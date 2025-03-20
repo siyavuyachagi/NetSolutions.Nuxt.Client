@@ -1,8 +1,9 @@
 <template>
     <nav class="hidden md:flex space-x-6 items-center">
-        <nuxt-link to="/" class="text-neutral-700 hover:text-primary-500 transition">Home</nuxt-link>
+        <nuxt-link to="/" class="text-neutral-700 hover:text-primary-500 transition"
+            active-class="text-primary-500">Home</nuxt-link>
 
-        <div class="relative" ref="servicesDropdownContainer">
+        <div v-if="servicesStatus === 'success'" class="relative" ref="servicesDropdownContainer">
             <div @click="toggleServicesDropdown" class="flex items-center cursor-pointer select-none">
                 <span class="text-neutral-700 hover:text-primary-500 transition mr-2">
                     Services
@@ -22,30 +23,31 @@
                 <div v-if="isServicesDropdownOpen"
                     class="absolute left-0 mt-4 w-56 origin-top-left bg-white border border-neutral-200 rounded-lg shadow-lg z-20">
                     <div class="py-2">
-                        <a href="#" class="block px-4 py-2 text-neutral-700 hover:bg-neutral-100 transition">
-                            Web Development
-                        </a>
-                        <a href="#" class="block px-4 py-2 text-neutral-700 hover:bg-neutral-100 transition">
-                            Mobile App Design
-                        </a>
-                        <a href="#" class="block px-4 py-2 text-neutral-700 hover:bg-neutral-100 transition">
-                            UI/UX Consulting
-                        </a>
-                        <a href="#" class="block px-4 py-2 text-neutral-700 hover:bg-neutral-100 transition">
-                            Cloud Solutions
-                        </a>
+                        <nuxt-link v-for="service in services" :key="service.id" :to="`/services/${service.id}`"
+                            class="block px-4 py-2 text-neutral-700 hover:bg-neutral-100 transition">
+                            {{ service.name }}
+                        </nuxt-link>
                     </div>
                 </div>
             </transition>
         </div>
 
-        <a href="#" class="text-neutral-700 hover:text-primary-500 transition">About</a>
-        <a href="#" class="text-neutral-700 hover:text-primary-500 transition">Contact</a>
+        <nuxt-link to="/about" class="text-neutral-700 hover:text-primary-500 transition"
+            active-class="text-primary-500">About</nuxt-link>
+        <nuxt-link to="/contact" class="text-neutral-700 hover:text-primary-500 transition"
+            active-class="text-primary-500">Contact</nuxt-link>
     </nav>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
+import serviceService from '~/services/ourServiceService';
+
+const {
+    data: services,
+    status: servicesStatus,
+    refresh: servicesRefresh,
+} = useAsyncData('services', () => serviceService.getServicesAsync());
 
 const servicesDropdownContainer = ref(null)
 const isServicesDropdownOpen = ref(false)
@@ -64,7 +66,8 @@ const handleClickOutside = (event) => {
 
 onMounted(() => {
     // Add event listener when component is mounted
-    document.addEventListener('click', handleClickOutside)
+    document.addEventListener('click', handleClickOutside);
+    servicesRefresh();
 })
 
 onUnmounted(() => {

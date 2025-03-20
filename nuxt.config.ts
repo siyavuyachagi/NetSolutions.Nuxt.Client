@@ -1,8 +1,7 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  ssr: true, // Ensure SSR is enabled globally
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
-  // Custom configurations
   css: ["~/assets/css/app.css"],
   modules: ["@nuxtjs/tailwindcss", "@pinia/nuxt"],
   tailwindcss: {
@@ -13,7 +12,6 @@ export default defineNuxtConfig({
   typescript: {
     builder: "vite",
   },
-  // Meta data
   app: {
     head: {
       title: "Home | NetSolutions",
@@ -31,7 +29,7 @@ export default defineNuxtConfig({
         },
         {
           property: "og:image",
-          content: "https://www.yourwebsite.com/path/to/your-image.jpg", // Use an actual image URL
+          content: "https://www.yourwebsite.com/path/to/your-image.jpg", // Replace with your actual image URL
         },
         { property: "og:url", content: "https://www.yourwebsite.com" },
         { property: "og:type", content: "website" },
@@ -41,9 +39,35 @@ export default defineNuxtConfig({
           content: "web development, hosting, design, SEO, NetSolutions",
         },
       ],
-      link: [
-        { rel: "icon", type: "image/svg+xml", href: "/logo.svg" }, 
-      ],
+      link: [{ rel: "icon", type: "image/svg+xml", href: "/logo.svg" }],
+    },
+  },
+  vite: {
+    optimizeDeps: {
+      include: ["@nuxtjs/axios"],
+    },
+    server: {
+      proxy: {
+        "/api": {
+          target: "https://localhost:7204", // Changed from https:// to http://
+          changeOrigin: true,
+          secure: false, // Only needed for HTTPS
+          timeout: 60000, // Set a longer timeout (60 seconds)
+          proxyTimeout: 60000,
+        },
+      },
+    },
+  },
+  nitro: {
+    storage: {
+      cache: {
+        driver: "memory", // Try switching to in-memory cache
+      },
+    },
+    prerender: {
+      crawlLinks: false, // Crawl links on the page
+      // routes: ["/", "/about", "/contact", "/auth/login"], // List the pages to prerender as static
+      routes: ["/", "/about", "/contact", "/auth/login"], // List the pages to prerender as static
     },
   },
 });

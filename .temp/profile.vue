@@ -1,5 +1,17 @@
 <template>
     <div class="min-h-screen bg-gray-50 p-6">
+        <!-- Breadcrumb navigation -->
+        <div class="mb-6">
+            <div class="flex items-center text-sm text-neutral-500">
+                <NuxtLink to="/" class="flex items-center hover:text-primary-500 transition">
+                    <ArrowLeft class="h-4 w-4 mr-2" />
+                    Home
+                </NuxtLink>
+                <span class="mx-2">/</span>
+                <span>Profile</span>
+            </div>
+        </div>
+
         <!-- Header -->
         <header class="flex justify-between items-center mb-8">
             <h1 class="text-3xl font-bold text-gray-800">Client Dashboard</h1>
@@ -15,7 +27,7 @@
                     New Project
                 </button>
                 <div class="relative">
-                    <img src="" alt="Profile" class="w-10 h-10 rounded-full cursor-pointer"
+                    <img :src="useAuthStore().user?.avatar" alt="Profile" class="w-10 h-10 rounded-full cursor-pointer"
                         @click="toggleProfileDropdown" />
                     <div v-if="isProfileDropdownOpen"
                         class="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg">
@@ -36,7 +48,7 @@
                 <div class="md:col-span-1 bg-white shadow rounded-lg p-6">
                     <div class="text-center">
                         <div class="relative inline-block mb-4">
-                            <img :src="profile.avatarUrl || '/api/placeholder/150/150'" alt="Profile Picture"
+                            <img :src="useAuthStore().user.avatar" alt="Profile Picture"
                                 class="w-32 h-32 rounded-full object-cover mx-auto mb-4" />
                             <label
                                 class="absolute bottom-0 right-0 bg-blue-500 text-white rounded-full p-2 cursor-pointer"
@@ -50,8 +62,9 @@
                             </label>
                         </div>
 
-                        <h2 class="text-2xl font-bold text-gray-800">{{ profile.fullName }}</h2>
-                        <p class="text-gray-600">{{ profile.companyRole }}</p>
+                        <h2 class="text-2xl font-bold text-gray-800">{{ useAuthStore().user?.lastName }} {{
+                            useAuthStore().user?.firstName }}</h2>
+                        <p class="text-gray-600">{{ useAuthStore().user.roles.join(', ') }}</p>
 
                         <div class="mt-6 space-y-2">
                             <div class="flex items-center justify-center space-x-4">
@@ -100,22 +113,21 @@
                         <div class="grid md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-gray-700 mb-2">First Name</label>
-                                <input v-model="profile.firstName" type="text"
+                                <input v-model="client.firstName" type="text"
                                     class="w-full border rounded-lg px-3 py-2" />
                             </div>
                             <div>
                                 <label class="block text-gray-700 mb-2">Last Name</label>
-                                <input v-model="profile.lastName" type="text"
+                                <input v-model="client.lastName" type="text"
                                     class="w-full border rounded-lg px-3 py-2" />
                             </div>
                             <div>
                                 <label class="block text-gray-700 mb-2">Email</label>
-                                <input v-model="profile.email" type="email"
-                                    class="w-full border rounded-lg px-3 py-2" />
+                                <input v-model="client.email" type="email" class="w-full border rounded-lg px-3 py-2" />
                             </div>
                             <div>
                                 <label class="block text-gray-700 mb-2">Phone Number</label>
-                                <input v-model="profile.phoneNumber" type="tel"
+                                <input v-model="client.phoneNumber" type="tel"
                                     class="w-full border rounded-lg px-3 py-2" />
                             </div>
                         </div>
@@ -173,7 +185,7 @@
                             </div>
                             <div class="md:col-span-2">
                                 <label class="block text-gray-700 mb-2">About Me</label>
-                                <textarea v-model="profile.aboutMe"
+                                <textarea v-model="client.bio"
                                     class="w-full border rounded-lg px-3 py-2 h-32"></textarea>
                             </div>
                         </div>
@@ -194,6 +206,29 @@
 
 <script setup>
 import { ref } from 'vue'
+import clientService from '~/services/clientService';
+import { useAuthStore } from '~/stores/useAuthStore';
+
+definePageMeta({
+    requiresAuth: true,
+    roles: ['Client'],
+    layout: 'account'
+});
+const {
+    data: client,
+    status: clientStatus,
+    error: clientError,
+    refresh: clientRefresh
+} = useAsyncData(() => clientService.getClientAsync(useAuthStore().user.id));
+console.log(await client.value);
+
+// const {
+//     data: userRoles,
+//     status: userRolesStatus,
+//     error: userRolesError,
+//     refresh: userRolesRefresh
+// } = useAsyncData(() => accountService.getUserRoles(useAuthStore().user.id));
+// console.log(await userRoles.value);
 
 const activeTab = ref('personal')
 

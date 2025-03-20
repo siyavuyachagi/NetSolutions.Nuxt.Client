@@ -1,58 +1,23 @@
-import apiClient from "../../netsolutions.client/services/apiClient";
-import { useAuthStore } from "~/store/authStore";
+import apiClient from "~/api/apiClient";
+import { useAuthStore } from "~/stores/useAuthStore";
 
-export default class AccountService {
-  //✅Login method
-  async loginAsync(
-    payload: any,
-    returnUrl: string | null = null
-  ): Promise<any> {
-    try {
-      const response = await apiClient.post(`/account/login`, payload);
+class AuthService {
+  constructor() {}
 
-      if (response.status === 200) {
-        useAuthStore().login(response.data, payload?.rememberMe);
-        returnUrl = returnUrl
-          ? returnUrl
-          : useRoute().query?.returnUrl
-          ? (useRoute().query?.returnUrl as string)
-          : "/";
-        useRouter().push(returnUrl);
-      } else {
-        throw new Error(response.data);
-      }
-    } catch (error: any) {
-      // Handle other errors
-      throw new Error(
-        `${error.response ? error.response.data : error.message}`
-      );
-    }
-  }
-
-  public async refreshToken(refreshToken: string) {
+  async getUserRoles(userId: string): Promise<any> {
     return apiClient
-      .post("/Account/token/refresh", refreshToken)
+      .post(`/api/Account/userRoles/${userId}`)
       .then((response) => {
         if (response.status === 200) {
+          console.log(response.data);
           return response.data;
+        } else if (response.status === 400) {
+          throw new Error(response.data);
         } else {
-          throw new Error("Failed to refresh the token.");
+          throw new Error("Invalid username or password");
         }
       });
   }
-
-  public static logout(returnUrl: string | null = null) {
-    useAuthStore().logout();
-    if (returnUrl) useRouter().push(returnUrl);
-  }
-
-  public async usersAsync() {
-    return apiClient.get("/Account/users").then((response) => {
-      if (response.status === 200) {
-        return response.data;
-      } else {
-        throw new Error("Failed to fetch services");
-      }
-    });
-  }
 }
+
+export default new AuthService();

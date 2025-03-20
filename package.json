@@ -8,15 +8,22 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "clean": "rm -rf ./.nuxt ./.output ./.vs ./dist ./node_modules package-lock.json"
+    "clean": "rm -rf ./.nuxt ./.output ./.vs ./dist ./node_modules package-lock.json && npm install"
   },
   "dependencies": {
     "@nuxtjs/tailwindcss": "^6.13.1",
     "@pinia/nuxt": "^0.10.1",
     "axios": "^1.8.1",
+    "date-fns": "^4.1.0",
+    "jwt-decode": "^4.0.0",
     "lucide-vue-next": "^0.477.0",
     "nuxt": "^3.15.4",
+    "typed.js": "^2.1.0",
     "vue": "^3.5.13",
-    "vue-router": "^4.5.0"
+    "vue-router": "^4.5.0",
+    "vuesanity": "github:ceejayviii/vuesanity"
+  },
+  "devDependencies": {
+    "@types/jwt-decode": "^2.2.1"
   }
 }

@@ -16,14 +16,14 @@
                         New Project
                     </button>
                     <div class="relative">
-                        <img src="https://placehold.co/600x400" alt="Profile"
+                        <img :src="useAuthStore().user?.avatar" alt="Profile"
                             class="w-10 h-10 rounded-full cursor-pointer" @click="toggleProfileDropdown" />
                         <div v-if="isProfileDropdownOpen"
                             class="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg">
                             <div class="py-1">
                                 <nuxt-link to="/account/profile"
                                     class="block px-4 py-2 hover:bg-gray-100">Profile</nuxt-link>
-                                <nuxt-link to="/dashboard/profile"
+                                <nuxt-link to="/account/profile"
                                     class="block px-4 py-2 hover:bg-gray-100">Settings</nuxt-link>
                                 <nuxt-link to=""
                                     class="block px-4 py-2 hover:bg-gray-100 text-red-500">Logout</nuxt-link>
@@ -83,23 +83,20 @@
                             <tbody>
                                 <tr v-for="project in filteredProjects" :key="project.id"
                                     class="border-b hover:bg-gray-50">
-                                    <td class="p-4">{{ project.name }}</td>
+                                    <td class="p-4">{{ project.title }}</td>
                                     <td class="p-4">
-                                        <span :class="{
-                                            'bg-green-100 text-green-800': project.status === 'completed',
-                                            'bg-blue-100 text-blue-800': project.status === 'active',
-                                            'bg-yellow-100 text-yellow-800': project.status === 'pending'
-                                        }" class="px-2 py-1 rounded-full text-xs font-medium">
+                                        <span :class="getStatusClasses(project.status)">
                                             {{ project.status }}
                                         </span>
                                     </td>
                                     <td class="p-4">
                                         <div class="w-full bg-gray-200 rounded-full h-2.5">
                                             <div class="bg-blue-600 h-2.5 rounded-full"
-                                                :style="{ width: `${project.progress}%` }"></div>
+                                                :style="{ width: project.progress ? `${project.progress}%` : `${Math.floor(Math.random() * 100)}%` }">
+                                            </div>
                                         </div>
                                     </td>
-                                    <td class="p-4">{{ project.lastUpdated }}</td>
+                                    <td class="p-4">{{ project.createdAt }}</td>
                                     <td class="p-4">
                                         <div class="flex space-x-2">
                                             <button @click="viewProjectDetails(project)"
@@ -123,6 +120,9 @@
                                             </button>
                                         </div>
                                     </td>
+                                </tr>
+                                <tr v-if="filteredProjects.length === 0">
+                                    <td colspan="5" class="p-4 text-center text-gray-500">No projects found.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -154,8 +154,8 @@
                     <form @submit.prevent="sendMessage" class="p-6">
                         <select v-model="selectedProject" class="w-full border rounded-lg px-3 py-2 mb-4" required>
                             <option value="">Select Project</option>
-                            <option v-for="project in projects" :key="project.id" :value="project.id">
-                                {{ project.name }}
+                            <option v-for="project in client?.projects" :key="project.id" :value="project.id">
+                                {{ project.title }}
                             </option>
                         </select>
                         <textarea v-model="messageContent" placeholder="Type your message..."
@@ -170,34 +170,21 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from 'vue'
+import clientService from '~/services/clientService'
+import { useAuthStore } from '~/stores/useAuthStore'
 
-// Sample data (would typically come from an API)
-const projects = ref([
-    {
-        id: 1,
-        name: 'Website Redesign',
-        status: 'active',
-        progress: 65,
-        lastUpdated: '2024-03-05'
-    },
-    {
-        id: 2,
-        name: 'Mobile App Development',
-        status: 'pending',
-        progress: 30,
-        lastUpdated: '2024-03-03'
-    },
-    {
-        id: 3,
-        name: 'E-commerce Platform',
-        status: 'completed',
-        progress: 100,
-        lastUpdated: '2024-02-28'
-    }
-])
+definePageMeta({
+    requiresAuth: true,
+    roles: ["Client"],
+});
 
+const { data: client, status: clientStatus, error: clientError } = useAsyncData(() =>
+    clientService.getClientAsync(useAuthStore().user?.id as string)
+);
+
+// Recent messages
 const recentMessages = ref([
     {
         id: 1,
@@ -211,70 +198,98 @@ const recentMessages = ref([
         content: 'Can we schedule a meeting to discuss the latest changes?',
         timestamp: 'Yesterday'
     }
-])
+]);
 
-// Dashboard statistics
-const activeProjectsCount = computed(() =>
-    projects.value.filter(p => p.status === 'active').length
-)
-const completedProjectsCount = computed(() =>
-    projects.value.filter(p => p.status === 'completed').length
-)
-const pendingCommunicationsCount = computed(() =>
-    recentMessages.value.length
-)
+// Dashboard statistics computed from client.projects if available
+const activeProjectsCount = computed(() => {
+    return client.value?.projects.filter((project: any) => project.status.toLowerCase() === 'active').length || 0;
+});
+const completedProjectsCount = computed(() => {
+    return client.value?.projects.filter((project: any) => project.status.toLowerCase() === 'completed').length || 0;
+});
+const pendingCommunicationsCount = computed(() => recentMessages.value.length);
 
 // Search and filter
-const searchTerm = ref('')
-const filterStatus = ref('')
+const searchTerm = ref('');
+const filterStatus = ref('');
 
 const filteredProjects = computed(() => {
-    return projects.value.filter(project => {
-        const matchesSearch = project.name.toLowerCase().includes(searchTerm.value.toLowerCase())
-        const matchesStatus = !filterStatus.value || project.status === filterStatus.value
-        return matchesSearch && matchesStatus
-    })
-})
+    if (!client.value?.projects) return [];
+    return client.value.projects.filter((project: any) => {
+        const matchesSearch = project.title.toLowerCase().includes(searchTerm.value.toLowerCase());
+        const matchesStatus = !filterStatus.value || project.status.toLowerCase() === filterStatus.value.toLowerCase();
+        return matchesSearch && matchesStatus;
+    });
+});
 
 // Profile dropdown
-const isProfileDropdownOpen = ref(false)
+const isProfileDropdownOpen = ref(false);
 const toggleProfileDropdown = () => {
-    isProfileDropdownOpen.value = !isProfileDropdownOpen.value
-}
+    isProfileDropdownOpen.value = !isProfileDropdownOpen.value;
+};
 
 // New project modal
 const openNewProjectModal = () => {
     // Implement new project modal logic
-    console.log('Open new project modal')
-}
+    console.log('Open new project modal');
+};
 
 // Project actions
-const viewProjectDetails = (project) => {
+const viewProjectDetails = (project: any) => {
     // Implement project details view
-    console.log('View project details', project)
-}
+    console.log('View project details', project);
+};
 
-const deleteProject = (project) => {
-    // Implement project deletion
-    const index = projects.value.findIndex(p => p.id === project.id)
+const deleteProject = (project: any) => {
+    // Implement project deletion logic
+    if (!client.value?.projects) return;
+    const index = client.value.projects.findIndex((p: any) => p.id === project.id);
     if (index !== -1) {
-        projects.value.splice(index, 1)
+        client.value.projects.splice(index, 1);
     }
-}
+};
 
 // Message functionality
-const selectedProject = ref('')
-const messageContent = ref('')
+const selectedProject = ref('');
+const messageContent = ref('');
 
 const sendMessage = () => {
     // Implement message sending logic
     console.log('Sending message', {
         projectId: selectedProject.value,
         message: messageContent.value
-    })
-
+    });
     // Reset form
-    selectedProject.value = ''
-    messageContent.value = ''
-}
+    selectedProject.value = '';
+    messageContent.value = '';
+};
+
+// Utility: Get status classes based on project status
+const getStatusClasses = (status: string) => {
+    const baseClasses = "px-2 py-1 rounded text-xs font-medium";
+    switch (status) {
+        case "Not Started":
+            return `${baseClasses} bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300`;
+        case "Planning Phase":
+            return `${baseClasses} bg-yellow-100 text-yellow-600 dark:bg-yellow-900 dark:text-yellow-300`;
+        case "In Progress":
+            return `${baseClasses} bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300`;
+        case "On Hold":
+            return `${baseClasses} bg-orange-100 text-orange-600 dark:bg-orange-900 dark:text-orange-300`;
+        case "Awaiting Approval":
+            return `${baseClasses} bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-300`;
+        case "Testing & QA":
+            return `${baseClasses} bg-teal-100 text-teal-600 dark:bg-teal-900 dark:text-teal-300`;
+        case "Deployment Phase":
+            return `${baseClasses} bg-teal-200 text-teal-700 dark:bg-teal-800 dark:text-teal-200`;
+        case "Maintenance & Support":
+            return `${baseClasses} bg-indigo-100 text-indigo-600 dark:bg-indigo-900 dark:text-indigo-300`;
+        case "Completed Successfully":
+            return `${baseClasses} bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300`;
+        case "Cancelled/Terminated":
+            return `${baseClasses} bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300`;
+        default:
+            return baseClasses;
+    }
+};
 </script>

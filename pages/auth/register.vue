@@ -1,12 +1,12 @@
 <template>
     <div class="flex items-center justify-center px-4">
         <div class="w-full max-w-md">
-            <FormsLoginForm />
+            <FormsRegisterForm />
         </div>
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ref } from 'vue'
 
 const email = ref('')
@@ -48,10 +48,10 @@ const handleLogin = () => {
         // Implement your login logic here
         console.log('Login attempted', { email: email.value })
     }
-    useRouter().push('/account');
+    useRouter().push('/dashboard');
 }
 
-const isValidEmail = (emailToValidate: string) => {
+const isValidEmail = (emailToValidate) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     return emailRegex.test(emailToValidate)
 }

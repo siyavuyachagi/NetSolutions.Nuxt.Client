@@ -3,7 +3,7 @@
         <nuxt-link to="/" class="text-neutral-700 hover:text-primary-500 transition"
             active-class="text-primary-500">Home</nuxt-link>
 
-        <div v-if="servicesStatus === 'success'" class="relative" ref="servicesDropdownContainer">
+        <div class="relative" ref="servicesDropdownContainer">
             <div @click="toggleServicesDropdown" class="flex items-center cursor-pointer select-none">
                 <span class="text-neutral-700 hover:text-primary-500 transition mr-2">
                     Services
@@ -23,9 +23,13 @@
                 <div v-if="isServicesDropdownOpen"
                     class="absolute left-0 mt-4 w-56 origin-top-left bg-white border border-neutral-200 rounded-lg shadow-lg z-20">
                     <div class="py-2">
-                        <nuxt-link v-for="service in services" :key="service.id" :to="`/services/${service.id}`"
+                        <nuxt-link v-if="servicesStatus === 'success'" v-for="service in services" :key="service.id"
+                            :to="`/services/${service.id}`"
                             class="block px-4 py-2 text-neutral-700 hover:bg-neutral-100 transition">
                             {{ service.name }}
+                        </nuxt-link>
+                        <nuxt-link class="block px-4 py-2 text-neutral-700 hover:bg-neutral-100 transition">
+                            Custom Solutions
                         </nuxt-link>
                     </div>
                 </div>

@@ -8,8 +8,8 @@
                     Back to Home
                 </NuxtLink>
                 <span class="mx-2">/</span>
-                <NuxtLink :to="`/services/${ourService?.id}`" class="hover:text-primary-500 transition">
-                    {{ ourService?.name }}
+                <NuxtLink :to="`/solutions/${solution?.id}`" class="hover:text-primary-500 transition">
+                    {{ solution?.title }}
                 </NuxtLink>
                 <span class="mx-2">/</span>
                 <span>Getting Started</span>
@@ -21,7 +21,7 @@
             <!-- Left column - form and inputs -->
             <div class="lg:col-span-2 space-y-6">
                 <div class="bg-white rounded-lg shadow-md p-6">
-                    <h1 class="text-2xl font-bold text-neutral-800 mb-4">Get Started with {{ ourService?.name }}</h1>
+                    <h1 class="text-2xl font-bold text-neutral-800 mb-4">Get Started with {{ solution?.title }}</h1>
                     <p class="text-neutral-600 mb-6">Tell us about your project requirements to help us understand your
                         needs better.</p>
 
@@ -57,7 +57,7 @@
                     <form @submit.prevent="goToNextStep" class="space-y-6">
                         <!-- Step 1: Project Requirements -->
                         <div v-if="currentStep === 0">
-                            <div class="space-y-4">
+                            <!-- <div class="space-y-4">
                                 <div>
                                     <label for="projectName"
                                         class="block text-sm font-medium text-neutral-700 mb-1">Project Name</label>
@@ -101,13 +101,13 @@
                                         <option value="longterm">Long-term (6+ months)</option>
                                     </select>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
 
                         <!-- Step 2: File Attachments -->
                         <div v-if="currentStep === 1">
                             <div class="space-y-4">
-                                <div>
+                                <!-- <div>
                                     <label class="block text-sm font-medium text-neutral-700 mb-2">Supporting
                                         Documents</label>
                                     <div class="border-2 border-dashed border-neutral-300 rounded-lg p-6 text-center hover:border-primary-400 transition-colors"
@@ -128,10 +128,10 @@
                                         </div>
                                     </div>
                                     <p v-if="errors.files" class="mt-1 text-sm text-red-600">{{ errors.files }}</p>
-                                </div>
+                                </div> -->
 
                                 <!-- File list -->
-                                <div v-if="formData.files.length > 0" class="mt-4">
+                                <!-- <div v-if="formData.files.length > 0" class="mt-4">
                                     <h3 class="text-sm font-medium text-neutral-700 mb-2">Uploaded Files ({{
                                         formData.files.length }})</h3>
                                     <ul class="space-y-2">
@@ -159,7 +159,7 @@
                                             </button>
                                         </li>
                                     </ul>
-                                </div>
+                                </div> -->
 
                                 <div>
                                     <label for="additionalNotes"
@@ -183,7 +183,7 @@
                                             :class="{ 'border-red-500': errors.firstName }"
                                             placeholder="Your first name" />
                                         <p v-if="errors.firstName" class="mt-1 text-sm text-red-600">{{ errors.firstName
-                                            }}</p>
+                                        }}</p>
                                     </div>
 
                                     <div>
@@ -194,7 +194,7 @@
                                             :class="{ 'border-red-500': errors.lastName }"
                                             placeholder="Your last name" />
                                         <p v-if="errors.lastName" class="mt-1 text-sm text-red-600">{{ errors.lastName
-                                            }}</p>
+                                        }}</p>
                                     </div>
                                 </div>
 
@@ -271,7 +271,7 @@
                             </button>
                             <div v-else></div>
 
-                            <button type="submit"
+                            <button type="submit" @click="submitForm"
                                 class="px-6 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg transition flex items-center"
                                 :disabled="isSubmitting">
                                 <span v-if="isSubmitting">Processing...</span>
@@ -288,24 +288,9 @@
             <div class="space-y-6">
                 <!-- Selected package summary -->
                 <div class="bg-white rounded-lg shadow-md p-6">
-                    <h3 class="text-lg font-semibold text-neutral-800 mb-4">Your Selected Package</h3>
-
-                    <div class="bg-neutral-50 rounded-lg p-4 mb-4">
-                        <div class="flex justify-between items-center mb-2">
-                            <h4 class="font-bold text-neutral-800">{{ selectedPackage?.name }}</h4>
-                            <span :class="pkgColor(selectedPackage?.name)">
-                                {{ selectedPackage?.name }}
-                            </span>
-                        </div>
-
-                        <div v-if="selectedPackage?.price !== 0" class="mb-2">
-                            <span class="text-xl font-bold text-neutral-800">R{{ selectedPackage?.price.toFixed(2)
-                                }}</span>
-                            <span class="text-neutral-500 text-sm">/{{ selectedPackage?.billingCycle }}</span>
-                        </div>
-
-                        <p class="text-neutral-600 text-sm mt-2">{{ selectedPackage?.description }}</p>
-                    </div>
+                    <h3 class="text-lg font-semibold text-neutral-800 mb-4">
+                        {{ solution?.title }}
+                    </h3>
 
                     <div class="border-t py-4">
                         <h4 class="font-medium text-neutral-800 mb-2">Included in this package:</h4>
@@ -315,6 +300,22 @@
                                 <span class="text-neutral-700 text-sm">{{ feature?.title }}</span>
                             </li>
                         </ul>
+                    </div>
+
+                    <div class="bg-neutral-50 rounded-lg p-4 mb-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-bold text-neutral-800">{{ selectedPackage?.name }}</h4>
+                            <span :class="pkgColor(selectedPackage?.name || '')">
+                                {{ selectedPackage?.name }}
+                            </span>
+                        </div>
+
+                        <div v-if="selectedPackage?.price !== 0" class="mb-2">
+                            <span class="text-xl font-bold text-neutral-800">R{{ solution.price }}</span>
+                            <span class="text-neutral-500 text-sm">/{{ `Total Price` }}</span>
+                        </div>
+
+                        <p class="text-neutral-600 text-sm mt-2">{{ selectedPackage?.description }}</p>
                     </div>
 
                     <div class="mt-4 pt-4 border-t">
@@ -359,37 +360,33 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import {
     ArrowLeft, ArrowRight, CheckCircle, CloudUpload, X, FileText, Image,
     File, MessageCircle, Phone, Mail, HelpCircle
 } from 'lucide-vue-next';
 import { useRoute, useRouter } from 'vue-router';
-
-import ourServiceService from '~/services/ourServiceService';
+import solutionService from '~/services/solutionService';
 
 definePageMeta({
     validate(route) {
-        if (!(route.params.id) || !(route.query.pkgId)) {
+        if (!(route.params.id)) {
             return false
         }
         return true;
     },
 })
 
-// const {
-//     data: ourService,
-//     status: ourServiceStatus,
-//     error: ourServiceError,
-//     refresh: ourServiceRefresh
-// } = useAsyncData('ourService-purchase', () => ourServiceService.getServiceAsync(useRoute().params.id as string));
-
 // Get route and service ID
 const route = useRoute();
 const router = useRouter();
 const serviceId = route.params.id;
 const packageId = route.query.pkgId;
+
+const { data: solution, status: solutionStatus, error: solutionError, refresh: solutionRefresh } =
+    useAsyncData(`solutions-solution-${route.params.id}`, () => solutionService.getSolutionAsync(route.params.id as string));
+
 
 // Define steps
 const steps = [
@@ -399,7 +396,7 @@ const steps = [
 ];
 
 // Form state
-const currentStep = ref(0);
+const currentStep = ref(2);
 const isSubmitting = ref(false);
 const isDragging = ref(false);
 const referenceId = ref('REQ-' + Math.random().toString(36).substr(2, 9).toUpperCase());
@@ -480,7 +477,7 @@ const selectedPackage = computed(() => {
 });
 
 // Color helper function
-const pkgColor = (name) => {
+const pkgColor = (name: string) => {
     switch (name) {
         case 'Basic':
             return 'bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs font-medium';
@@ -494,7 +491,7 @@ const pkgColor = (name) => {
 };
 
 // Format file size
-const formatFileSize = (bytes) => {
+const formatFileSize = (bytes: any) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
@@ -502,46 +499,46 @@ const formatFileSize = (bytes) => {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };
 
-// Handle file drop
-const handleFileDrop = (event) => {
-    isDragging.value = false;
-    const droppedFiles = event.dataTransfer.files;
-    processFiles(droppedFiles);
-};
+// // Handle file drop
+// const handleFileDrop = (event: any) => {
+//     isDragging.value = false;
+//     const droppedFiles = event.dataTransfer.files;
+//     processFiles(droppedFiles);
+// };
 
-// Handle file selection
-const handleFileChange = (event) => {
-    const selectedFiles = event.target.files;
-    processFiles(selectedFiles);
-};
+// // Handle file selection
+// const handleFileChange = (event: any) => {
+//     const selectedFiles = event.target.files;
+//     processFiles(selectedFiles);
+// };
 
-// Process files
-const processFiles = (files) => {
-    const maxSize = 5 * 1024 * 1024; // 5MB
-    const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png'];
+// // Process files
+// const processFiles = (files: any) => {
+//     const maxSize = 5 * 1024 * 1024; // 5MB
+//     const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png'];
 
-    for (let i = 0; i < files.length; i++) {
-        const file = files[i];
+//     for (let i = 0; i < files.length; i++) {
+//         const file = files[i];
 
-        // Validate file size
-        if (file.size > maxSize) {
-            errors.value.files = `${file.name} exceeds the 5MB size limit`;
-            continue;
-        }
+//         // Validate file size
+//         if (file.size > maxSize) {
+//             errors.value.files = `${file.name} exceeds the 5MB size limit`;
+//             continue;
+//         }
 
-        // Validate file type
-        if (!allowedTypes.includes(file.type)) {
-            errors.value.files = `${file.name} is not a supported file type`;
-            continue;
-        }
+//         // Validate file type
+//         if (!allowedTypes.includes(file.type)) {
+//             errors.value.files = `${file.name} is not a supported file type`;
+//             continue;
+//         }
 
-        // Add file to the list
-        formData.value.files.push(file);
-    }
-};
+//         // Add file to the list
+//         formData.value.files.push(file);
+//     }
+// };
 
 // Remove file
-const removeFile = (index) => {
+const removeFile = (index: number) => {
     formData.value.files.splice(index, 1);
 };
 
@@ -551,34 +548,34 @@ const validateCurrentStep = () => {
 
     switch (currentStep.value) {
         case 0: // Project Details
-            if (!formData.value.projectName) {
-                errors.value.projectName = 'Project name is required';
-            }
-            if (!formData.value.projectDescription) {
-                errors.value.projectDescription = 'Project description is required';
-            } else if (formData.value.projectDescription.length < 50) {
-                errors.value.projectDescription = 'Please provide a more detailed description (at least 50 characters)';
-            }
+            // if (!formData.value.projectName) {
+            //     errors.value.projectName = 'Project name is required';
+            // }
+            // if (!formData.value.projectDescription) {
+            //     errors.value.projectDescription = 'Project description is required';
+            // } else if (formData.value.projectDescription.length < 50) {
+            //     errors.value.projectDescription = 'Please provide a more detailed description (at least 50 characters)';
+            // }
             break;
 
         case 2: // Contact Information
-            if (!formData.value.firstName) {
-                errors.value.firstName = 'First name is required';
-            }
-            if (!formData.value.lastName) {
-                errors.value.lastName = 'Last name is required';
-            }
-            if (!formData.value.email) {
-                errors.value.email = 'Email is required';
-            } else if (!/\S+@\S+\.\S+/.test(formData.value.email)) {
-                errors.value.email = 'Please enter a valid email address';
-            }
-            if (!formData.value.phone) {
-                errors.value.phone = 'Phone number is required';
-            }
-            if (!formData.value.termsAccepted) {
-                errors.value.termsAccepted = 'You must accept the terms of service';
-            }
+            // if (!formData.value.firstName) {
+            //     errors.value.firstName = 'First name is required';
+            // }
+            // if (!formData.value.lastName) {
+            //     errors.value.lastName = 'Last name is required';
+            // }
+            // if (!formData.value.email) {
+            //     errors.value.email = 'Email is required';
+            // } else if (!/\S+@\S+\.\S+/.test(formData.value.email)) {
+            //     errors.value.email = 'Please enter a valid email address';
+            // }
+            // if (!formData.value.phone) {
+            //     errors.value.phone = 'Phone number is required';
+            // }
+            // if (!formData.value.termsAccepted) {
+            //     errors.value.termsAccepted = 'You must accept the terms of service';
+            // }
             break;
     }
 
@@ -606,18 +603,18 @@ const submitForm = async () => {
     isSubmitting.value = true;
 
     try {
-        // Mock API call
-        await new Promise(resolve => setTimeout(resolve, 1500));
-
-        // Form submitted successfully
-        currentStep.value = 3;
-        isSubmitting.value = false;
-
-        // In a real app, you would send the form data to your backend
-        console.log('Form submitted:', formData.value);
+        var request = {
+            Email: formData.value.email,
+        }
+        console.log(request)
+        await solutionService.purchaseSolutionsAsync(solution.value.id, request);
     } catch (error) {
         console.error('Error submitting form:', error);
-        isSubmitting.value = false;
     }
+    isSubmitting.value = false;
 };
+
+onMounted(() => {
+    console.log(solution.value);
+});
 </script>

@@ -5,17 +5,17 @@
             <!-- Company Info -->
             <div>
                 <h4 class="text-xl font-bold mb-4">NetSolutions</h4>
-                <p class="text-neutral-300">Innovative tech solutions for modern businesses.</p>
+                <p class="">Innovative tech solutions for modern businesses.</p>
             </div>
 
             <!-- Quick Links -->
             <div>
                 <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
                 <ul class="space-y-2">
-                    <li><a href="#" class="hover:text-primary-300">Home</a></li>
+                    <li><a href="/" class="hover:text-primary-300">Home</a></li>
                     <li><a href="#" class="hover:text-primary-300">Solutions</a></li>
-                    <li><a href="#" class="hover:text-primary-300">About Us</a></li>
-                    <li><a href="#" class="hover:text-primary-300">Contact</a></li>
+                    <li><a href="/about" class="hover:text-primary-300">About Us</a></li>
+                    <li><a href="/contact" class="hover:text-primary-300">Contact</a></li>
                 </ul>
             </div>
 
@@ -33,8 +33,12 @@
             <!-- Contact -->
             <div>
                 <h4 class="text-lg font-semibold mb-4">Contact Us</h4>
-                <p class="text-gray-500 mb-2">Email: info@netsolutions.com</p>
-                <p class="text-gray-500 mb-2">Phone: (555) 123-4567</p>
+                <p class="text-gray-500 mb-2">
+                    Email: <a class="hover:text-primary-300" href="mailto:syavuya08@gmail.com">syavuya08@gmail.com</a>
+                </p>
+                <p class="text-gray-500 mb-2">
+                    Phone: <a class="hover:text-primary-300" href="tel:+27639615361">+27 63 961 5361</a>
+                </p>
                 <div class="flex space-x-4 mt-4">
                     <!-- Instagram -->
                     <a href="#" class="text-pink-600 hover:text-pink-800 transition-colors">

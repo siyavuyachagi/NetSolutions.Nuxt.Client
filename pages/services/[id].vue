@@ -73,20 +73,20 @@
 
                             <p class="text-neutral-700 leading-relaxed">{{ ourService?.description }}</p>
 
-                            <!-- <div class="flex flex-col sm:flex-row sm:justify-between space-y-4 sm:space-y-0 pt-4">
-                                <div>
+                            <div class="flex flex-col sm:flex-row sm:justify-between space-y-4 sm:space-y-0 pt-4">
+                                <!-- <div>
                                     <h3 class="text-sm font-medium text-neutral-500">Lead Developer</h3>
                                     <p class="text-neutral-800">{{ activeService?.leadDeveloper }}</p>
-                                </div>
+                                </div> -->
                                 <div>
                                     <h3 class="text-sm font-medium text-neutral-500">Typical Timeframe</h3>
-                                    <p class="text-neutral-800">{{ activeService?.timeframe }}</p>
+                                    <p class="text-neutral-800">2-6 Months</p>
                                 </div>
-                                <div>
+                                <!-- <div>
                                     <h3 class="text-sm font-medium text-neutral-500">Starting From</h3>
                                     <p class="text-neutral-800">R{{ activeService?.basePrice.toFixed(2) }}</p>
-                                </div>
-                            </div> -->
+                                </div> -->
+                            </div>
                         </div>
 
                         <!-- Features tab -->
@@ -237,11 +237,11 @@
 
                     <p class="text-neutral-600 mb-4">{{ pkg.description }}</p>
 
-                    <button
+                    <nuxt-link :to="`getting-started/${ourService.id}?pkgId=${pkg.id}`"
                         class="w-full bg-primary-500 hover:bg-primary-600 text-white font-medium py-3 px-4 rounded-lg mb-4 flex items-center justify-center">
                         <ShoppingCart class="h-5 w-5 mr-2" />
                         Get Started
-                    </button>
+                    </nuxt-link>
 
                     <div class="border-t py-4">
                         <h4 class="font-medium text-neutral-800 mb-2">Included in this package:</h4>
@@ -387,6 +387,7 @@ function handleContactUsSubmit() {
 onMounted(() => {
     ourServicesRefresh();
     solutionsRefresh();
+    console.log(ourService.value)
 });
 </script>
 

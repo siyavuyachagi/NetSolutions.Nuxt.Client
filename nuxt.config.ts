@@ -48,7 +48,8 @@ export default defineNuxtConfig({
     server: {
       proxy: {
         "/api": {
-          target: "https://localhost:7204", // Changed from https:// to http://
+          target: "https://chagisiyavuya-adf2dycddcfqbvgu.canadacentral-01.azurewebsites.net", // Live url
+          // target: "https://localhost:7278", // Changed from https:// to http://
           changeOrigin: true,
           secure: false, // Only needed for HTTPS
           timeout: 60000, // Set a longer timeout (60 seconds)

@@ -1,6 +1,7 @@
 import { se } from "date-fns/locale";
 import apiClient from "~/api/apiClient";
 import { useSolutionsStore } from "~/stores/useSolutionsStore";
+import usePayFast from "./usePayFast";
 // import type { Client, Solution } from "~/api/interfaces";
 
 class SolutionService {
@@ -101,6 +102,27 @@ class SolutionService {
           throw new Error("Failed to fetch solutions");
         }
       });
+  }
+
+  async purchaseSolutionsAsync(Id: string, payload: any): Promise<any> {
+    try {
+      // Send the solution ID and item details to your backend
+      const response = await apiClient.post(
+        `/api/Solutions/purchase/${Id}`,
+        payload
+      );
+
+      if (response.status === 200) {
+        // redirect the user to PayFast's payment page
+        window.location.href = response.data.redirectUrl;
+        return { success: true };
+      } else {
+        throw new Error("Error purchasing solution");
+      }
+    } catch (error) {
+      console.error("Payment initiation failed:", error);
+      throw error;
+    }
   }
 }
 

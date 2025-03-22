@@ -3,7 +3,7 @@
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
             <!-- Logo and Brand -->
             <div class="flex items-center space-x-4">
-                <img src="/public/logo.png" alt="NetSolutions Logo" class="w-10 h-min cursor-pointer"
+                <img src="/public/logo.png" alt="NetSolutions Logo" class="w-10 h-10 cursor-pointer"
                     @click="useRouter().push('/')">
                 <h1 class="text-2xl font-bold text-primary-600 hidden md:block">NetSolutions</h1>
             </div>

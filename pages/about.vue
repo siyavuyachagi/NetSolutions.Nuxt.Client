@@ -26,9 +26,7 @@
                 </div>
                 <div class="bg-gray-200 h-80 rounded-lg overflow-hidden">
                     <!-- Replace with actual image -->
-                    <div class="w-full h-full flex items-center justify-center bg-gray-300">
-                        <p class="text-gray-600">Company founding image placeholder</p>
-                    </div>
+                    <img src="/assets/images/company-founding.jpg" alt="" srcset="">
                 </div>
             </div>
         </section>
@@ -342,8 +340,9 @@
                         attention to detail and commitment to quality is unmatched. I highly recommend their services.
                     </p>
                     <div class="flex items-center">
-                        <div class="w-12 h-12 bg-gray-300 rounded-full mr-4">
-                            <!-- Replace with actual image -->
+                        <div class="w-12 h-12 bg-gray-300 rounded-full mr-4 overflow-hidden">
+                            <img :src="`https://randomuser.me/api/portraits/${['men', 'women'][Math.floor(Math.random() * 2)]}/${Math.floor(Math.random() * 100)}.jpg`"
+                                alt="Random Person" class="w-full h-full object-cover">
                         </div>
                         <div>
                             <h4 class="font-semibold text-purple-900">Robert Johnson</h4>
@@ -365,9 +364,11 @@
                         They delivered our project on time and within budget. We couldn't be happier with the results.
                     </p>
                     <div class="flex items-center">
-                        <div class="w-12 h-12 bg-gray-300 rounded-full mr-4">
-                            <!-- Replace with actual image -->
+                        <div class="w-12 h-12 bg-gray-300 rounded-full mr-4 overflow-hidden">
+                            <img :src="`https://randomuser.me/api/portraits/${['men', 'women'][Math.floor(Math.random() * 2)]}/${Math.floor(Math.random() * 100)}.jpg`"
+                                alt="Random Person" class="w-full h-full object-cover">
                         </div>
+
                         <div>
                             <h4 class="font-semibold text-purple-900">Emily Davis</h4>
                             <p class="text-gray-600">Marketing Director, Brand Co</p>
@@ -387,9 +388,11 @@
                     <p class="text-gray-700 mb-6">Their innovative approach and creative solutions have transformed our
                         business. We've seen remarkable growth since implementing their recommendations.</p>
                     <div class="flex items-center">
-                        <div class="w-12 h-12 bg-gray-300 rounded-full mr-4">
-                            <!-- Replace with actual image -->
+                        <div class="w-12 h-12 bg-gray-300 rounded-full mr-4 overflow-hidden">
+                            <img :src="`https://randomuser.me/api/portraits/${['men', 'women'][Math.floor(Math.random() * 2)]}/${Math.floor(Math.random() * 100)}.jpg`"
+                                alt="Random Person" class="w-full h-full object-cover">
                         </div>
+
                         <div>
                             <h4 class="font-semibold text-purple-900">David Wilson</h4>
                             <p class="text-gray-600">Founder, Startup Inc</p>

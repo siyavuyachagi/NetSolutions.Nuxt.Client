@@ -33,6 +33,17 @@ class ProjectService {
       }
     });
   }
+
+  async postProjectCreate(request: any): Promise<any> {
+    return apiClient.post(`/api/Projects`, request).then((response) => {
+      if (response.status === 200) {
+        console.log(response.data);
+        return response.data;
+      } else {
+        throw new Error("Invalid username or password");
+      }
+    });
+  }
 }
 
 export default new ProjectService();

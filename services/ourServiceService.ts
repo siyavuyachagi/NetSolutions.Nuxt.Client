@@ -1,5 +1,4 @@
 import apiClient from "~/api/apiClient";
-import { useAuthStore } from "~/stores/useAuthStore";
 
 class OurServiceService {
   constructor() {}
@@ -14,7 +13,7 @@ class OurServiceService {
     });
   }
 
-  async getServiceAsync(id: string): Promise<any[]> {
+  async getServiceAsync(id: string): Promise<any> {
     return apiClient.get(`/api/OurServices/${id}`).then((response) => {
       if (response.status === 200) {
         return response.data;

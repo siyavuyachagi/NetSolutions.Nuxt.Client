@@ -24,7 +24,7 @@
                     </div>
                     <div class="flex p-2 space-x-2 overflow-x-auto">
                         <button v-for="service in ourServices" :key="service.id"
-                            @click="useRouter().push(`/services/${service.id}`)" :class="[
+                            @click="ourService = service" :class="[
                                 'relative flex-shrink-0 w-20 h-14 overflow-hidden rounded',
                                 ourService === service ? 'ring-2 ring-primary-500' : 'hover:opacity-80'
                             ]">
@@ -44,7 +44,7 @@
                                 : 'text-neutral-600 hover:text-neutral-900'
                         ]">
                             {{ tab.label }}
-                            <span v-if="tab.id === 'testimonials'">({{ ourService?.testimonials.length }})</span>
+                            <span v-if="tab.id === 'testimonials'">({{ ourService?.testimonials?.length || 0 }})</span>
                         </button>
                     </div>
 
@@ -65,7 +65,7 @@
                                     ]" />
                                 </div>
                                 <span class="text-sm font-medium text-neutral-700">
-                                    {{ averageRating.toFixed(1) }} ({{ ourService?.testimonials.length || 0 }} reviews)
+                                    {{ averageRating.toFixed(1) }} ({{ ourService?.testimonials?.length || 0 }} reviews)
                                 </span>
                             </div>
 
@@ -237,7 +237,7 @@
 
                     <p class="text-neutral-600 mb-4">{{ pkg.description }}</p>
 
-                    <nuxt-link :to="`getting-started/${ourService.id}?pkgId=${pkg.id}`"
+                    <nuxt-link :to="`getting-started/${pkg.id}`"
                         class="w-full bg-primary-500 hover:bg-primary-600 text-white font-medium py-3 px-4 rounded-lg mb-4 flex items-center justify-center">
                         <ShoppingCart class="h-5 w-5 mr-2" />
                         Get Started
@@ -318,17 +318,11 @@ import ourServiceService from '~/services/ourServiceService';
 import solutionService from '~/services/solutionService';
 import type { ModelConfig } from 'vuesanity';
 
-// Fetch our services and solutions asynchronously
-const { data: ourServices, refresh: ourServicesRefresh } = useAsyncData('ourServices', () => ourServiceService.getServicesAsync());
-const { data: solutions, refresh: solutionsRefresh  } = useAsyncData('solutions', () => solutionService.getSolutionsAsync());
-
 const route = useRoute();
-
-// Reactive computed property for the selected service based on the route parameter
-const ourService = computed(() => {
-    const id = route.params.id;
-    return ourServices.value?.find((service: any) => service.id === id) || null;
-});
+// Fetch our services and solutions asynchronously
+const { data: ourService, refresh: ourServiceRefresh } = useAsyncData(`ourService-${route.params.id}`, () => ourServiceService.getServiceAsync(route.params.id as string));
+const { data: ourServices, refresh: ourServicesRefresh } = useAsyncData(`ourServices-${route.params.id}`, () => ourServiceService.getServicesAsync());
+const { data: solutions, refresh: solutionsRefresh } = useAsyncData(`solutions-${route.params.id}`, () => solutionService.getSolutionsAsync());
 
 // State management using Composition API
 const activeTab = ref('overview');
@@ -385,8 +379,7 @@ function handleContactUsSubmit() {
 }
 
 onMounted(() => {
-    ourServicesRefresh();
-    solutionsRefresh();
+    console.log(ourServices.value)
     console.log(ourService.value)
 });
 </script>

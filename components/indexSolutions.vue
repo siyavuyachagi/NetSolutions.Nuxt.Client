@@ -102,7 +102,7 @@
                         :class="getRibbonShadowClass(solution.discriminator)"></div>
                     <div :class="['py-1 px-3 flex items-center ribbon', getRibbonClass(solution.discriminator)]">
                         <span class="text-white text-xs font-medium">{{ solution.discriminator || 'Web App'
-                        }}</span>
+                            }}</span>
                     </div>
                 </div>
             </div>
@@ -222,7 +222,7 @@ const filteredSolutions = computed(() => {
         solution.title.toLowerCase().includes(query) ||
         solution.description.toLowerCase().includes(query) ||
         solution.discriminator?.toLowerCase().includes(query) ||
-        solution.technologyStack.some((tech: any) => tech.name.toLowerCase().includes(query))
+        solution.stack.some((s: any) => s.technologyStack.name.toLowerCase().includes(query))
     );
 });
 
@@ -254,6 +254,7 @@ const prevPage = () => {
 
 onMounted(() => {
     solutionsRefresh();
+    console.log(solutions.value)
 })
 </script>
 

@@ -1,3 +1,5 @@
+import { resolve } from "path";
+
 export default defineNuxtConfig({
   ssr: true, // Ensure SSR is enabled globally
   compatibilityDate: "2024-11-01",
@@ -68,3 +70,4 @@ export default defineNuxtConfig({
     },
   },
 });
+

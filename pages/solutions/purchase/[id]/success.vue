@@ -40,7 +40,9 @@
                             <h2 class="text-2xl font-bold text-neutral-800 mb-2">Request Submitted Successfully!</h2>
                             <p class="text-neutral-600 mb-6">Thank you for your interest in our services. We've received
                                 your request and will contact you shortly. Download link will also be sent via
-                                <a :href="`mailto:${paymentTransaction?.user?.email}`">{{ paymentTransaction?.user?.email }}</a>
+                                <a :href="`mailto:${paymentTransaction?.user?.email}`"
+                                    class="flex items-center text-neutral-700 hover:text-primary-500 transition">{{
+                                        paymentTransaction?.user?.email }}</a>
                             </p>
                             <p class="text-sm text-neutral-500 mb-4">Reference ID: {{ paymentTransaction?.id }}</p>
                             <div class="flex justify-center space-x-4">
@@ -62,7 +64,7 @@
             <!-- Right column - Package summary and help -->
             <div class="space-y-6">
                 <!-- Selected package summary -->
-                <!-- <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="bg-white rounded-lg shadow-md p-6">
                     <h3 class="text-lg font-semibold text-neutral-800 mb-4">
                         {{ paymentTransaction?.solution?.title }}
                     </h3>
@@ -80,27 +82,27 @@
                     <div class="bg-neutral-50 rounded-lg p-4 mb-4">
                         <div class="flex justify-between items-center mb-2">
                             <h4 class="font-bold text-neutral-800">{{ selectedPackage?.name }}</h4>
-                            <span :class="pkgColor(selectedPackage?.name)">
+                            <!-- <span :class="pkgColor(selectedPackage?.name)">
                                 {{ selectedPackage?.name }}
-                            </span>
+                            </span> -->
                         </div>
 
                         <div v-if="selectedPackage?.price !== 0" class="mb-2">
-                            <span class="text-xl font-bold text-neutral-800">R{{ solution?.price }}</span>
+                            <span class="text-xl font-bold text-neutral-800">R{{ paymentTransaction?.amount }}</span>
                             <span class="text-neutral-500 text-sm">/{{ `Total Price` }}</span>
                         </div>
 
                         <p class="text-neutral-600 text-sm mt-2">{{ selectedPackage?.description }}</p>
                     </div>
 
-                    <div class="mt-4 pt-4 border-t">
+                    <!-- <div class="mt-4 pt-4 border-t">
                         <NuxtLink :to="`/services/${ourService?.id}`"
                             class="text-primary-500 hover:text-primary-600 text-sm flex items-center">
                             <ArrowLeft class="h-4 w-4 mr-1" />
                             Change package
                         </NuxtLink>
-                    </div>
-                </div> -->
+                    </div> -->
+                </div>
 
                 <!-- Need help section -->
                 <div class="bg-white rounded-lg shadow-md p-6">
@@ -139,7 +141,7 @@
 import { ref, onMounted } from 'vue';
 import {
     ArrowLeft, ArrowRight, CheckCircle,
-    MessageCircle, Phone, Mail, HelpCircle
+    MessageCircle, Phone, Mail, HelpCircle, CircleX
 } from 'lucide-vue-next';
 import { useRoute } from 'vue-router';
 import paymentTransactionService from '~/services/paymentTransactionService';

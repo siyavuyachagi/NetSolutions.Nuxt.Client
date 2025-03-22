@@ -12,7 +12,7 @@
                     {{ solution?.title }}
                 </NuxtLink>
                 <span class="mx-2">/</span>
-                <span>Getting Started</span>
+                <span>Purchase</span>
             </div>
         </div>
 
@@ -26,7 +26,7 @@
                         needs better.</p>
 
                     <!-- Progress steps -->
-                    <div class="mb-8">
+                    <!-- <div class="mb-8">
                         <div class="flex items-center justify-between">
                             <div v-for="(step, index) in steps" :key="index"
                                 class="flex flex-col items-center w-full relative">
@@ -44,14 +44,13 @@
                                     :class="currentStep >= index ? 'text-primary-600 font-medium' : 'text-neutral-500'">
                                     {{ step.label }}
                                 </div>
-                                <!-- Connector line -->
                                 <div v-if="index < steps.length - 1" :class="[
                                     'absolute top-4 w-full h-0.5 left-1/2',
                                     currentStep > index ? 'bg-primary-500' : 'bg-neutral-200'
                                 ]"></div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <!-- Step content -->
                     <form @submit.prevent="goToNextStep" class="space-y-6">
@@ -172,7 +171,7 @@
                         </div>
 
                         <!-- Step 3: Contact Information -->
-                        <div v-if="currentStep === 2">
+                        <div>
                             <div class="space-y-4">
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
@@ -265,12 +264,10 @@
 
                         <!-- Navigation buttons -->
                         <div v-if="currentStep < 3" class="flex justify-between pt-4 border-t">
-                            <button type="button" v-if="currentStep > 0" @click="goToPreviousStep"
+                            <nuxt-link :to="`/solutions/${solution?.id}`"
                                 class="px-6 py-2 border border-neutral-300 rounded-lg text-neutral-700 hover:bg-neutral-50 transition">
                                 Back
-                            </button>
-                            <div v-else></div>
-
+                            </nuxt-link>
                             <button type="submit" @click="submitForm"
                                 class="px-6 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg transition flex items-center"
                                 :disabled="isSubmitting">

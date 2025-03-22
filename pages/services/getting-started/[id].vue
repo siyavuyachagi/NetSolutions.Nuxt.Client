@@ -8,8 +8,9 @@
                     Back to Home
                 </NuxtLink>
                 <span class="mx-2">/</span>
-                <NuxtLink :to="`/services/${ourService?.id}`" class="hover:text-primary-500 transition">
-                    {{ ourService?.name }}
+                <NuxtLink :to="`/services/${ourServicePackage?.ourService?.id}`"
+                    class="hover:text-primary-500 transition">
+                    {{ ourServicePackage?.ourService?.name }}
                 </NuxtLink>
                 <span class="mx-2">/</span>
                 <span>Getting Started</span>
@@ -21,7 +22,8 @@
             <!-- Left column - form and inputs -->
             <div class="lg:col-span-2 space-y-6">
                 <div class="bg-white rounded-lg shadow-md p-6">
-                    <h1 class="text-2xl font-bold text-neutral-800 mb-4">Get Started with {{ ourService?.name }}</h1>
+                    <h1 class="text-2xl font-bold text-neutral-800 mb-4">Get started with {{
+                        ourServicePackage?.ourService?.name }}</h1>
                     <p class="text-neutral-600 mb-6">Tell us about your project requirements to help us understand your
                         needs better.</p>
 
@@ -32,80 +34,96 @@
                                 class="flex flex-col items-center w-full relative">
                                 <div :class="[
                                     'w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium z-10',
-                                    currentStep > index
+                                    currentStep > index + 1
                                         ? 'bg-primary-500 text-white'
-                                        : currentStep === index
+                                        : currentStep === index + 1
                                             ? 'bg-primary-100 text-primary-600 border-2 border-primary-500'
                                             : 'bg-neutral-100 text-neutral-400'
                                 ]">
                                     {{ index + 1 }}
                                 </div>
                                 <div class="text-xs mt-2 text-center"
-                                    :class="currentStep >= index ? 'text-primary-600 font-medium' : 'text-neutral-500'">
+                                    :class="currentStep >= index + 1 ? 'text-primary-600 font-medium' : 'text-neutral-500'">
                                     {{ step.label }}
                                 </div>
                                 <!-- Connector line -->
                                 <div v-if="index < steps.length - 1" :class="[
                                     'absolute top-4 w-full h-0.5 left-1/2',
-                                    currentStep > index ? 'bg-primary-500' : 'bg-neutral-200'
+                                    currentStep > index + 1 ? 'bg-primary-500' : 'bg-neutral-200'
                                 ]"></div>
                             </div>
                         </div>
                     </div>
 
+
                     <!-- Step content -->
                     <form @submit.prevent="goToNextStep" class="space-y-6">
                         <!-- Step 1: Project Requirements -->
-                        <div v-if="currentStep === 0">
+                        <div v-if="currentStep === 1">
                             <div class="space-y-4">
                                 <div>
-                                    <label for="projectName"
-                                        class="block text-sm font-medium text-neutral-700 mb-1">Project Name</label>
-                                    <input type="text" id="projectName" v-model="formData.projectName"
+                                    <label for="name" class="block text-sm font-medium text-neutral-700 mb-1">Project
+                                        Name <small class="text-error">*</small></label>
+                                    <input type="text" id="name" v-model="projectDetailsModel.name.value"
                                         class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-primary-500 focus:outline-none"
-                                        :class="{ 'border-red-500': errors.projectName }"
+                                        :class="{ 'border-red-500': projectDetailsModel.name.errors?.length }"
                                         placeholder="Give your project a name" />
-                                    <p v-if="errors.projectName" class="mt-1 text-sm text-red-600">{{ errors.projectName
+                                    <p v-if="projectDetailsModel.name.errors?.length" class="mt-1 text-sm text-red-600">
+                                        {{
+                                            projectDetailsModel.name.errors[0]
                                         }}</p>
                                 </div>
 
                                 <div>
-                                    <label for="projectDescription"
+                                    <label for="description"
                                         class="block text-sm font-medium text-neutral-700 mb-1">Project
-                                        Description</label>
-                                    <textarea id="projectDescription" v-model="formData.projectDescription" rows="5"
-                                        class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-primary-500 focus:outline-none resize-none"
-                                        :class="{ 'border-red-500': errors.projectDescription }"
-                                        placeholder="Describe your project requirements in detail"></textarea>
-                                    <p v-if="errors.projectDescription" class="mt-1 text-sm text-red-600">{{
-                                        errors.projectDescription }}</p>
+                                        Description <small class="text-error">*</small></label>
+                                    <textarea id="description" v-model="projectDetailsModel.description.value" rows="5"
+                                        class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-primary-500 focus:outline-none min-h-10 max-h-80"
+                                        :class="{ 'border-red-500': projectDetailsModel.description.errors?.length }"
+                                        placeholder="Describe your project requirements in detail"
+                                        autocomplete="on"></textarea>
+                                    <p v-if="projectDetailsModel.description.errors?.length"
+                                        class="mt-1 text-sm text-red-600">{{
+                                            projectDetailsModel.description.errors[0] }}</p>
                                 </div>
 
-                                <div>
-                                    <label for="targetAudience"
-                                        class="block text-sm font-medium text-neutral-700 mb-1">Target Audience</label>
-                                    <input type="text" id="targetAudience" v-model="formData.targetAudience"
-                                        class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-primary-500 focus:outline-none"
-                                        placeholder="Who is your target audience?" />
-                                </div>
-
-                                <div>
+                                <!-- <div>
                                     <label for="timeline"
-                                        class="block text-sm font-medium text-neutral-700 mb-1">Desired Timeline</label>
-                                    <select id="timeline" v-model="formData.timeline"
-                                        class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-primary-500 focus:outline-none">
-                                        <option value="">Select a timeline</option>
+                                        class="block text-sm font-medium text-neutral-700 mb-1">Desired Timeline
+                                        <small class="text-error">*</small></label>
+                                    <select id="timeline" v-model="projectDetailsModel.timeline.value"
+                                        class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-primary-500 focus:outline-none"
+                                        :class="{ 'border-red-500': projectDetailsModel.timeline.errors?.length }">
+                                        <option value="" disabled selected>Select a timeline</option>
                                         <option value="urgent">Urgent (< 1 month)</option>
                                         <option value="standard">Standard (1-3 months)</option>
                                         <option value="flexible">Flexible (3-6 months)</option>
                                         <option value="longterm">Long-term (6+ months)</option>
                                     </select>
+                                    <p v-if="projectDetailsModel.timeline.errors?.length"
+                                        class="mt-1 text-sm text-red-600">
+                                        {{
+                                            projectDetailsModel.timeline.errors[0] }}</p>
+                                </div> -->
+
+                                <TimelineSelector @update:timeline="updateTimeline"
+                                    :errors="projectDetailsModel.timeline.errors"></TimelineSelector>
+
+                                <div>
+                                    <label for="projectName"
+                                        class="block text-sm font-medium text-neutral-700 mb-1">Target audience
+                                        <small>(Optional)</small></label>
+                                    <input type="text" id="projectName"
+                                        v-model="projectDetailsModel.targetAudience.value"
+                                        class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-primary-500 focus:outline-none"
+                                        placeholder="What are your target auddience" />
                                 </div>
                             </div>
                         </div>
 
                         <!-- Step 2: File Attachments -->
-                        <div v-if="currentStep === 1">
+                        <div v-if="currentStep === 2">
                             <div class="space-y-4">
                                 <div>
                                     <label class="block text-sm font-medium text-neutral-700 mb-2">Supporting
@@ -123,19 +141,22 @@
                                                 <input type="file" id="fileUpload" multiple class="hidden"
                                                     @change="handleFileChange" />
                                             </label>
-                                            <p class="text-xs text-neutral-500">Supported file types: PDF, DOC, DOCX,
-                                                JPG, PNG (Max 5MB per file)</p>
+                                            <p class="text-xs text-neutral-500">Supported file types: {{
+                                                allowedExtensions.join(', ') }} (Max 5MB per file)</p>
                                         </div>
                                     </div>
-                                    <p v-if="errors.files" class="mt-1 text-sm text-red-600">{{ errors.files }}</p>
+                                    <p v-if="attachmentsModel.files.errors?.length" class="mt-1 text-sm text-error">
+                                        <span v-for="error in attachmentsModel.files.errors" :key="error">{{ error
+                                            }}</span>
+                                    </p>
                                 </div>
 
                                 <!-- File list -->
-                                <div v-if="formData.files.length > 0" class="mt-4">
+                                <div v-if="attachmentsModel.files.value.length" class="mt-4">
                                     <h3 class="text-sm font-medium text-neutral-700 mb-2">Uploaded Files ({{
-                                        formData.files.length }})</h3>
+                                        attachmentsModel.files.value.length }})</h3>
                                     <ul class="space-y-2">
-                                        <li v-for="(file, index) in formData.files" :key="index"
+                                        <li v-for="(file, index) in attachmentsModel.files.value" :key="index"
                                             class="flex items-center justify-between p-3 bg-neutral-50 rounded-md">
                                             <div class="flex items-center">
                                                 <div class="p-2 bg-neutral-100 rounded mr-3">
@@ -164,7 +185,8 @@
                                 <div>
                                     <label for="additionalNotes"
                                         class="block text-sm font-medium text-neutral-700 mb-1">Additional Notes</label>
-                                    <textarea id="additionalNotes" v-model="formData.additionalNotes" rows="3"
+                                    <textarea id="additionalNotes" v-model="attachmentsModel.additionalNotes.value"
+                                        rows="3"
                                         class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-primary-500 focus:outline-none resize-none"
                                         placeholder="Any additional information you'd like to share"></textarea>
                                 </div>
@@ -172,28 +194,31 @@
                         </div>
 
                         <!-- Step 3: Contact Information -->
-                        <div v-if="currentStep === 2">
+                        <div v-if="currentStep === 3">
                             <div class="space-y-4">
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
                                         <label for="firstName"
                                             class="block text-sm font-medium text-neutral-700 mb-1">First Name</label>
-                                        <input type="text" id="firstName" v-model="formData.firstName"
+                                        <input type="text" id="firstName" v-model="contactInfo.firstName.value"
                                             class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-primary-500 focus:outline-none"
-                                            :class="{ 'border-red-500': errors.firstName }"
+                                            :class="{ 'border-red-500': contactInfo.firstName.errors?.length }"
                                             placeholder="Your first name" />
-                                        <p v-if="errors.firstName" class="mt-1 text-sm text-red-600">{{ errors.firstName
+                                        <p v-if="contactInfo.firstName.errors?.length"
+                                            class="mt-1 text-sm text-red-600">{{
+                                                contactInfo.firstName.errors[0]
                                             }}</p>
                                     </div>
 
                                     <div>
                                         <label for="lastName"
                                             class="block text-sm font-medium text-neutral-700 mb-1">Last Name</label>
-                                        <input type="text" id="lastName" v-model="formData.lastName"
+                                        <input type="text" id="lastName" v-model="contactInfo.lastName.value"
                                             class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-primary-500 focus:outline-none"
-                                            :class="{ 'border-red-500': errors.lastName }"
+                                            :class="{ 'border-red-500': contactInfo.lastName.errors?.length }"
                                             placeholder="Your last name" />
-                                        <p v-if="errors.lastName" class="mt-1 text-sm text-red-600">{{ errors.lastName
+                                        <p v-if="contactInfo.lastName.errors?.length" class="mt-1 text-sm text-red-600">
+                                            {{ contactInfo.lastName.errors[0]
                                             }}</p>
                                     </div>
                                 </div>
@@ -201,32 +226,38 @@
                                 <div>
                                     <label for="email" class="block text-sm font-medium text-neutral-700 mb-1">Email
                                         Address</label>
-                                    <input type="email" id="email" v-model="formData.email"
+                                    <input type="email" id="email" v-model="contactInfo.email.value"
                                         class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-primary-500 focus:outline-none"
-                                        :class="{ 'border-red-500': errors.email }" placeholder="your@email.com" />
-                                    <p v-if="errors.email" class="mt-1 text-sm text-red-600">{{ errors.email }}</p>
+                                        :class="{ 'border-red-500': contactInfo.email.errors?.length }"
+                                        placeholder="your@email.com" />
+                                    <p v-if="contactInfo.email.errors?.length" class="mt-1 text-sm text-red-600">{{
+                                        contactInfo.email.errors[0] }}</p>
                                 </div>
 
                                 <div>
                                     <label for="phone" class="block text-sm font-medium text-neutral-700 mb-1">Phone
                                         Number</label>
-                                    <input type="tel" id="phone" v-model="formData.phone"
+                                    <input type="tel" id="phone" v-model="contactInfo.phoneNumber.value"
                                         class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-primary-500 focus:outline-none"
-                                        :class="{ 'border-red-500': errors.phone }" placeholder="Your phone number" />
-                                    <p v-if="errors.phone" class="mt-1 text-sm text-red-600">{{ errors.phone }}</p>
+                                        :class="{ 'border-red-500': contactInfo.phoneNumber.errors?.length }"
+                                        placeholder="Your phone number" />
+                                    <p v-if="contactInfo.phoneNumber.errors?.length" class="mt-1 text-sm text-red-600">
+                                        {{
+                                            contactInfo.phoneNumber.errors[0] }}</p>
                                 </div>
 
                                 <div>
                                     <label for="company"
                                         class="block text-sm font-medium text-neutral-700 mb-1">Company/Organization</label>
-                                    <input type="text" id="company" v-model="formData.company"
+                                    <input type="text" id="company" v-model="contactInfo.organization.value"
                                         class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-primary-500 focus:outline-none"
-                                        placeholder="Your company or organization (if applicable)" />
+                                        placeholder="Your company or organization (if applicable)"
+                                        autocomplete="organization" />
                                 </div>
 
                                 <div>
                                     <label class="flex items-center">
-                                        <input type="checkbox" v-model="formData.termsAccepted"
+                                        <input type="checkbox" v-model="contactInfo.acceptTerms.value"
                                             class="h-4 w-4 text-primary-600 focus:ring-primary-500" />
                                         <span class="ml-2 text-sm text-neutral-700">
                                             I agree to the <a href="#" class="text-primary-600 hover:underline">Terms of
@@ -234,14 +265,15 @@
                                             <a href="#" class="text-primary-600 hover:underline">Privacy Policy</a>
                                         </span>
                                     </label>
-                                    <p v-if="errors.termsAccepted" class="mt-1 text-sm text-red-600">{{
-                                        errors.termsAccepted }}</p>
+                                    <p v-if="contactInfo.acceptTerms.errors?.length" class="mt-1 text-sm text-red-600">
+                                        {{
+                                            contactInfo.acceptTerms.errors[0] }}</p>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Success screen -->
-                        <div v-if="currentStep === 3" class="text-center py-6">
+                        <div v-if="currentStep > steps.length" class="text-center py-6">
                             <div class="flex justify-center mb-4">
                                 <div class="h-16 w-16 rounded-full bg-green-100 flex items-center justify-center">
                                     <CheckCircle class="h-10 w-10 text-green-500" />
@@ -250,7 +282,8 @@
                             <h2 class="text-2xl font-bold text-neutral-800 mb-2">Request Submitted Successfully!</h2>
                             <p class="text-neutral-600 mb-6">Thank you for your interest in our services. We've received
                                 your request and will contact you shortly.</p>
-                            <p class="text-sm text-neutral-500 mb-4">Reference ID: {{ referenceId }}</p>
+                            <p class="text-sm text-neutral-500 mb-4">Reference ID: {{ 'REQ-' +
+                                Math.random().toString(36).substr(2, 9).toUpperCase() }}</p>
                             <div class="flex justify-center space-x-4">
                                 <NuxtLink to="/"
                                     class="px-6 py-2 border border-neutral-300 rounded-lg text-neutral-700 hover:bg-neutral-50">
@@ -264,8 +297,8 @@
                         </div>
 
                         <!-- Navigation buttons -->
-                        <div v-if="currentStep < 3" class="flex justify-between pt-4 border-t">
-                            <button type="button" v-if="currentStep > 0" @click="goToPreviousStep"
+                        <div v-if="currentStep < steps.length + 1" class="flex justify-between pt-4 border-t">
+                            <button type="button" v-if="currentStep > 1" @click="goToPreviousStep"
                                 class="px-6 py-2 border border-neutral-300 rounded-lg text-neutral-700 hover:bg-neutral-50 transition">
                                 Back
                             </button>
@@ -273,9 +306,9 @@
 
                             <button type="submit"
                                 class="px-6 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg transition flex items-center"
-                                :disabled="isSubmitting">
+                                :disabled="isSubmitting" @click="goToNextStep">
                                 <span v-if="isSubmitting">Processing...</span>
-                                <span v-else-if="currentStep === 2">Submit Request</span>
+                                <span v-else-if="currentStep === steps.length">Submit Request</span>
                                 <span v-else>Continue</span>
                                 <ArrowRight v-if="!isSubmitting" class="h-4 w-4 ml-2" />
                             </button>
@@ -288,37 +321,45 @@
             <div class="space-y-6">
                 <!-- Selected package summary -->
                 <div class="bg-white rounded-lg shadow-md p-6">
-                    <h3 class="text-lg font-semibold text-neutral-800 mb-4">Your Selected Package</h3>
+                    <h3 class="text-lg font-semibold text-neutral-800 mb-4">{{ ourServicePackage?.name }}
+                    </h3>
 
-                    <div class="bg-neutral-50 rounded-lg p-4 mb-4">
-                        <div class="flex justify-between items-center mb-2">
-                            <h4 class="font-bold text-neutral-800">{{ selectedPackage?.name }}</h4>
-                            <span :class="pkgColor(selectedPackage?.name)">
-                                {{ selectedPackage?.name }}
-                            </span>
-                        </div>
-
-                        <div v-if="selectedPackage?.price !== 0" class="mb-2">
-                            <span class="text-xl font-bold text-neutral-800">R{{ selectedPackage?.price.toFixed(2)
-                                }}</span>
-                            <span class="text-neutral-500 text-sm">/{{ selectedPackage?.billingCycle }}</span>
-                        </div>
-
-                        <p class="text-neutral-600 text-sm mt-2">{{ selectedPackage?.description }}</p>
-                    </div>
 
                     <div class="border-t py-4">
                         <h4 class="font-medium text-neutral-800 mb-2">Included in this package:</h4>
                         <ul class="space-y-2">
-                            <li v-for="feature in selectedPackage?.features" :key="feature.id" class="flex items-start">
+                            <li v-for="feature in ourServicePackage?.ourServicePackageFeatures" :key="feature.id"
+                                class="flex items-start">
                                 <CheckCircle class="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
                                 <span class="text-neutral-700 text-sm">{{ feature?.title }}</span>
                             </li>
                         </ul>
                     </div>
 
+                    <div class="bg-neutral-50 rounded-lg p-4 mb-4">
+                        <div v-if="ourServicePackage?.name !== 'Custom'" class="flex justify-between items-center mb-2">
+                            <h4 class="font-bold text-neutral-800">Total Price</h4>
+                            <span :class="pkgColor(ourServicePackage?.name)">
+                                {{ ourServicePackage?.name }}
+                            </span>
+                        </div>
+
+                        <div class="mb-2">
+                            <span v-if="ourServicePackage?.name !== 'Custom'"
+                                class="text-xl font-bold text-neutral-800 mr-2">{{ ourServicePackage?.price }}</span>
+                            <span v-else class="text-xl font-bold text-neutral-800 mr-2">Price</span>
+
+
+                            <span v-if="ourServicePackage?.name !== 'Custom'" class="text-neutral-500 text-sm">/{{
+                                ourServicePackage?.billingCycle }}</span>
+                            <span v-else class="text-neutral-500 text-sm">/To be determined</span>
+                        </div>
+
+                        <p class="text-neutral-600 text-sm mt-2">{{ ourServicePackage?.description }}</p>
+                    </div>
+
                     <div class="mt-4 pt-4 border-t">
-                        <NuxtLink :to="`/services/${ourService?.id}`"
+                        <NuxtLink :to="`/services/${ourServicePackage?.ourService?.id}`"
                             class="text-primary-500 hover:text-primary-600 text-sm flex items-center">
                             <ArrowLeft class="h-4 w-4 mr-1" />
                             Change package
@@ -359,37 +400,42 @@
     </div>
 </template>
 
-<script setup>
-import { ref, computed, onMounted } from 'vue';
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import {
     ArrowLeft, ArrowRight, CheckCircle, CloudUpload, X, FileText, Image,
     File, MessageCircle, Phone, Mail, HelpCircle
 } from 'lucide-vue-next';
 import { useRoute, useRouter } from 'vue-router';
-
-import ourServiceService from '~/services/ourServiceService';
+import ourServicePackageService from '~/services/ourServicePackageService';
+import VueSanity, { email, extensions, maxSize, required, type ModelConfig } from 'vuesanity';
+import { set } from 'date-fns';
+import type { Timeline } from '~/components/timelineSelector.vue';
+import projectService from '~/services/projectService';
 
 definePageMeta({
     validate(route) {
-        if (!(route.params.id) || !(route.query.pkgId)) {
+        if (!(route.params.id)) {
             return false
-        }
-        return true;
+        } else
+            return true;
     },
 })
 
-// const {
-//     data: ourService,
-//     status: ourServiceStatus,
-//     error: ourServiceError,
-//     refresh: ourServiceRefresh
-// } = useAsyncData('ourService-purchase', () => ourServiceService.getServiceAsync(useRoute().params.id as string));
+onMounted(() => {
+    if (!route.query.step) router.replace({ query: { ...route.query, step: 1 } })
+    ourServicePackageRefresh();
+    console.log(ourServicePackage.value);
+})
+
 
 // Get route and service ID
 const route = useRoute();
 const router = useRouter();
-const serviceId = route.params.id;
-const packageId = route.query.pkgId;
+
+const { data: ourServicePackage, status: ourServicePackageStatus, error: ourServicePackageError, refresh: ourServicePackageRefresh }
+    = useAsyncData(`ourServicePackage--getting-started-${route.params.id}`, () => ourServicePackageService.getOurServicePackage(route.params.id as string));
+
 
 // Define steps
 const steps = [
@@ -399,88 +445,51 @@ const steps = [
 ];
 
 // Form state
-const currentStep = ref(0);
+const currentStep = computed(() => {
+    return parseInt(route.query.step as string) || 1;
+});
+
 const isSubmitting = ref(false);
 const isDragging = ref(false);
-const referenceId = ref('REQ-' + Math.random().toString(36).substr(2, 9).toUpperCase());
 
-// Form data
-const formData = ref({
-    projectName: '',
-    projectDescription: '',
-    targetAudience: '',
-    timeline: '',
-    files: [],
-    additionalNotes: '',
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    company: '',
-    termsAccepted: false
+const requestModel: ModelConfig = reactive({
+    ourServicePackageId: { value: route.params.id },
+});
+
+const projectDetailsModel: ModelConfig = reactive({
+    name: { validations: [required()] },
+    description: { validations: [required()] },
+    timeline: { validations: [required()] },
+    targetAudience: {},
+});
+
+
+const allowedExtensions = [
+    'PDF', 'DOC', 'DOCX', 'TXT', 'CSV', 'JSON', // Documents & Data Files
+    'JPG', 'PNG', 'JPEG', 'GIF', 'SVG', 'FIG', // Graphic & UI/UX Design Files
+    'HTML', 'CSS', 'JS', // Web Development Files
+    'ZIP' // Archive for packaging files
+];
+const attachmentsModel: ModelConfig = reactive({
+    files: { validations: [required(), extensions(allowedExtensions), maxSize(5)], value: [] },
+    additionalNotes: {},
+});
+
+const contactInfo: ModelConfig = reactive({
+    lastName: { validations: [required()] },
+    firstName: { validations: [required()] },
+    email: { validations: [required(), email()] },
+    phoneNumber: {},
+    additionalNotes: {},
+    organization: {},
+    acceptTerms: { validations: [required()] },
 });
 
 // Errors object
 const errors = ref({});
 
-// Mock data for demo purposes
-// In a real app, these would be fetched from an API
-const ourService = ref({
-    id: serviceId,
-    name: 'Website Development',
-    packages: [
-        {
-            id: '1',
-            name: 'Basic',
-            price: 4999.99,
-            billingCycle: 'once',
-            description: 'Perfect for small businesses just getting started online.',
-            features: [
-                { id: '1-1', title: 'Responsive design' },
-                { id: '1-2', title: '5 pages' },
-                { id: '1-3', title: 'Contact form' },
-                { id: '1-4', title: 'Basic SEO' }
-            ]
-        },
-        {
-            id: '2',
-            name: 'Professional',
-            price: 9999.99,
-            billingCycle: 'once',
-            description: 'Full-featured website for established businesses.',
-            features: [
-                { id: '2-1', title: 'Responsive design' },
-                { id: '2-2', title: 'Up to 15 pages' },
-                { id: '2-3', title: 'Contact form & booking system' },
-                { id: '2-4', title: 'Advanced SEO package' },
-                { id: '2-5', title: 'Content management system' }
-            ]
-        },
-        {
-            id: '3',
-            name: 'Enterprise',
-            price: 19999.99,
-            billingCycle: 'once',
-            description: 'Complete digital solution for large businesses.',
-            features: [
-                { id: '3-1', title: 'Custom responsive design' },
-                { id: '3-2', title: 'Unlimited pages' },
-                { id: '3-3', title: 'Advanced forms & integrations' },
-                { id: '3-4', title: 'Enterprise SEO suite' },
-                { id: '3-5', title: 'Full CMS with user roles' },
-                { id: '3-6', title: '1 year maintenance included' }
-            ]
-        }
-    ]
-});
-
-// Get selected package
-const selectedPackage = computed(() => {
-    return ourService.value.packages.find(pkg => pkg.id === packageId);
-});
-
 // Color helper function
-const pkgColor = (name) => {
+const pkgColor = (name: string) => {
     switch (name) {
         case 'Basic':
             return 'bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs font-medium';
@@ -494,7 +503,7 @@ const pkgColor = (name) => {
 };
 
 // Format file size
-const formatFileSize = (bytes) => {
+const formatFileSize = (bytes: any) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
@@ -503,118 +512,100 @@ const formatFileSize = (bytes) => {
 };
 
 // Handle file drop
-const handleFileDrop = (event) => {
+const handleFileDrop = (event: any) => {
     isDragging.value = false;
     const droppedFiles = event.dataTransfer.files;
     processFiles(droppedFiles);
 };
 
 // Handle file selection
-const handleFileChange = (event) => {
-    const selectedFiles = event.target.files;
-    processFiles(selectedFiles);
+const handleFileChange = (event: Event) => {
+    const target = event.target as HTMLInputElement; // Typecast the target as HTMLInputElement
+    const selectedFiles = target.files; // Get the selected files from the input element
+    console.log(selectedFiles);
+    if (selectedFiles) {
+        processFiles(selectedFiles);
+    }
 };
 
+
 // Process files
-const processFiles = (files) => {
-    const maxSize = 5 * 1024 * 1024; // 5MB
-    const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png'];
-
-    for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-
-        // Validate file size
-        if (file.size > maxSize) {
-            errors.value.files = `${file.name} exceeds the 5MB size limit`;
-            continue;
-        }
-
-        // Validate file type
-        if (!allowedTypes.includes(file.type)) {
-            errors.value.files = `${file.name} is not a supported file type`;
-            continue;
-        }
-
-        // Add file to the list
-        formData.value.files.push(file);
-    }
+const processFiles = (files: FileList) => {
+    attachmentsModel.files.value = [...attachmentsModel.files.value, ...Array.from(files)];
+    const state = new VueSanity(attachmentsModel, false);
+    return state.isValid;
 };
 
 // Remove file
-const removeFile = (index) => {
-    formData.value.files.splice(index, 1);
+const removeFile = (index: number) => {
+    attachmentsModel.files.value.splice(index, 1);
 };
 
-// Validate current step
-const validateCurrentStep = () => {
-    errors.value = {};
-
+function stepValidation() {
     switch (currentStep.value) {
-        case 0: // Project Details
-            if (!formData.value.projectName) {
-                errors.value.projectName = 'Project name is required';
+        case 1:
+            {
+                const valid = new VueSanity(projectDetailsModel, false).isValid;
+                if (valid) return Object.assign(requestModel, projectDetailsModel);
+                return valid;
+                break;
             }
-            if (!formData.value.projectDescription) {
-                errors.value.projectDescription = 'Project description is required';
-            } else if (formData.value.projectDescription.length < 50) {
-                errors.value.projectDescription = 'Please provide a more detailed description (at least 50 characters)';
+        case 2:
+            {
+                const valid = new VueSanity(attachmentsModel, false).isValid;
+                if (valid) return Object.assign(requestModel, attachmentsModel);
+                return valid;
+                break;
             }
-            break;
-
-        case 2: // Contact Information
-            if (!formData.value.firstName) {
-                errors.value.firstName = 'First name is required';
+        case 3:
+            {
+                const valid = new VueSanity(contactInfo, false).isValid;
+                if (valid) return Object.assign(requestModel, contactInfo);
+                return valid;
+                break;
             }
-            if (!formData.value.lastName) {
-                errors.value.lastName = 'Last name is required';
-            }
-            if (!formData.value.email) {
-                errors.value.email = 'Email is required';
-            } else if (!/\S+@\S+\.\S+/.test(formData.value.email)) {
-                errors.value.email = 'Please enter a valid email address';
-            }
-            if (!formData.value.phone) {
-                errors.value.phone = 'Phone number is required';
-            }
-            if (!formData.value.termsAccepted) {
-                errors.value.termsAccepted = 'You must accept the terms of service';
-            }
+        default:
             break;
     }
+    return true;
+}
 
-    return Object.keys(errors.value).length === 0;
-};
 
 // Navigation methods
 const goToNextStep = () => {
-    if (validateCurrentStep()) {
-        if (currentStep.value === 2) {
-            // Submit form
-            submitForm();
-        } else {
-            currentStep.value++;
-        }
+    if (stepValidation()) {
+        router.push({ query: { ...route.query, step: currentStep.value + 1 } });
+    }
+    if (currentStep.value === steps.length) {
+        handleProjectSubmit();
     }
 };
 
+
 const goToPreviousStep = () => {
-    currentStep.value--;
+    router.push({ query: { ...route.query, step: currentStep.value - 1 } });
 };
 
+function updateTimeline(timeline: Timeline) {
+    // Create an array of startDate and endDate, ignoring the timelineType
+    const timelineArray = [timeline.startDate, timeline.endDate];
+    projectDetailsModel.timeline.value = timelineArray;
+
+    console.log(timelineArray);
+}
+
+
+
 // Submit form
-const submitForm = async () => {
+const handleProjectSubmit = async () => {
     isSubmitting.value = true;
-
     try {
-        // Mock API call
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        const state = new VueSanity(requestModel);
+        if (state.isValid) {
+            console.log(state);
+            await projectService.postProjectCreate(state.formData);
 
-        // Form submitted successfully
-        currentStep.value = 3;
-        isSubmitting.value = false;
-
-        // In a real app, you would send the form data to your backend
-        console.log('Form submitted:', formData.value);
+        }
     } catch (error) {
         console.error('Error submitting form:', error);
         isSubmitting.value = false;

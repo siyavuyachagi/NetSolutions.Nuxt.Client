@@ -31,13 +31,13 @@
                     <div class="space-y-6">
 
                         <!-- Success screen -->
-                        <div v-if="currentStep === 3" class="text-center py-6">
+                        <div class="text-center py-6">
                             <div class="flex justify-center mb-4">
-                                <div class="h-16 w-16 rounded-full bg-green-100 flex items-center justify-center">
-                                    <CheckCircle class="h-10 w-10 text-green-500" />
+                                <div class="h-16 w-16 rounded-full bg-red-100 flex items-center justify-center">
+                                    <XCircle class="h-10 w-10 text-error" />
                                 </div>
                             </div>
-                            <h2 class="text-2xl font-bold text-neutral-800 mb-2">Request Submitted Successfully!</h2>
+                            <h2 class="text-2xl font-bold text-neutral-800 mb-2">Request failed!</h2>
                             <p class="text-neutral-600 mb-6">Thank you for your interest in our services. We've received
                                 your request and will contact you shortly.</p>
                             <p class="text-sm text-neutral-500 mb-4">Reference ID: {{ referenceId }}</p>
@@ -46,29 +46,7 @@
                                     class="px-6 py-2 border border-neutral-300 rounded-lg text-neutral-700 hover:bg-neutral-50">
                                     Back to Home
                                 </NuxtLink>
-                                <NuxtLink to="/dashboard"
-                                    class="px-6 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">
-                                    Go to Dashboard
-                                </NuxtLink>
                             </div>
-                        </div>
-
-                        <!-- Navigation buttons -->
-                        <div v-if="currentStep < 3" class="flex justify-between pt-4 border-t">
-                            <button type="button" v-if="currentStep > 0"
-                                class="px-6 py-2 border border-neutral-300 rounded-lg text-neutral-700 hover:bg-neutral-50 transition">
-                                Back
-                            </button>
-                            <div v-else></div>
-
-                            <button type="submit"
-                                class="px-6 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg transition flex items-center"
-                                :disabled="isSubmitting">
-                                <span v-if="isSubmitting">Processing...</span>
-                                <span v-else-if="currentStep === 2">Submit Request</span>
-                                <span v-else>Continue</span>
-                                <ArrowRight v-if="!isSubmitting" class="h-4 w-4 ml-2" />
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -76,47 +54,6 @@
 
             <!-- Right column - Package summary and help -->
             <div class="space-y-6">
-                <!-- Selected package summary -->
-                <!-- <div class="bg-white rounded-lg shadow-md p-6">
-                    <h3 class="text-lg font-semibold text-neutral-800 mb-4">
-                        {{ paymentTransaction?.solution?.title }}
-                    </h3>
-
-                    <div class="border-t py-4">
-                        <h4 class="font-medium text-neutral-800 mb-2">Included in this package:</h4>
-                        <ul class="space-y-2">
-                            <li v-for="feature in selectedPackage?.features" :key="feature?.id" class="flex items-start">
-                                <CheckCircle class="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
-                                <span class="text-neutral-700 text-sm">{{ feature?.title }}</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="bg-neutral-50 rounded-lg p-4 mb-4">
-                        <div class="flex justify-between items-center mb-2">
-                            <h4 class="font-bold text-neutral-800">{{ selectedPackage?.name }}</h4>
-                            <span :class="pkgColor(selectedPackage?.name)">
-                                {{ selectedPackage?.name }}
-                            </span>
-                        </div>
-
-                        <div v-if="selectedPackage?.price !== 0" class="mb-2">
-                            <span class="text-xl font-bold text-neutral-800">R{{ solution?.price }}</span>
-                            <span class="text-neutral-500 text-sm">/{{ `Total Price` }}</span>
-                        </div>
-
-                        <p class="text-neutral-600 text-sm mt-2">{{ selectedPackage?.description }}</p>
-                    </div>
-
-                    <div class="mt-4 pt-4 border-t">
-                        <NuxtLink :to="`/services/${ourService?.id}`"
-                            class="text-primary-500 hover:text-primary-600 text-sm flex items-center">
-                            <ArrowLeft class="h-4 w-4 mr-1" />
-                            Change package
-                        </NuxtLink>
-                    </div>
-                </div> -->
-
                 <!-- Need help section -->
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <h3 class="text-lg font-semibold text-neutral-800 mb-4">Need Help?</h3>
@@ -153,7 +90,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import {
-    ArrowLeft, ArrowRight, CheckCircle,
+    ArrowLeft, ArrowRight, XCircle,
     MessageCircle, Phone, Mail, HelpCircle
 } from 'lucide-vue-next';
 import { useRoute } from 'vue-router';

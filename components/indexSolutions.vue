@@ -108,16 +108,16 @@
             </div>
 
             <h3 class="text-xl font-semibold text-neutral-800 mb-2 mt-5">
-                {{ solution.title }}
+                {{ solution.name }}
             </h3>
             <p class="text-neutral-600 mb-4 line-clamp-6 md:line-clamp-3">
                 {{ solution.description }}
             </p>
             <!-- Tech Stack Pills -->
             <div class="flex flex-wrap gap-2 mb-4">
-                <span v-for="stack in solution.stack" :key="stack.id"
+                <span v-for="stack in solution.technologyStacks" :key="stack.id"
                     class="bg-primary-100 text-primary-600 text-sm px-3 py-1 rounded-full">
-                    {{ stack.technologyStack.name }}
+                    {{ stack.name }}
                 </span>
             </div>
             <hr class="text-gray-200 my-3" />
@@ -154,6 +154,7 @@
 
 <script setup lang="ts">
 import { ExternalLink, LayoutGrid, List } from 'lucide-vue-next';
+import type { TechnologyStack } from '~/interface/TechnologyStack';
 import solutionService from '~/services/solutionService';
 
 // Fetch solutions
@@ -179,16 +180,16 @@ const onSearchInput = () => {
     currentPage.value = 1;
 };
 
-// Get color class for ribbon based on solution category
-const getRibbonClass = (category: string) => {
-    switch (category?.toLowerCase()) {
-        case 'webdevelopment':
+// Get color class for ribbon based on solution discriminator
+const getRibbonClass = (discriminator: string) => {
+    switch (discriminator?.toLowerCase()) {
+        case 'web application':
             return 'bg-blue-600';
         case 'uiuxdesign':
             return 'bg-purple-600';
-        case 'mobiledevelopment':
+        case 'mobile development':
             return 'bg-green-600';
-        case 'graphicdesign':
+        case 'graphic design':
             return 'bg-orange-500';
         default:
             return 'bg-blue-600';
@@ -219,10 +220,10 @@ const filteredSolutions = computed(() => {
 
     const query = searchQuery.value.toLowerCase().trim();
     return solutions.value.filter(solution =>
-        solution.title.toLowerCase().includes(query) ||
+        solution.name.toLowerCase().includes(query) ||
         solution.description.toLowerCase().includes(query) ||
         solution.discriminator?.toLowerCase().includes(query) ||
-        solution.stack.some((s: any) => s.technologyStack.name.toLowerCase().includes(query))
+        solution.technologyStacks.some((s: TechnologyStack) => s.name.toLowerCase().includes(query))
     );
 });
 
@@ -254,7 +255,7 @@ const prevPage = () => {
 
 onMounted(() => {
     solutionsRefresh();
-    console.log(solutions.value)
+    if (solutionsStatus.value === 'success') console.log(solutions.value)
 })
 </script>
 

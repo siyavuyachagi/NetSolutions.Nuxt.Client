@@ -8,7 +8,7 @@
                     Back to Solutions
                 </NuxtLink>
                 <span class="mx-2">/</span>
-                <span>{{ solution?.title }}</span>
+                <span>{{ solution?.name }}</span>
             </div>
         </div>
 
@@ -34,15 +34,15 @@
                 <div v-else class="bg-white rounded-lg shadow-md overflow-hidden">
                     <div class="relative aspect-video bg-neutral-100">
                         <img v-if="activeImage?.viewLink" :src="activeImage?.viewLink"
-                            :alt="`${solution?.title} preview`" class="w-full h-full object-cover" />
+                            :alt="`${solution?.name} preview`" class="w-full h-full object-cover" />
                     </div>
                     <div class="flex p-2 space-x-2 overflow-x-auto">
-                        <button v-for="(img, index) in solution?.solutionImages" :key="img.id"
-                            @click="activeImage = img" :class="[
+                        <button v-for="(img, index) in solution?.images" :key="img.id" @click="activeImage = img"
+                            :class="[
                                 'relative flex-shrink-0 w-20 h-14 overflow-hidden rounded',
                                 activeImage === img ? 'ring-2 ring-primary-500' : 'hover:opacity-80'
                             ]">
-                            <img :src="img.viewLink" :alt="`Thumbnail ${index + 1}`"
+                            <img :src="img.viewLink || ''" :alt="`Thumbnail ${index + 1}`"
                                 class="w-full h-full object-cover" />
                         </button>
                     </div>
@@ -58,7 +58,7 @@
                                 : 'text-neutral-600 hover:text-neutral-900'
                         ]">
                             {{ tab.label }}
-                            <span v-if="tab.id === 'reviews'">({{ solution?.solutionReviews?.length }})</span>
+                            <span v-if="tab.id === 'reviews'">({{ solution?.reviews?.length }})</span>
                         </button>
                     </div>
 
@@ -66,12 +66,12 @@
                     <div class="p-6">
                         <!-- Overview tab -->
                         <div v-if="activeTab === 'overview'" class="space-y-4">
-                            <h1 class="text-3xl font-bold text-neutral-800">{{ solution?.title }}</h1>
+                            <h1 class="text-3xl font-bold text-neutral-800">{{ solution?.name }}</h1>
                             <span class="text-sm text-neutral-600">
                                 {{
-                                    solution?.project?.ourService ?
-                                        solution?.project?.ourService?.name :
-                                        solution?.descriminator
+                                solution?.project?.businessService ?
+                                solution?.project?.businessService?.name :
+                                solution?.discriminator
                                 }}
                             </span>
                             <div class="flex items-center space-x-2">
@@ -86,7 +86,7 @@
                                     ]" />
                                 </div>
                                 <span class="text-sm font-medium text-neutral-700">
-                                    {{ averageRating.toFixed(1) }} ({{ solution?.solutionReviews?.length || 0 }}
+                                    {{ averageRating.toFixed(1) }} ({{ solution?.reviews?.length || 0 }}
                                     reviews)
                                 </span>
                             </div>
@@ -102,9 +102,9 @@
                                     <h3 class="text-sm font-medium text-neutral-500">Last Updated</h3>
                                     <p class="text-neutral-800">
                                         {{
-                                            solution?.modifiedAt ? format(new Date(solution?.modifiedAt), 'do MMM yyyy') :
-                                                solution?.createdAt ? format(new Date(solution?.modifiedAt), 'do MMM yyyy') :
-                                                    'N/A'
+                                        solution?.updatedAt ? format(new Date(solution?.updatedAt), 'do MMM yyyy') :
+                                        solution?.createdAt ? format(new Date(solution?.createdAt), 'do MMM yyyy') :
+                                        'N/A'
                                         }}
                                     </p>
                                 </div>
@@ -119,8 +119,7 @@
                         <div v-if="activeTab === 'features'" class="space-y-6">
                             <h2 class="text-2xl font-semibold text-neutral-800">Key Features</h2>
                             <ul class="space-y-4">
-                                <li v-for="feature in solution.solutionFeatures" :key="feature"
-                                    class="flex items-start">
+                                <li v-for="feature in solution?.features" :key="feature.id" class="flex items-start">
                                     <CheckCircle class="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
                                     <span class="text-neutral-700">{{ feature.description }}</span>
                                 </li>
@@ -131,9 +130,9 @@
                         <div v-if="activeTab === 'techStack'" class="space-y-6">
                             <h2 class="text-2xl font-semibold text-neutral-800">Technology Stack</h2>
                             <div class="flex flex-wrap gap-3">
-                                <span v-for="stack in solution?.stack" :key="stack.id"
+                                <span v-for="stack in solution?.technologyStacks" :key="stack.id"
                                     class="bg-primary-100 text-primary-600 px-4 py-2 rounded-full text-sm font-medium">
-                                    {{ stack.technologyStack.name }}
+                                    {{ stack.name }}
                                 </span>
                             </div>
                         </div>
@@ -151,8 +150,8 @@
                                                 <User class="h-6 w-6" />
                                             </div>
                                             <div>
-                                                <h4 class="font-medium text-neutral-800">{{ review.reviewer.lastName }}
-                                                    {{ review.reviewer.firstName }}</h4>
+                                                <h4 class="font-medium text-neutral-800">{{ review.evaluator.lastName }}
+                                                    {{ review.evaluator.firstName }}</h4>
                                                 <div class="flex">
                                                     <Star v-for="j in 5" :key="j" :class="[
                                                         'h-4 w-4',
@@ -227,7 +226,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <NuxtLink v-for="related in relatedSolutions" :key="related.id" :to="`/solutions/${related.id}`"
                             class="p-4 bg-neutral-50 hover:bg-primary-50 rounded-lg transition">
-                            <h3 class="font-medium text-neutral-800">{{ related.title }}</h3>
+                            <h3 class="font-medium text-neutral-800">{{ related.name }}</h3>
                             <div class="flex items-center text-sm text-primary-500 mt-2">
                                 <span>View details</span>
                                 <ArrowRight class="h-4 w-4 ml-1" />
@@ -302,11 +301,11 @@
                             <Share2 class="h-5 w-5 mb-1" />
                             Share
                         </button>
-                        <button
+                        <nuxt-link to="/contact#contact"
                             class="p-2 border border-neutral-200 rounded-lg text-neutral-600 hover:bg-neutral-50 transition flex flex-col items-center text-xs">
                             <MessageCircle class="h-5 w-5 mb-1" />
                             Contact
-                        </button>
+                        </nuxt-link>
                         <button
                             class="p-2 border border-neutral-200 rounded-lg text-neutral-600 hover:bg-neutral-50 transition flex flex-col items-center text-xs">
                             <Info class="h-5 w-5 mb-1" />
@@ -319,20 +318,23 @@
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <h3 class="text-lg font-semibold text-neutral-800 mb-4">Resources</h3>
                     <div class="space-y-3">
-                        <a href="#" class="flex items-center text-neutral-700 hover:text-primary-500 transition">
+                        <a href="#" target="_blank"
+                            class="flex items-center text-neutral-700 hover:text-primary-500 transition">
                             <FileCode class="h-5 w-5 mr-3 text-neutral-500" />
                             <span>Documentation</span>
                         </a>
-                        <a href="#" class="flex items-center text-neutral-700 hover:text-primary-500 transition">
+                        <a v-if="solution?.SourceUrl" :href="solution.SourceUrl" target="_blank"
+                            class="flex items-center text-neutral-700 hover:text-primary-500 transition">
                             <Github class="h-5 w-5 mr-3 text-neutral-500" />
                             <span>Source Code</span>
                         </a>
-                        <nuxt-link :to="solution?.previewUrl" target="_blank"
+                        <nuxt-link v-if="solution?.previewUrl" :to="solution?.previewUrl" target="_blank"
                             class="flex items-center text-neutral-700 hover:text-primary-500 transition">
                             <Globe class="h-5 w-5 mr-3 text-neutral-500" />
                             <span>Live Demo</span>
                         </nuxt-link>
-                        <a href="#" class="flex items-center text-neutral-700 hover:text-primary-500 transition">
+                        <a href="#" target="_blank"
+                            class="flex items-center text-neutral-700 hover:text-primary-500 transition">
                             <ExternalLink class="h-5 w-5 mr-3 text-neutral-500" />
                             <span>API Reference</span>
                         </a>
@@ -390,18 +392,23 @@ const relatedSolutions = computed(() => {
     return allSolutions.value
         .filter(s => s.id !== solutionId) // Remove current solution
         .filter(s => {
-            // Find solutions with matching category or technology stack
-            const categoryMatch = s.category === solution.value.category;
-
             // Check for keyword matches in title
-            const titleMatch = solution.value.title.split(' ')
+            const nameMatch = solution.value?.name.split(' ')
                 .some((word: any) => {
                     // Only consider meaningful words (longer than 3 chars)
                     if (word.length <= 3) return false;
-                    return s.title.toLowerCase().includes(word.toLowerCase());
+                    return s.name.toLowerCase().includes(word.toLowerCase());
                 });
+            const discriminatorMatch = solution.value?.discriminator.split(' ')
+                .some((word: any) => {
+                    return s.discriminator.toLowerCase().includes(word.toLowerCase());
+                });
+            // Find solutions with matching category or technology stack
+            const techStackMatch = s.technologyStacks.some((stack: any) =>
+                solution.value?.technologyStacks.some((ts: any) => ts.id === stack.id)
+            );
 
-            return categoryMatch || titleMatch;
+            return nameMatch || techStackMatch || discriminatorMatch;
         })
         .slice(0, 4); // Limit to 4 related solutions
 });
@@ -426,7 +433,7 @@ async function bookmarkSolution() {
         try {
             var payload = {
                 userId: useAuthStore().user?.id,
-                solutionId: solution.value.id
+                solutionId: solution.value?.id
             }
             await solutionService.bookmarkAsync(payload);
         }
@@ -438,7 +445,7 @@ async function bookmarkSolution() {
 
 // Calculate average rating from reviews
 const averageRating = computed(() => {
-    const reviews = solution.value?.solutionReviews || [];
+    const reviews = solution.value?.reviews || [];
 
     if (!reviews.length) {
         return 0;
@@ -456,15 +463,19 @@ const averageRating = computed(() => {
 
 const sortedReviews = computed(() => {
     if (!solution.value) return [];
-    if (showMoreReviews.value) return solution.value?.solutionReviews.reverse();
-    else return solution.value?.solutionReviews.slice(-4).reverse();
+    if (showMoreReviews.value) return solution.value?.reviews.reverse();
+    else return solution.value?.reviews.slice(-4).reverse();
 });
 
 watch(solution, () => {
     if (solution.value) {
-        activeImage.value = solution.value.solutionImages[0];
+        activeImage.value = solution.value.images[0];
     }
 });
 
-onMounted(() => { solutionRefresh(); allSolutionsRefresh() });
+onMounted(() => {
+    solutionRefresh();
+    allSolutionsRefresh();
+    console.log(solution.value);
+});
 </script>

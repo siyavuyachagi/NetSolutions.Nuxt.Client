@@ -8,9 +8,9 @@
                     Back to Home
                 </NuxtLink>
                 <span class="mx-2">/</span>
-                <NuxtLink :to="`/services/${ourServicePackage?.ourService?.id}`"
+                <NuxtLink :to="`/services/${businessServicePackage?.businessService?.id}`"
                     class="hover:text-primary-500 transition">
-                    {{ ourServicePackage?.ourService?.name }}
+                    {{ businessServicePackage?.businessService?.name }}
                 </NuxtLink>
                 <span class="mx-2">/</span>
                 <span>Getting Started</span>
@@ -23,7 +23,7 @@
             <div class="lg:col-span-2 space-y-6">
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <h1 class="text-2xl font-bold text-neutral-800 mb-4">Get started with {{
-                        ourServicePackage?.ourService?.name }}</h1>
+                        businessServicePackage?.businessService?.name }}</h1>
                     <p class="text-neutral-600 mb-6">Tell us about your project requirements to help us understand your
                         needs better.</p>
 
@@ -321,14 +321,14 @@
             <div class="space-y-6">
                 <!-- Selected package summary -->
                 <div class="bg-white rounded-lg shadow-md p-6">
-                    <h3 class="text-lg font-semibold text-neutral-800 mb-4">{{ ourServicePackage?.name }}
+                    <h3 class="text-lg font-semibold text-neutral-800 mb-4">{{ businessServicePackage?.name }}
                     </h3>
 
 
                     <div class="border-t py-4">
                         <h4 class="font-medium text-neutral-800 mb-2">Included in this package:</h4>
                         <ul class="space-y-2">
-                            <li v-for="feature in ourServicePackage?.ourServicePackageFeatures" :key="feature.id"
+                            <li v-for="feature in businessServicePackage?.packageFeatures" :key="feature.id"
                                 class="flex items-start">
                                 <CheckCircle class="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
                                 <span class="text-neutral-700 text-sm">{{ feature?.title }}</span>
@@ -337,29 +337,26 @@
                     </div>
 
                     <div class="bg-neutral-50 rounded-lg p-4 mb-4">
-                        <div v-if="ourServicePackage?.name !== 'Custom'" class="flex justify-between items-center mb-2">
+                        <div v-if="businessServicePackage?.name !== 'Custom'"
+                            class="flex justify-between items-center mb-2">
                             <h4 class="font-bold text-neutral-800">Total Price</h4>
-                            <span :class="pkgColor(ourServicePackage?.name)">
-                                {{ ourServicePackage?.name }}
+                            <span :class="pkgColor(businessServicePackage?.name || '')">
+                                {{ businessServicePackage?.name }}
                             </span>
                         </div>
 
                         <div class="mb-2">
-                            <span v-if="ourServicePackage?.name !== 'Custom'"
-                                class="text-xl font-bold text-neutral-800 mr-2">{{ ourServicePackage?.price }}</span>
-                            <span v-else class="text-xl font-bold text-neutral-800 mr-2">Price</span>
-
-
-                            <span v-if="ourServicePackage?.name !== 'Custom'" class="text-neutral-500 text-sm">/{{
-                                ourServicePackage?.billingCycle }}</span>
-                            <span v-else class="text-neutral-500 text-sm">/To be determined</span>
+                            <span class="text-xl font-bold text-neutral-800 mr-2">R{{ businessServicePackage?.price
+                                }}</span>
+                            <span class="text-neutral-500 text-sm">/{{
+                                businessServicePackage?.billingCycle }}</span>
                         </div>
 
-                        <p class="text-neutral-600 text-sm mt-2">{{ ourServicePackage?.description }}</p>
+                        <p class="text-neutral-600 text-sm mt-2">{{ businessServicePackage?.description }}</p>
                     </div>
 
                     <div class="mt-4 pt-4 border-t">
-                        <NuxtLink :to="`/services/${ourServicePackage?.ourService?.id}`"
+                        <NuxtLink :to="`/services/${businessServicePackage?.businessService?.id}`"
                             class="text-primary-500 hover:text-primary-600 text-sm flex items-center">
                             <ArrowLeft class="h-4 w-4 mr-1" />
                             Change package
@@ -407,11 +404,12 @@ import {
     File, MessageCircle, Phone, Mail, HelpCircle
 } from 'lucide-vue-next';
 import { useRoute, useRouter } from 'vue-router';
-import ourServicePackageService from '~/services/ourServicePackageService';
+import ourServicePackageService from '~/services/businessServicePackageService';
 import VueSanity, { email, extensions, maxSize, required, type ModelConfig } from 'vuesanity';
 import { set } from 'date-fns';
 import type { Timeline } from '~/components/timelineSelector.vue';
 import projectService from '~/services/projectService';
+import businessServicePackageService from '~/services/businessServicePackageService';
 
 definePageMeta({
     validate(route) {
@@ -422,19 +420,12 @@ definePageMeta({
     },
 })
 
-onMounted(() => {
-    if (!route.query.step) router.replace({ query: { ...route.query, step: 1 } })
-    ourServicePackageRefresh();
-    console.log(ourServicePackage.value);
-})
-
-
 // Get route and service ID
 const route = useRoute();
 const router = useRouter();
 
-const { data: ourServicePackage, status: ourServicePackageStatus, error: ourServicePackageError, refresh: ourServicePackageRefresh }
-    = useAsyncData(`ourServicePackage--getting-started-${route.params.id}`, () => ourServicePackageService.getOurServicePackage(route.params.id as string));
+const { data: businessServicePackage, status: businessServicePackageStatus, error: businessServicePackageError, refresh: businessServicePackageRefresh }
+    = useAsyncData(`ourServicePackage--getting-started-${route.params.id}`, () => businessServicePackageService.getBusinessServicePackage(route.params.id as string));
 
 
 // Define steps
@@ -611,4 +602,10 @@ const handleProjectSubmit = async () => {
         isSubmitting.value = false;
     }
 };
+
+console.log(businessServicePackage.value);
+onMounted(() => {
+    if (!route.query.step) router.replace({ query: { ...route.query, step: 1 } })
+    businessServicePackageRefresh();
+})
 </script>

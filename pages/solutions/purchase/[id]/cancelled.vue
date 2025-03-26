@@ -22,10 +22,10 @@
             <!-- Left column - form and inputs -->
             <div class="lg:col-span-2 space-y-6">
                 <div class="bg-white rounded-lg shadow-md p-6">
-                    <h1 class="text-2xl font-bold text-neutral-800 mb-4">Get Started with {{
+                    <!-- <h1 class="text-2xl font-bold text-neutral-800 mb-4">Get Started with {{
                         paymentTransaction?.solution?.title }}</h1>
                     <p class="text-neutral-600 mb-6">Tell us about your project requirements to help us understand your
-                        needs better.</p>
+                        needs better.</p> -->
 
                     <!-- Step content -->
                     <div class="space-y-6">

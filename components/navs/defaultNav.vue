@@ -28,9 +28,6 @@
                             class="block px-4 py-2 text-neutral-700 hover:bg-neutral-100 transition">
                             {{ service.name }}
                         </nuxt-link>
-                        <nuxt-link class="block px-4 py-2 text-neutral-700 hover:bg-neutral-100 transition">
-                            Custom Solutions
-                        </nuxt-link>
                     </div>
                 </div>
             </transition>
@@ -43,27 +40,27 @@
     </nav>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
-import serviceService from '~/services/ourServiceService';
+import businessServiceService from '~/services/businessServiceService';
 
 const {
     data: services,
     status: servicesStatus,
     refresh: servicesRefresh,
-} = useAsyncData('services', () => serviceService.getServicesAsync());
+} = useAsyncData('services', () => businessServiceService.getServicesAsync());
 
-const servicesDropdownContainer = ref(null)
+const servicesDropdownContainer = ref<HTMLElement | null>(null)
 const isServicesDropdownOpen = ref(false)
 
 const toggleServicesDropdown = () => {
     isServicesDropdownOpen.value = !isServicesDropdownOpen.value
 }
 
-const handleClickOutside = (event) => {
+const handleClickOutside = (event: Event) => {
     // Check if the click is outside the dropdown container
     if (servicesDropdownContainer.value &&
-        !servicesDropdownContainer.value.contains(event.target)) {
+        !servicesDropdownContainer.value.contains(event.target as HTMLElement)) {
         isServicesDropdownOpen.value = false
     }
 }

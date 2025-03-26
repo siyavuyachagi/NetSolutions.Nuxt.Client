@@ -138,11 +138,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { onMounted } from 'vue';
 import {
-    ArrowLeft, ArrowRight, CheckCircle,
-    MessageCircle, Phone, Mail, HelpCircle, CircleX
-} from 'lucide-vue-next';
+    ArrowLeft, CheckCircle,
+    MessageCircle, Phone, Mail, HelpCircle} from 'lucide-vue-next';
 import { useRoute } from 'vue-router';
 import paymentTransactionService from '~/services/paymentTransactionService';
 

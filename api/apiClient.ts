@@ -3,7 +3,7 @@ import { useAuthStore } from "~/stores/useAuthStore";
 
 // Create an instance of Axios with base configuration
 const apiClient = axios.create({
-  // baseURL: "http://localhost:7204", // Uses the Nuxt proxy
+  baseURL: "https://netsolutions-hneebegvezgga3h2.canadacentral-01.azurewebsites.net", // Uses the Nuxt proxy
   headers: {
     "Content-Type": "application/json",
   },

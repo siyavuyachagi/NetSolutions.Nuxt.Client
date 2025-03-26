@@ -48,8 +48,6 @@ export default defineNuxtConfig({
     server: {
       proxy: {
         "/api": {
-          target:
-            "https://netsolutions-hneebegvezgga3h2.canadacentral-01.azurewebsites.net",
           // target: "https://localhost:7047", // Changed from https:// to http://
           changeOrigin: true,
           secure: false, // Only needed for HTTPS

@@ -8,7 +8,7 @@
                     Back to Home
                 </NuxtLink>
                 <span class="mx-2">/</span>
-                <span>{{ ourService?.name }}</span>
+                <span>{{ businessService?.name }}</span>
             </div>
         </div>
 
@@ -19,16 +19,16 @@
                 <!-- Service showcase -->
                 <div class="bg-white rounded-lg shadow-md overflow-hidden">
                     <div class="relative aspect-video bg-neutral-100">
-                        <img :src="ourService?.thumbnail" :alt="`${ourService?.name} preview`"
+                        <img :src="businessService?.thumbnail || ''" :alt="`${businessService?.name} preview`"
                             class="w-full h-full object-cover" />
                     </div>
                     <div class="flex p-2 space-x-2 overflow-x-auto">
-                        <button v-for="service in ourServices" :key="service.id"
-                            @click="ourService = service" :class="[
+                        <button v-for="service in businessServices" :key="service.id" @click="businessService = service"
+                            :class="[
                                 'relative flex-shrink-0 w-20 h-14 overflow-hidden rounded',
-                                ourService === service ? 'ring-2 ring-primary-500' : 'hover:opacity-80'
+                                businessService === service ? 'ring-2 ring-primary-500' : 'hover:opacity-80'
                             ]">
-                            <img :src="service?.thumbnail" :alt="`${service?.name} thumbnail`"
+                            <img :src="service?.thumbnail || ''" :alt="`${service?.name} thumbnail`"
                                 class="w-full h-full object-cover" />
                         </button>
                     </div>
@@ -44,7 +44,8 @@
                                 : 'text-neutral-600 hover:text-neutral-900'
                         ]">
                             {{ tab.label }}
-                            <span v-if="tab.id === 'testimonials'">({{ ourService?.testimonials?.length || 0 }})</span>
+                            <span v-if="tab.id === 'testimonials'">({{ businessService?.testimonials?.length || 0
+                            }})</span>
                         </button>
                     </div>
 
@@ -52,7 +53,7 @@
                     <div class="p-6">
                         <!-- Overview tab -->
                         <div v-if="activeTab === 'overview'" class="space-y-4">
-                            <h1 class="text-3xl font-bold text-neutral-800">{{ ourService?.name }}</h1>
+                            <h1 class="text-3xl font-bold text-neutral-800">{{ businessService?.name }}</h1>
                             <div class="flex items-center space-x-2">
                                 <div class="flex">
                                     <Star v-for="i in 5" :key="i" :class="[
@@ -65,13 +66,14 @@
                                     ]" />
                                 </div>
                                 <span class="text-sm font-medium text-neutral-700">
-                                    {{ averageRating.toFixed(1) }} ({{ ourService?.testimonials?.length || 0 }} reviews)
+                                    {{ averageRating.toFixed(1) }} ({{ businessService?.testimonials?.length || 0 }}
+                                    reviews)
                                 </span>
                             </div>
 
 
 
-                            <p class="text-neutral-700 leading-relaxed">{{ ourService?.description }}</p>
+                            <p class="text-neutral-700 leading-relaxed">{{ businessService?.description }}</p>
 
                             <div class="flex flex-col sm:flex-row sm:justify-between space-y-4 sm:space-y-0 pt-4">
                                 <!-- <div>
@@ -92,10 +94,10 @@
                         <!-- Features tab -->
                         <div v-if="activeTab === 'features'" class="space-y-6">
                             <h2 class="text-2xl font-semibold text-neutral-800">Key Features</h2>
-                            <div v-for="servicePackage in ourService?.packages" :key="servicePackage.id">
+                            <div v-for="servicePackage in businessService?.packages" :key="servicePackage.id">
                                 <h4 class="font-semibold text-neutral-700">{{ servicePackage?.name }}</h4>
                                 <ul class="space-y-4">
-                                    <li v-for="feature in servicePackage.features" :key="feature.id"
+                                    <li v-for="feature in servicePackage.packageFeatures" :key="feature.id"
                                         class="flex items-start">
                                         <CheckCircle class="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
                                         <span class="text-neutral-700">{{ feature.description }}</span>
@@ -105,62 +107,18 @@
                         </div>
 
                         <!-- ContactUs tab -->
-                        <div v-if="activeTab === 'contact-us'"
-                            class="contact-form-container max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
+                        <div v-if="activeTab === 'contact-us'">
                             <h2 class="text-2xl font-semibold text-gray-800 mb-6">Contact Us</h2>
 
-                            <form @submit.prevent="handleContactUsSubmit" class="space-y-6">
-                                <!-- Email Field -->
-                                <div class="form-group">
-                                    <label for="email"
-                                        class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                    <input type="email" id="email" v-model="model.email.value"
-                                        class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                                        :class="{ 'border-red-500': model.email.value }" placeholder="your@email.com" />
-                                    <p v-if="model.email.value" class="mt-1 text-sm text-red-600">{{
-                                        model.email.value[0] }}</p>
-                                </div>
+                            <FormsContactUsForm />
 
-                                <!-- Subject Field -->
-                                <div class="form-group">
-                                    <label for="subject"
-                                        class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-                                    <input type="text" id="subject" v-model="model.subject.value"
-                                        class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                                        :class="{ 'border-red-500': model.subject.errors }"
-                                        placeholder="What's this about?" />
-                                    <p v-if="model.subject.errors" class="mt-1 text-sm text-red-600">{{
-                                        model.subject.errors[0] }}</p>
-                                </div>
-
-                                <!-- Message Field -->
-                                <div class="form-group">
-                                    <label for="message"
-                                        class="block text-sm font-medium text-gray-700 mb-1">Message</label>
-                                    <textarea id="message" v-model="model.message.value" rows="5"
-                                        class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
-                                        :class="{ 'border-red-500': model.message.errors }"
-                                        placeholder="How can we help you?"></textarea>
-                                    <p v-if="model.message.errors" class="mt-1 text-sm text-red-600">{{
-                                        model.message.errors[0] }}</p>
-                                </div>
-
-                                <!-- Submit Button -->
-                                <div class="flex items-center justify-between">
-                                    <button type="submit"
-                                        class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition"
-                                        :disabled="isSubmitting">
-                                        {{ isSubmitting ? 'Sending...' : 'Send Message' }}
-                                    </button>
-                                </div>
-                            </form>
                         </div>
 
                         <!-- Testimonials tab -->
                         <div v-if="activeTab === 'testimonials'" class="space-y-6">
                             <h2 class="text-2xl font-semibold text-neutral-800">Client Testimonials</h2>
                             <div class="flex flex-col space-y-4">
-                                <div v-for="testimonial in ourService?.testimonials" :key="testimonial.id"
+                                <div v-for="testimonial in businessService?.testimonials" :key="testimonial.id"
                                     class="bg-neutral-50 p-4 rounded-lg">
                                     <div class="flex justify-between">
                                         <div class="flex items-center space-x-2">
@@ -170,7 +128,7 @@
                                             </div>
                                             <div>
                                                 <h4 class="font-medium text-neutral-800">{{
-                                                    testimonial.reviewer.lastName }} {{ testimonial.reviewer.firstName
+                                                    testimonial.evaluator.lastName }} {{ testimonial.evaluator.firstName
                                                     }}</h4>
                                                 <div class="flex">
                                                     <Star v-for="j in 5" :key="j" :class="[
@@ -188,7 +146,7 @@
                                         {{ testimonial.comment }}
                                     </p>
                                 </div>
-                                <button v-if="ourService?.testimonials.length > 5"
+                                <button v-if="businessService?.testimonials.length"
                                     class="text-primary-500 hover:text-primary-600 font-medium"
                                     @click="showMoreTestimonials = !showMoreTestimonials">
                                     {{ showMoreTestimonials ? 'Show less' : 'Show more' }}
@@ -203,10 +161,10 @@
                     <h2 class="text-xl font-semibold text-neutral-800 mb-4">Portfolio Showcase</h2>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <nuxt-link
-                            v-for="solution in (solutions?.filter((s: any) => s?.project?.ourService?.id == ourService?.id))?.slice(0, 4)"
+                            v-for="solution in (solutions?.filter((s: Solution) => s?.project?.businessService?.id == businessService?.id))?.slice(0, 4)"
                             :key="solution.id" class="p-4 bg-neutral-50 hover:bg-primary-50 rounded-lg transition"
                             :to="`/solutions/${solution.id}`">
-                            <img :src="solution?.solutionImages[0].viewLink" :alt="solution?.name"
+                            <img :src="solution?.images[0].viewLink" :alt="solution?.name"
                                 class="w-full h-40 object-cover rounded-md mb-3" />
                             <h3 class="font-medium text-neutral-800">{{ solution?.name }}</h3>
                             <div class="flex items-center text-sm text-primary-500 mt-2">
@@ -221,8 +179,8 @@
             <!-- Right column - packages and contact info -->
             <div class="space-y-6">
                 <!-- Packages cards -->
-                <div v-for="pkg in [...(ourService?.packages || [])].sort((a, b) => a.price - b.price)" :key="pkg.id"
-                    class="bg-white rounded-lg shadow-md p-6">
+                <div v-for="pkg in [...(businessService?.packages || [])].sort((a, b) => a.price - b.price)"
+                    :key="pkg.id" class="bg-white rounded-lg shadow-md p-6">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-2xl font-bold text-neutral-800">{{ pkg?.name }}</h3>
                         <span :class="pkgColor(pkg?.name)">
@@ -246,7 +204,7 @@
                     <div class="border-t py-4">
                         <h4 class="font-medium text-neutral-800 mb-2">Included in this package:</h4>
                         <ul class="space-y-2">
-                            <li v-for="feature in pkg.features" :key="feature" class="flex items-start">
+                            <li v-for="feature in pkg.packageFeatures" :key="feature.id" class="flex items-start">
                                 <CheckCircle class="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
                                 <span class="text-neutral-700">{{ feature?.title }}</span>
                             </li>
@@ -260,11 +218,12 @@
                     <p class="text-neutral-600 mb-4">Need a custom solution? Let's discuss your project requirements.
                     </p>
 
-                    <button
+                    <nuxt-link
+                        :to="`/contact?fromUrl=/service/${businessService?.id}&rexs=${businessService?.id}#contact`"
                         class="w-full bg-neutral-800 hover:bg-neutral-900 text-white font-medium py-3 px-4 rounded-lg mb-4 flex items-center justify-center">
                         <Mail class="h-5 w-5 mr-2" />
                         Get in Touch
-                    </button>
+                    </nuxt-link>
 
                     <div class="space-y-3 mt-6">
                         <a href="#" class="flex items-center text-neutral-700 hover:text-primary-500 transition">
@@ -314,14 +273,14 @@ import { ref, computed } from 'vue';
 import { format } from 'date-fns';
 import { ArrowLeft, ArrowRight, Star, CheckCircle, User, ShoppingCart, Mail, Phone, Clock } from 'lucide-vue-next';
 import { useRoute } from 'vue-router';
-import ourServiceService from '~/services/ourServiceService';
 import solutionService from '~/services/solutionService';
-import type { ModelConfig } from 'vuesanity';
+import businessServiceService from '~/services/businessServiceService';
+import type { Solution } from '~/interface/Solution';
 
 const route = useRoute();
 // Fetch our services and solutions asynchronously
-const { data: ourService, refresh: ourServiceRefresh } = useAsyncData(`ourService-${route.params.id}`, () => ourServiceService.getServiceAsync(route.params.id as string));
-const { data: ourServices, refresh: ourServicesRefresh } = useAsyncData(`ourServices-${route.params.id}`, () => ourServiceService.getServicesAsync());
+const { data: businessService, refresh: businessServiceRefresh } = useAsyncData(`businessService-${route.params.id}`, () => businessServiceService.getServiceAsync(route.params.id as string));
+const { data: businessServices, refresh: businessServicesRefresh } = useAsyncData(`businessServices-${route.params.id}`, () => businessServiceService.getServicesAsync());
 const { data: solutions, refresh: solutionsRefresh } = useAsyncData(`solutions-${route.params.id}`, () => solutionService.getSolutionsAsync());
 
 // State management using Composition API
@@ -338,7 +297,7 @@ const tabs = [
 
 // Computed property for average rating from the service testimonials
 const averageRating = computed(() => {
-    const reviews = ourService.value?.testimonials || [];
+    const reviews = businessService.value?.testimonials || [];
     if (!reviews.length) return 0;
     const sum = reviews.reduce((total: number, review: any) => total + (review.rating || 0), 0);
     return sum / reviews.length;
@@ -362,25 +321,11 @@ function pkgColor(name: string) {
     }
 }
 
-const model = reactive<ModelConfig>({
-    email: {
-        type: 'email',
-    },
-    subject: {
-        type: 'string',
-    },
-    message: {
-        type: 'string',
-    },
-});
-const isSubmitting = ref(false);
-function handleContactUsSubmit() {
-
-}
-
 onMounted(() => {
-    console.log(ourServices.value)
-    console.log(ourService.value)
+    businessServiceRefresh();
+    businessServicesRefresh();
+    console.log(businessServices.value)
+    console.log(businessService.value)
 });
 </script>
 

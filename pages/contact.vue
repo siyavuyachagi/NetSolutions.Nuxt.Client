@@ -13,14 +13,13 @@
         </section>
 
         <!-- Main Content Section -->
-        <section v-if="!pageLoading" class="container mx-auto px-4 py-16">
+        <section id="contact" v-if="!pageLoading" class="container mx-auto px-4 py-16">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
                 <!-- Contact Information -->
                 <Transition appear enter-from-class="opacity-0 -translate-x-6"
                     enter-active-class="transition-all duration-1000 ease-out">
                     <div class="contact-info">
                         <h2 class="text-2xl font-semibold mb-6">Our Contact Information</h2>
-
                         <div class="space-y-8">
                             <!-- Address -->
                             <div class="flex items-start">
@@ -117,8 +116,11 @@
 
                 <Transition v-else appear enter-from-class="opacity-0 translate-x-6"
                     enter-active-class="transition-all duration-1000 ease-out">
-                    <div class="bg-white rounded-lg shadow-md p-8">
-                        <iframe src="" class="h-52"></iframe>
+                    <div class="bg-white rounded-lg shadow-md">
+                        <iframe class="w-full h-full"
+                            :src="`https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=Bizana,South+Africa&zoom=15`"
+                            allowfullscreen loading="lazy" title="Google Map">
+                        </iframe>
                     </div>
                 </Transition>
 
@@ -132,10 +134,10 @@
             <div class="container mx-auto px-4">
                 <h2 class="text-2xl font-semibold mb-6">Our Location</h2>
                 <div class="h-96 bg-gray-200 rounded-lg overflow-hidden">
-                    <!-- Replace with actual map implementation -->
-                    <div class="w-full h-full flex items-center justify-center bg-gray-300">
-                        <p class="text-gray-600">Map placeholder - integrate with Google Maps or other map service</p>
-                    </div>
+                    <iframe class="w-full h-full"
+                        :src="`https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=Bizana,South+Africa&zoom=15`"
+                        allowfullscreen loading="lazy" title="Google Map">
+                    </iframe>
                 </div>
             </div>
         </section>
@@ -145,7 +147,11 @@
 
 <script setup lang="ts">
 import ContactUsForm from '~/components/forms/contactUsForm.vue';
+import {
+    CheckCircle
+} from 'lucide-vue-next';
 
+const googleMapsApiKey = useRuntimeConfig().public.googleMapsApiKey;
 const pageLoading = ref(true);
 const formSubmitted = ref<boolean>(false)
 
@@ -155,6 +161,7 @@ function contactUsFormSubmit() {
     if (import.meta.client) {
         sessionStorage.setItem('ns-contact-us-form-submitted', 'true');
         formSubmitted.value = true;
+        toasts.success('Message sent successfully')
     }
 }
 

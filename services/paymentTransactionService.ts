@@ -1,7 +1,8 @@
 import apiClient from "~/api/apiClient";
+import type { PaymentTransaction } from "~/interface/PaymentTransaction";
 
 class PaymentTransactionService {
-  async getTransactionAsync(id: string): Promise<any> {
+  async getTransactionAsync(id: string): Promise<PaymentTransaction> {
     return apiClient
       .get(`/api/PaymentTransactions/${id}`)
       .then((response) => {

@@ -13,21 +13,27 @@
         <!-- Our Story Section -->
         <section class="container mx-auto px-4 py-16">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                <div>
-                    <h2 class="text-3xl font-semibold mb-6 text-purple-900">Our Story</h2>
-                    <div class="prose max-w-none text-gray-700">
-                        <p class="mb-4">Founded in 2015, our company began with a simple vision: to create innovative
-                            solutions that make a difference in people's lives.</p>
-                        <p class="mb-4">What started as a small team of passionate individuals has grown into a thriving
-                            organization dedicated to excellence and customer satisfaction.</p>
-                        <p>Through years of hard work, dedication, and a commitment to our core values, we've
-                            established ourselves as industry leaders known for quality and reliability.</p>
+                <TransitionGroup appear enter-from-class="opacity-0 -translate-x-6"
+                    enter-active-class="transition-all duration-1000 ease-out">
+                    <div>
+                        <h2 class="text-3xl font-semibold mb-6 text-purple-900">Our Story</h2>
+                        <div class="prose max-w-none text-gray-700">
+                            <p class="mb-4">Founded in 2015, our company began with a simple vision: to create
+                                innovative
+                                solutions that make a difference in people's lives.</p>
+                            <p class="mb-4">What started as a small team of passionate individuals has grown into a
+                                thriving
+                                organization dedicated to excellence and customer satisfaction.</p>
+                            <p>Through years of hard work, dedication, and a commitment to our core values, we've
+                                established ourselves as industry leaders known for quality and reliability.</p>
+                        </div>
                     </div>
-                </div>
-                <div class="bg-gray-200 h-80 rounded-lg overflow-hidden">
-                    <!-- Replace with actual image -->
-                    <img src="/assets/images/company-founding.jpg" alt="" srcset="">
-                </div>
+
+                    <div class="bg-gray-200 rounded-lg overflow-hidden">
+                        <!-- Replace with actual image -->
+                        <img src="/assets/images/company-founding.jpg" class="h-80 object-cover" alt="" srcset="">
+                    </div>
+                </TransitionGroup>
             </div>
         </section>
 
@@ -408,9 +414,10 @@
                 <h2 class="text-3xl font-semibold mb-6">Ready to Work With Us?</h2>
                 <p class="text-xl mb-8 max-w-2xl mx-auto">Let's create something amazing together. Get in touch with our
                     team to discuss your project.</p>
-                <a href="/contact"
-                    class="inline-block px-8 py-3 bg-white text-purple-900 font-semibold rounded-lg hover:bg-purple-100 transition duration-300">Contact
-                    Us</a>
+                <nuxt-link href="/contact#contact"
+                    class="inline-block px-8 py-3 bg-white text-purple-900 font-semibold rounded-lg hover:bg-purple-100 transition duration-300">
+                    Contact Us
+                </nuxt-link>
             </div>
         </section>
     </div>

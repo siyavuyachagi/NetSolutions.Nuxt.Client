@@ -2,6 +2,8 @@ import { se } from "date-fns/locale";
 import apiClient from "~/api/apiClient";
 import { useSolutionsStore } from "~/stores/useSolutionsStore";
 import usePayFast from "./usePayFast";
+import type { Solution } from "~/interface/Solution";
+import type { PaymentTransaction } from "~/interface/PaymentTransaction";
 // import type { Client, Solution } from "~/api/interfaces";
 
 class SolutionService {
@@ -9,20 +11,8 @@ class SolutionService {
 
   constructor() {}
 
-  async getSolutionAsync(id: string): Promise<any> {
+  async getSolutionAsync(id: string): Promise<Solution | null> {
     try {
-      if (import.meta.client) {
-        // Check session storage for cached solutions
-        const stored = sessionStorage.getItem(this.STORAGE_KEY);
-        if (stored) {
-          const solutions = JSON.parse(stored) || [];
-          const solution = solutions.find((s: any) => s.id === id);
-          if (solution) {
-            return solution;
-          }
-        }
-      }
-
       // Fetch the solution from the API
       const response = await apiClient.get(`/api/Solutions/${id}`);
       if (response.status === 200) {
@@ -36,26 +26,11 @@ class SolutionService {
     }
   }
 
-  async getSolutionsAsync(): Promise<any[]> {
+  async getSolutionsAsync(): Promise<Solution[]> {
     try {
-      // On client, attempt to retrieve from sessionStorage first
-      if (import.meta.client) {
-        const stored = sessionStorage.getItem(this.STORAGE_KEY);
-        if (stored) {
-          return JSON.parse(stored);
-        }
-      }
-
       // Fetch solutions from API
       const response = await apiClient.get(`/api/Solutions`);
       if (response.status === 200) {
-        // Save to sessionStorage on the client for subsequent requests
-        if (import.meta.client) {
-          sessionStorage.setItem(
-            this.STORAGE_KEY,
-            JSON.stringify(response.data)
-          );
-        }
         return response.data;
       } else {
         throw new Error("Failed to fetch solutions");
@@ -104,18 +79,22 @@ class SolutionService {
       });
   }
 
-  async purchaseSolutionsAsync(Id: string, payload: any): Promise<any> {
+  async purchaseSolutionsAsync(id: string, payload: any) {
     try {
-      // Send the solution ID and item details to your backend
       const response = await apiClient.post(
-        `/api/Solutions/purchase/${Id}`,
+        `/api/Solutions/purchase/${id}`,
         payload
       );
 
       if (response.status === 200) {
-        // redirect the user to PayFast's payment page
-        window.location.href = response.data.redirectUrl;
-        return { success: true };
+        console.log("Redirect URL received:", response.data.redirectUrl);
+
+        if (response.data.redirectUrl) {
+          window.location.href = response.data.redirectUrl; // Redirect user
+          return { success: true };
+        } else {
+          throw new Error("Redirect URL is missing in the response");
+        }
       } else {
         throw new Error("Error purchasing solution");
       }
@@ -123,6 +102,18 @@ class SolutionService {
       console.error("Payment initiation failed:", error);
       throw error;
     }
+  }
+
+  async paymentTransaction(Id: string): Promise<PaymentTransaction> {
+    return apiClient
+      .get(`/api/Solutions/transaction/${Id}`)
+      .then((response) => {
+        if (response.status === 200) {
+          return response.data;
+        } else {
+          throw new Error("Failed to fetch solutions");
+        }
+      });
   }
 }
 

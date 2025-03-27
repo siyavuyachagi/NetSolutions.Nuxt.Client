@@ -13,13 +13,15 @@ class BusinessServicePackageService {
   }
 
   async getBusinessServicePackage(id: string): Promise<BusinessServicePackage> {
-    return apiClient.get(`/api/BusinessServicePackages/${id}`).then((response) => {
-      if (response.status === 200) {
-        return response.data;
-      } else {
-        throw new Error("Invalid username or password");
-      }
-    });
+    return apiClient
+      .get(`/api/BusinessServicePackages/${id}`)
+      .then((response) => {
+        if (response.status === 200) {
+          return response.data;
+        } else {
+          throw new Error("Invalid username or password");
+        }
+      });
   }
 }
 

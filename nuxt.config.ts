@@ -1,5 +1,3 @@
-import { resolve } from "path";
-
 export default defineNuxtConfig({
   ssr: true, // Ensure SSR is enabled globally
   compatibilityDate: "2024-11-01",
@@ -48,9 +46,7 @@ export default defineNuxtConfig({
     server: {
       proxy: {
         "/api": {
-          target:
-            "https://netsolutions-hneebegvezgga3h2.canadacentral-01.azurewebsites.net",
-          // target: "https://localhost:7047", // Changed from https:// to http://
+          // target:, // Changed from https:// to http://
           changeOrigin: true,
           secure: false, // Only needed for HTTPS
           timeout: 60000, // Set a longer timeout (60 seconds)
@@ -67,16 +63,14 @@ export default defineNuxtConfig({
     },
     prerender: {
       crawlLinks: false, // Crawl links on the page
-      // routes: ["/", "/about", "/contact", "/auth/login"], // List the pages to prerender as static
       routes: ["/", "/about", "/contact", "/auth/login"], // List the pages to prerender as static
     },
   },
   runtimeConfig: {
     public: {
-      apiBaseUrl: process.env.API_BASE_URL || "https://localhost:7047",
-      // apiBaseUrl: process.env.API_BASE_URL || "https://netsolutions-hneebegvezgga3h2.canadacentral-01.azurewebsites.net",
-      googleMapsApiKey: "AIzaSyCvVW55KanTQjR9v1mLWMIJk4uVMK05ByA",
+      apiUrl: process.env.NUXT_PUBLIC_API_BASE_URL,
+      apiUrlLive: process.env.NUXT_PUBLIC_API_BASE_URL_LIVE,
+      googleMapsApiKey: process.env.NUXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     },
-    private: {}, // Add private runtime config here
   },
 });

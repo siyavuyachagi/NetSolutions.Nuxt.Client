@@ -117,7 +117,7 @@
                 <Transition v-else appear enter-from-class="opacity-0 translate-x-6"
                     enter-active-class="transition-all duration-1000 ease-out">
                     <div class="bg-white rounded-lg shadow-md">
-                        <iframe class="w-full h-full"
+                        <iframe class="w-full h-full rounded-lg shadow-md"
                             :src="`https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=Bizana,South+Africa&zoom=15`"
                             allowfullscreen loading="lazy" title="Google Map">
                         </iframe>

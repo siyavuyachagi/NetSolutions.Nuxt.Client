@@ -13,7 +13,7 @@ apiClient.interceptors.request.use(
     config.baseURL = import.meta.env.DEV
       ? useRuntimeConfig().public.apiUrl
       : useRuntimeConfig().public.apiUrlLive;
-      console.log(config.baseURL)
+      console.log(useRuntimeConfig())
     //Token
     const token = useAuthStore().accessToken;
     if (token) {

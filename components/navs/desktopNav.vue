@@ -1,7 +1,8 @@
-<!-- <template>
+<template>
     <nav class="hidden md:flex space-x-6 items-center">
-        <nuxt-link to="/" class="text-neutral-700 hover:text-primary-500 transition"
-            active-class="text-primary-500">Home</nuxt-link>
+        <nuxt-link to="/" class="text-neutral-700 hover:text-primary-500 transition" active-class="text-primary-500">
+            Home
+        </nuxt-link>
 
         <div class="relative" ref="servicesDropdownContainer">
             <div @click="toggleServicesDropdown" class="flex items-center cursor-pointer select-none">
@@ -18,9 +19,8 @@
 
             <transition enter-active-class="transition ease-out duration-200" enter-from-class="opacity-0 scale-95"
                 enter-to-class="opacity-100 scale-100" leave-active-class="transition ease-in duration-150"
-                leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-95"
-                @mouseleave="() => isServicesDropdownOpen = false">
-                <div v-if="isServicesDropdownOpen"
+                leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-95">
+                <div v-if="isServicesDropdownOpen" @mouseleave="() => isServicesDropdownOpen = false"
                     class="absolute left-0 mt-4 w-56 origin-top-left bg-white border border-neutral-200 rounded-lg shadow-lg z-20">
                     <div class="py-2">
                         <nuxt-link v-if="servicesStatus === 'success'" v-for="service in services" :key="service.id"
@@ -34,21 +34,26 @@
         </div>
 
         <nuxt-link to="/about" class="text-neutral-700 hover:text-primary-500 transition"
-            active-class="text-primary-500">About</nuxt-link>
+            active-class="text-primary-500">
+            About
+        </nuxt-link>
         <nuxt-link to="/contact" class="text-neutral-700 hover:text-primary-500 transition"
-            active-class="text-primary-500">Contact</nuxt-link>
+            active-class="text-primary-500">
+            Contact
+        </nuxt-link>
     </nav>
 </template>
 
 <script setup lang="ts">
+import { useAsyncData } from 'nuxt/app'
 import { ref, onMounted, onUnmounted } from 'vue'
-import businessServiceService from '~/services/businessServiceService';
+import businessServiceService from '../../services/businessServiceService'
 
 const {
     data: services,
     status: servicesStatus,
     refresh: servicesRefresh,
-} = useAsyncData('services', () => businessServiceService.getServicesAsync());
+} = useAsyncData('services', () => businessServiceService.getServicesAsync())
 
 const servicesDropdownContainer = ref<HTMLElement | null>(null)
 const isServicesDropdownOpen = ref(false)
@@ -75,4 +80,4 @@ onUnmounted(() => {
     // Remove event listener before component is destroyed
     document.removeEventListener('click', handleClickOutside)
 })
-</script> -->
+</script>

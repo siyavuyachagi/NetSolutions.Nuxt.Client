@@ -5,7 +5,7 @@
             <div class="flex items-center text-sm text-neutral-500">
                 <NuxtLink to="/" class="flex items-center hover:text-primary-500 transition">
                     <ArrowLeft class="h-4 w-4 mr-2" />
-                    Back to Solutions
+                    <span class="hidden md:block">Back to Solutions</span>
                 </NuxtLink>
                 <span class="mx-2">/</span>
                 <span>{{ solution?.name }}</span>

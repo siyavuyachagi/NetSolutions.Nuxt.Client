@@ -1,6 +1,10 @@
 import axios from "axios";
 
 const apiClient = axios.create({
+  // baseURL:
+  //   process.env.NODE_ENV === "development"
+  //     ? "https://localhost:7047"
+  //     : "https://netsolutions-hneebegvezgga3h2.canadacentral-01.azurewebsites.net",
   headers: {
     "Content-Type": "application/json",
   },
@@ -8,8 +12,7 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   (config) => {
-    console.log("IsDev:", process.env.NODE_ENV === "development");
-    console.log("runtimeConfig: ", useRuntimeConfig());
+    console.log("RuntimeConfig: ", useRuntimeConfig());
 
     config.baseURL = useRuntimeConfig().public.apiUrl;
     const token = useAuthStore().accessToken;

@@ -102,7 +102,7 @@
                         :class="getRibbonShadowClass(solution.discriminator)"></div>
                     <div :class="['py-1 px-3 flex items-center ribbon', getRibbonClass(solution.discriminator)]">
                         <span class="text-white text-xs font-medium">{{ solution.discriminator || 'Web App'
-                        }}</span>
+                            }}</span>
                     </div>
                 </div>
             </div>
@@ -163,7 +163,10 @@ const {
     status: solutionsStatus,
     refresh: solutionsRefresh,
     error: solutionsError,
-} = useAsyncData('solutions-index', () => solutionService.getSolutionsAsync());
+} = useAsyncData('solutions-index', () => solutionService.getSolutionsAsync(), {
+    // Add caching options
+    lazy: true,
+})
 
 // Search query
 const searchQuery = ref('');

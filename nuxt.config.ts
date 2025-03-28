@@ -1,7 +1,3 @@
-import dotenv from "dotenv";
-
-dotenv.config(); // This loads the .env file
-
 export default defineNuxtConfig({
   ssr: true, // Ensure SSR is enabled globally
   compatibilityDate: "2024-11-01",
@@ -51,10 +47,7 @@ export default defineNuxtConfig({
     server: {
       proxy: {
         "/api": {
-          target:
-            process.env.NODE_ENV === "development"
-              ? process.env.NUXT_PUBLIC_API_BASE_URL_DEV
-              : process.env.NUXT_PUBLIC_API_BASE_URL_PROD,
+          // target: ,
           changeOrigin: true,
           secure: true, // Only needed for HTTPS
           timeout: 60000, // Set a longer timeout (60 seconds)
@@ -66,20 +59,14 @@ export default defineNuxtConfig({
   nitro: {
     storage: {
       cache: {
-        driver: "memory", // Try switching to in-memory cache
+        driver: "fs", // Use filesystem-based cache instead of memory
+        base: "./.cache", // Optional: specify a cache directory
       },
-    },
-    prerender: {
-      crawlLinks: false, // Crawl links on the page
-      routes: ["/", "/about", "/contact", "/auth/login"], // List the pages to prerender as static
     },
   },
   runtimeConfig: {
     public: {
-      apiUrl:
-        process.env.NODE_ENV === "development"
-          ? process.env.NUXT_PUBLIC_API_BASE_URL_DEV
-          : process.env.NUXT_PUBLIC_API_BASE_URL_PROD,
+      apiUrl:process.env.NUXT_PUBLIC_API_BASE_URL,
       googleMapsApiKey: process.env.NUXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     },
   },

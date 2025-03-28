@@ -1,4 +1,3 @@
-import { jwtDecode } from "jwt-decode";
 import { useAuthStore } from "~/stores/useAuthStore";
 
 export default defineNuxtRouteMiddleware(async (to, from) => {

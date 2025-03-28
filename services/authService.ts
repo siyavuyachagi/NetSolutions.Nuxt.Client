@@ -7,7 +7,6 @@ class AuthService {
   async loginAsync(payload: any, returnUrl: string = "/") {
     return apiClient.post("/api/Account/login", payload).then((response) => {
       if (response.status === 200) {
-        console.log(response.data);
         useAuthStore().update(response.data);
         useRouter().push(returnUrl);
       } else if (response.status === 400) {

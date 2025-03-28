@@ -24,39 +24,25 @@
                     <LogIn class="h-4 w-4" /> Login
                 </nuxt-link>
 
-                <!-- When user IS logged in - Dropdown Menu -->
-                <div v-else class="relative hidden md:block" id="user-dropdown">
-                    <button @click="toggleDropdown"
-                        class="flex items-center space-x-2 bg-gray-100 p-2 rounded-full hover:bg-gray-200 transition">
-                        <img :src="authStore.user?.avatar" alt="User Avatar"
-                            class="h-8 w-8 rounded-full object-cover" />
-                        <span class="text-gray-700 pr-1">{{ authStore.user?.userName }}</span>
-                        <ChevronDown class="h-4 w-4 text-gray-500" />
-                    </button>
 
-                    <!-- Dropdown Content -->
-                    <nav v-if="isDropdownOpen"
-                        class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 py-1">
-                        <nuxt-link to="/account" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            Account
-                        </nuxt-link>
-                        <nuxt-link to="/account/profile"
-                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            Profile
-                        </nuxt-link>
-                        <nuxt-link to="/account/settings"
-                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            Settings
-                        </nuxt-link>
-                        <div class="border-t border-gray-100 my-1"></div>
-                        <button @click="logout"
-                            class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <div class="flex items-center">
-                                <LogOut class="h-4 w-4 mr-2" />
+                <!-- When user IS logged in - Dropdown Menu -->
+                <div v-else class="relative z-10">
+                    <img :src="useAuthStore().user?.avatar" alt="Profile"
+                        class="w-10 h-10 rounded-full cursor-pointer border-2 border-primary-500"
+                        @click="toggleProfileDropdown" />
+                    <div v-if="isProfileDropdownOpen"
+                        class="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg">
+                        <nav class="py-1">
+                            <nuxt-link to="/account" class="block px-4 py-2 hover:bg-gray-100">Account</nuxt-link>
+                            <nuxt-link to="/account/settings"
+                                class="block px-4 py-2 hover:bg-gray-100">Settings</nuxt-link>
+                            <button class="flex px-4 py-2 hover:bg-gray-100 text-red-500 w-full text-start"
+                                @click="authService.logout('/auth/login')">
+                                <LogOut class="" />
                                 Logout
-                            </div>
-                        </button>
-                    </nav>
+                            </button>
+                        </nav>
+                    </div>
                 </div>
             </div>
         </div>
@@ -65,42 +51,36 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
-import { LogOut, LogIn, ChevronDown } from 'lucide-vue-next';
+import { LogOut, LogIn } from 'lucide-vue-next';
 import { useAuthStore } from '~/stores/useAuthStore';
 import DesktopNav from '../navs/desktopNav.vue';
 import MobileNav from '../navs/mobileNav.vue';
+import authService from '~/services/authService';
 
 // Get auth store instance
 const authStore = useAuthStore();
 
-// Dropdown state
-const isDropdownOpen = ref(false);
+const isProfileDropdownOpen = ref(false);
 
-const toggleDropdown = () => {
-    isDropdownOpen.value = !isDropdownOpen.value;
+const toggleProfileDropdown = (event: Event) => {
+    event.stopPropagation();
+    isProfileDropdownOpen.value = !isProfileDropdownOpen.value;
 };
 
-// Close dropdown when clicking outside
-const closeDropdown = (event: MouseEvent) => {
-    const dropdown = document.getElementById('user-dropdown');
-    if (dropdown && !dropdown.contains(event.target as Node)) {
-        isDropdownOpen.value = false;
+const handleClickOutside = (event: MouseEvent) => {
+    // Close dropdown if click is outside the dropdown
+    if (isProfileDropdownOpen.value) {
+        isProfileDropdownOpen.value = false;
     }
 };
 
-// Add and remove event listeners
 onMounted(() => {
-    document.addEventListener('click', closeDropdown);
+    // Add click event listener to the document
+    document.addEventListener('click', handleClickOutside);
 });
 
 onUnmounted(() => {
-    document.removeEventListener('click', closeDropdown);
+    // Remove event listener when component is unmounted
+    document.removeEventListener('click', handleClickOutside);
 });
-
-// Logout function
-const logout = () => {
-    authStore.update(); // Assuming your store has a logout method
-    isDropdownOpen.value = false;
-    // Navigation will likely be handled in the store or by a navigation guard
-};
 </script>

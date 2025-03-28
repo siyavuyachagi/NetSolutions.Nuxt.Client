@@ -21,7 +21,8 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Left column - form and inputs -->
             <div class="lg:col-span-2 space-y-6">
-                <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="bg-white rounded-lg shadow-md p-6"
+                    :class="{ 'opacity-50 pointer-events-none': isSubmitting }">
                     <h1 class="text-2xl font-bold text-neutral-800 mb-4">Get started with {{
                         businessServicePackage?.businessService?.name }}</h1>
                     <p class="text-neutral-600 mb-6">Tell us about your project requirements to help us understand your
@@ -88,25 +89,6 @@
                                             projectDetailsModel.description.errors[0] }}</p>
                                 </div>
 
-                                <!-- <div>
-                                    <label for="timeline"
-                                        class="block text-sm font-medium text-neutral-700 mb-1">Desired Timeline
-                                        <small class="text-error">*</small></label>
-                                    <select id="timeline" v-model="projectDetailsModel.timeline.value"
-                                        class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-primary-500 focus:outline-none"
-                                        :class="{ 'border-red-500': projectDetailsModel.timeline.errors?.length }">
-                                        <option value="" disabled selected>Select a timeline</option>
-                                        <option value="urgent">Urgent (< 1 month)</option>
-                                        <option value="standard">Standard (1-3 months)</option>
-                                        <option value="flexible">Flexible (3-6 months)</option>
-                                        <option value="longterm">Long-term (6+ months)</option>
-                                    </select>
-                                    <p v-if="projectDetailsModel.timeline.errors?.length"
-                                        class="mt-1 text-sm text-red-600">
-                                        {{
-                                            projectDetailsModel.timeline.errors[0] }}</p>
-                                </div> -->
-
                                 <TimelineSelector @update:timeline="updateTimeline"
                                     :errors="projectDetailsModel.timeline.errors"></TimelineSelector>
 
@@ -123,7 +105,7 @@
                         </div>
 
                         <!-- Step 2: File Attachments -->
-                        <div v-if="currentStep === 2">
+                        <div v-else-if="currentStep === 2">
                             <div class="space-y-4">
                                 <div>
                                     <label class="block text-sm font-medium text-neutral-700 mb-2">Supporting
@@ -194,7 +176,7 @@
                         </div>
 
                         <!-- Step 3: Contact Information -->
-                        <div v-if="currentStep === 3">
+                        <div v-else-if="currentStep >= 3">
                             <div class="space-y-4">
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
@@ -249,7 +231,7 @@
                                 <div>
                                     <label for="company"
                                         class="block text-sm font-medium text-neutral-700 mb-1">Company/Organization</label>
-                                    <input type="text" id="company" v-model="contactInfo.organization.value"
+                                    <input type="text" id="company" v-model="contactInfo.organizationName.value"
                                         class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-primary-500 focus:outline-none"
                                         placeholder="Your company or organization (if applicable)"
                                         autocomplete="organization" />
@@ -269,30 +251,6 @@
                                         {{
                                             contactInfo.acceptTerms.errors[0] }}</p>
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- Success screen -->
-                        <div v-if="currentStep > steps.length" class="text-center py-6">
-                            <div class="flex justify-center mb-4">
-                                <div class="h-16 w-16 rounded-full bg-green-100 flex items-center justify-center">
-                                    <CheckCircle class="h-10 w-10 text-green-500" />
-                                </div>
-                            </div>
-                            <h2 class="text-2xl font-bold text-neutral-800 mb-2">Request Submitted Successfully!</h2>
-                            <p class="text-neutral-600 mb-6">Thank you for your interest in our services. We've received
-                                your request and will contact you shortly.</p>
-                            <p class="text-sm text-neutral-500 mb-4">Reference ID: {{ 'REQ-' +
-                                Math.random().toString(36).substr(2, 9).toUpperCase() }}</p>
-                            <div class="flex justify-center space-x-4">
-                                <NuxtLink to="/"
-                                    class="px-6 py-2 border border-neutral-300 rounded-lg text-neutral-700 hover:bg-neutral-50">
-                                    Back to Home
-                                </NuxtLink>
-                                <NuxtLink to="/dashboard"
-                                    class="px-6 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">
-                                    Go to Dashboard
-                                </NuxtLink>
                             </div>
                         </div>
 
@@ -404,11 +362,8 @@ import {
     File, MessageCircle, Phone, Mail, HelpCircle
 } from 'lucide-vue-next';
 import { useRoute, useRouter } from 'vue-router';
-import ourServicePackageService from '~/services/businessServicePackageService';
 import VueSanity, { email, extensions, maxSize, required, type ModelConfig } from 'vuesanity';
-import { set } from 'date-fns';
 import type { Timeline } from '~/components/timelineSelector.vue';
-import projectService from '~/services/projectService';
 import businessServicePackageService from '~/services/businessServicePackageService';
 
 definePageMeta({
@@ -472,7 +427,7 @@ const contactInfo: ModelConfig = reactive({
     email: { validations: [required(), email()] },
     phoneNumber: {},
     additionalNotes: {},
-    organization: {},
+    organizationName: {},
     acceptTerms: { validations: [required()] },
 });
 
@@ -537,38 +492,44 @@ function stepValidation() {
         case 1:
             {
                 const valid = new VueSanity(projectDetailsModel, false).isValid;
-                if (valid) return Object.assign(requestModel, projectDetailsModel);
+                if (!valid) return valid;
+                else {
+                    Object.assign(requestModel, projectDetailsModel);
+                    router.push({ query: { ...route.query, step: currentStep.value + 1 } });
+                }
                 return valid;
-                break;
             }
         case 2:
             {
                 const valid = new VueSanity(attachmentsModel, false).isValid;
-                if (valid) return Object.assign(requestModel, attachmentsModel);
+                if (!valid) return valid;
+                else {
+                    Object.assign(requestModel, attachmentsModel);
+                    router.push({ query: { ...route.query, step: currentStep.value + 1 } });
+                }
                 return valid;
-                break;
             }
         case 3:
             {
                 const valid = new VueSanity(contactInfo, false).isValid;
-                if (valid) return Object.assign(requestModel, contactInfo);
+                if (valid) {
+                    Object.assign(requestModel, contactInfo);
+                    router.push({ query: { ...route.query, step: currentStep.value + 1 } });
+                }
                 return valid;
-                break;
             }
         default:
-            break;
+            return false;
     }
-    return true;
 }
 
 
 // Navigation methods
 const goToNextStep = () => {
     if (stepValidation()) {
-        router.push({ query: { ...route.query, step: currentStep.value + 1 } });
-    }
-    if (currentStep.value === steps.length) {
-        handleProjectSubmit();
+        if (currentStep.value === steps.length) {
+            handleProjectSubmit();
+        }
     }
 };
 
@@ -579,10 +540,8 @@ const goToPreviousStep = () => {
 
 function updateTimeline(timeline: Timeline) {
     // Create an array of startDate and endDate, ignoring the timelineType
-    const timelineArray = [timeline.startDate, timeline.endDate];
+    const timelineArray = [timeline.startDate?.toISOString(), timeline.endDate?.toISOString()];
     projectDetailsModel.timeline.value = timelineArray;
-
-    console.log(timelineArray);
 }
 
 
@@ -594,8 +553,8 @@ const handleProjectSubmit = async () => {
         const state = new VueSanity(requestModel);
         if (state.isValid) {
             console.log(state);
-            await projectService.postProjectCreate(state.formData);
-
+            var result = await businessServicePackageService.postSubscribeAsync(route.params.id as string, state.formData);
+            console.log(result)
         }
     } catch (error) {
         console.error('Error submitting form:', error);

@@ -23,6 +23,25 @@ class BusinessServicePackageService {
         }
       });
   }
+
+  async postSubscribeAsync(id: string, payload: any): Promise<any> {
+    return apiClient
+      .post(`/api/BusinessServicePackages/subscribe/${id}`, payload)
+      .then((response) => {
+        if (response.status === 200) {
+          console.log("Redirect URL received:", response.data);
+
+          if (response.data.redirectUrl) {
+            window.location.href = response.data.redirectUrl; // Redirect user
+            return { success: true };
+          } else {
+            throw new Error("Redirect URL is missing in the response");
+          }
+        } else {
+          throw new Error("Error processiong the request");
+        }
+      });
+  }
 }
 
 export default new BusinessServicePackageService();

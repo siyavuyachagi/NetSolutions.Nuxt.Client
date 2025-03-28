@@ -6,15 +6,14 @@ const apiClient = axios.create({
   },
 });
 
-// Add a request interceptor to include the token
 apiClient.interceptors.request.use(
   (config) => {
-    //BaseUrl
-    config.baseURL = import.meta.env.DEV
-      ? useRuntimeConfig().public.apiUrl
-      : useRuntimeConfig().public.apiUrlLive;
-      console.log(config.baseURL)
-    //Token
+    console.log("Runtime Config:", useRuntimeConfig());
+
+    config.baseURL = useRuntimeConfig().public.apiUrl;
+
+    console.log("Base URL:", config.baseURL);
+
     const token = useAuthStore().accessToken;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -22,8 +21,8 @@ apiClient.interceptors.request.use(
     return config;
   },
   (error) => {
+    console.error("Request Interceptor Error:", error);
     return Promise.reject(error);
   }
 );
-
 export default apiClient;

@@ -69,9 +69,9 @@
                             <h1 class="text-3xl font-bold text-neutral-800">{{ solution?.name }}</h1>
                             <span class="text-sm text-neutral-600">
                                 {{
-                                solution?.project?.businessService ?
-                                solution?.project?.businessService?.name :
-                                solution?.discriminator
+                                    solution?.project?.businessService ?
+                                        solution?.project?.businessService?.name :
+                                        solution?.discriminator
                                 }}
                             </span>
                             <div class="flex items-center space-x-2">
@@ -102,9 +102,9 @@
                                     <h3 class="text-sm font-medium text-neutral-500">Last Updated</h3>
                                     <p class="text-neutral-800">
                                         {{
-                                        solution?.updatedAt ? format(new Date(solution?.updatedAt), 'do MMM yyyy') :
-                                        solution?.createdAt ? format(new Date(solution?.createdAt), 'do MMM yyyy') :
-                                        'N/A'
+                                            solution?.updatedAt ? format(new Date(solution?.updatedAt), 'do MMM yyyy') :
+                                                solution?.createdAt ? format(new Date(solution?.createdAt), 'do MMM yyyy') :
+                                                    'N/A'
                                         }}
                                     </p>
                                 </div>
@@ -369,12 +369,24 @@ import {
 import { useAuthStore } from '~/stores/useAuthStore';
 import { format } from 'date-fns';
 
+definePageMeta({
+    validate(route) {
+        if (!(route.params.id)) {
+            return false
+        } else
+            return true;
+    },
+})
+
 // Fetch the current solution
 const route = useRoute();
 const solutionId = route.params.id as string;
 
 const { data: solution, status: solutionStatus, error: solutionError, refresh: solutionRefresh } =
-    useAsyncData(`solutions-solution-${solutionId}`, () => solutionService.getSolutionAsync(solutionId));
+    useAsyncData(`solutions-solution-${route.params.id}`, () => solutionService.getSolutionAsync(route.params.id as string), {
+        lazy: true,
+        watch: [route.params],
+    });
 
 // Fetch all solutions
 const {
@@ -382,7 +394,10 @@ const {
     status: allSolutionsStatus,
     error: allSolutionsError,
     refresh: allSolutionsRefresh
-} = useAsyncData('allSolutions', () => solutionService.getSolutionsAsync());
+} = useAsyncData('allSolutions', () => solutionService.getSolutionsAsync(),
+    {
+        lazy: true,
+    });
 
 // Compute related solutions based on current solution
 const relatedSolutions = computed(() => {

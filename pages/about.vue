@@ -434,4 +434,5 @@
 </template>
 
 <script setup lang="ts">
+// Or set at the page level
 </script>

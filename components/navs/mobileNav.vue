@@ -85,33 +85,12 @@
                         </nuxt-link>
                     </template>
                     <template v-else>
-                        <div class="flex items-center space-x-2 mb-4">
-                            <img :src="authStore.user?.avatar" alt="User Avatar"
-                                class="h-10 w-10 rounded-full object-cover" />
-                            <span class="text-neutral-700">{{ authStore.user?.userName }}</span>
-                        </div>
-                        <div class="space-y-2">
-                            <nuxt-link to="/account"
-                                class="block px-4 py-2 text-neutral-700 hover:bg-neutral-100 transition"
-                                @click="toggleMobileMenu">
-                                Account
-                            </nuxt-link>
-                            <nuxt-link to="/account/profile"
-                                class="block px-4 py-2 text-neutral-700 hover:bg-neutral-100 transition"
-                                @click="toggleMobileMenu">
-                                Profile
-                            </nuxt-link>
-                            <nuxt-link to="/account/settings"
-                                class="block px-4 py-2 text-neutral-700 hover:bg-neutral-100 transition"
-                                @click="toggleMobileMenu">
-                                Settings
-                            </nuxt-link>
-                            <button @click="logout"
-                                class="w-full text-left px-4 py-2 text-neutral-700 hover:bg-neutral-100 transition flex items-center">
-                                <LogOut class="h-4 w-4 mr-2" />
-                                Logout
-                            </button>
-                        </div>
+                        <button
+                            class="flex w-full bg-primary-500 text-white px-4 py-2 rounded-full hover:bg-primary-600 transition text-center"
+                            @click="logout, toggleMobileMenu">
+                            <LogOut class="mr-2" />
+                            Sign out
+                        </button>
                     </template>
                 </div>
             </nav>

@@ -99,6 +99,7 @@ import { EyeOff, Eye } from 'lucide-vue-next';
 import VueSanity, { required, type ModelConfig } from 'vuesanity';
 import authService from '~/services/authService';
 
+const route = useRoute();
 const errors = ref<string[]>([]);
 const onSubmit = ref<boolean>(false);
 const model = reactive<ModelConfig>({
@@ -122,14 +123,49 @@ async function login() {
     onSubmit.value = true;
     errors.value = [];
     try {
-        await new Promise<void>((resolve) => setTimeout(() => resolve(), 2000))
-        var state = new VueSanity(model);
-        if (!state.isValid) return;
-        await authService.loginAsync(state.formData, '/account');
-    } catch (error: any) {
-        errors.value?.push(error?.response.data as string);
-        console.error(error);
+        const state = new VueSanity(model);
+        if (!state.isValid) {
+            onSubmit.value = false;
+            return;
+        }
+
+        try {
+            await authService.loginAsync(state.formData, '/account');
+        } catch (error: any) {
+            // Handle different types of errors
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                errors.value.push(error.response.data || "An unexpected error occurred");
+            } else if (error.request) {
+                // The request was made but no response was received
+                // This could indicate network issues or server is down
+                errors.value.push('No response from server. Please check your internet connection.');
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                errors.value.push('Error processing login request. Please try again.');
+            }
+
+            // Log the full error for debugging
+            console.error('Login Error:', error);
+        }
+    } catch (validationError) {
+        // Handle any validation errors
+        errors.value.push('Validation failed. Please check your input.');
+        console.error('Validation Error:', validationError);
+    } finally {
+        // Ensure loading state is always turned off
+        onSubmit.value = false;
     }
-    onSubmit.value = false;
 }
+// Watch the entire route query for changes
+watch(() => route.query, (newQuery) => {
+    // Clear previous errors
+    errors.value = []
+
+    // Add new message if exists
+    if (newQuery.message) {
+        errors.value.push(newQuery.message as string)
+    }
+}, { immediate: true }) // This ensures it runs immediately on component creation
 </script>

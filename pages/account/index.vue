@@ -139,13 +139,16 @@ import { useAuthStore } from '~/stores/useAuthStore'
 definePageMeta({
     title: 'HetSolutions | Client Dashboard',
     description: 'Client account page',
-    layout: 'account'
+    layout: 'account',
+    requiresAuth: true,
+    roles: ['client']
 });
+
 
 const { data: client } = useAsyncData(() =>
     clientService.getClientAsync(useAuthStore().user?.id as string)
 );
-
+console.log(client.value)
 // Recent messages
 const recentMessages = ref([
     {

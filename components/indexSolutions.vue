@@ -252,7 +252,7 @@ const nextPage = () => {
 const prevPage = () => {
     if (currentPage.value > 1) currentPage.value--;
 };
-
+console.log(solutions.value)
 onMounted(() => {
     solutionsRefresh();
     if (solutionsStatus.value === 'success') console.log(solutions.value)

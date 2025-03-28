@@ -36,7 +36,8 @@ export default defineNuxtConfig({
         { property: "og:site_name", content: "NetSolutions" },
         {
           name: "keywords",
-          content: "web development, hosting, design, SEO, NetSolutions",
+          content:
+            "web development, web design,uiux design, SEO, NetSolutions, mobile development",
         },
       ],
       link: [{ rel: "icon", type: "image/svg+xml", href: "/logo.svg" }],
@@ -48,7 +49,7 @@ export default defineNuxtConfig({
         "/api": {
           // target:, // Changed from https:// to http://
           changeOrigin: true,
-          secure: false, // Only needed for HTTPS
+          secure: true, // Only needed for HTTPS
           timeout: 60000, // Set a longer timeout (60 seconds)
           proxyTimeout: 60000,
         },
@@ -66,10 +67,22 @@ export default defineNuxtConfig({
       routes: ["/", "/about", "/contact", "/auth/login"], // List the pages to prerender as static
     },
   },
+  $production: {
+    runtimeConfig: {
+      public: {
+        apiUrl: process.env.NUXT_PUBLIC_API_BASE_URL_PROD,
+      },
+    },
+  },
+  $development: {
+    runtimeConfig: {
+      public: {
+        apiUrl: process.env.NUXT_PUBLIC_API_BASE_URL_DEV,
+      },
+    },
+  },
   runtimeConfig: {
     public: {
-      apiUrl: process.env.NUXT_PUBLIC_API_BASE_URL,
-      apiUrlLive: process.env.NUXT_PUBLIC_API_BASE_URL_LIVE,
       googleMapsApiKey: process.env.NUXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     },
   },

@@ -70,7 +70,9 @@ export default defineNuxtConfig({
   $production: {
     runtimeConfig: {
       public: {
-        apiUrl: process.env.NUXT_PUBLIC_API_BASE_URL_PROD,
+        apiUrl:
+          process.env.NUXT_PUBLIC_API_BASE_URL_PROD ||
+          "https://netsolutions-hneebegvezgga3h2.canadacentral-01.azurewebsites.net",
       },
     },
   },

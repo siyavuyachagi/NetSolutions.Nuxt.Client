@@ -102,7 +102,7 @@
                         :class="getRibbonShadowClass(solution.discriminator)"></div>
                     <div :class="['py-1 px-3 flex items-center ribbon', getRibbonClass(solution.discriminator)]">
                         <span class="text-white text-xs font-medium">{{ solution.discriminator || 'Web App'
-                            }}</span>
+                        }}</span>
                     </div>
                 </div>
             </div>
@@ -252,10 +252,9 @@ const nextPage = () => {
 const prevPage = () => {
     if (currentPage.value > 1) currentPage.value--;
 };
-console.log(solutions.value)
+// console.log(await solutions.value)
 onMounted(() => {
     solutionsRefresh();
-    if (solutionsStatus.value === 'success') console.log(solutions.value)
 })
 </script>
 

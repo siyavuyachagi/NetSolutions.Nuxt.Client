@@ -1,9 +1,11 @@
 import apiClient from "~/api/apiClient";
+import type { Client } from "~/interface/Client";
 
 class ClientService {
-  async getClientAsync(id: string): Promise<any> {
+  async getClientAsync(id: string): Promise<Client> {
     return apiClient.get(`/api/Clients/${id}`).then((response) => {
       if (response.status === 200) {
+        console.log(response.data)
         return response.data;
       } else {
         throw new Error(`Error fetching User: ${id}`);

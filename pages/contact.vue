@@ -150,6 +150,7 @@ import ContactUsForm from '~/components/forms/contactUsForm.vue';
 import {
     CheckCircle
 } from 'lucide-vue-next';
+import messagesService from '~/services/messagesService';
 
 const googleMapsApiKey = useRuntimeConfig().public.googleMapsApiKey;
 const pageLoading = ref(true);
@@ -160,9 +161,8 @@ function contactUsFormSubmit() {
     console.log('Update UI')
     if (import.meta.client) {
         sessionStorage.setItem('ns-contact-us-form-submitted', 'true');
-        formSubmitted.value = true;
-        toasts.success('Message sent successfully')
     }
+    formSubmitted.value = true;
 }
 
 onMounted(() => {

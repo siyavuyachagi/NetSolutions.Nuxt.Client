@@ -13,10 +13,10 @@
         <!-- Our Story Section -->
         <section class="container mx-auto px-4 py-16">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                <TransitionGroup appear enter-from-class="opacity-0 -translate-x-6"
-                    enter-active-class="transition-all duration-1000 ease-out">
-                    <div>
-                        <h2 class="text-3xl font-semibold mb-6 text-purple-900">Our Story</h2>
+                <div>
+                    <h2 class="text-3xl font-semibold mb-6 text-purple-900">Our Story</h2>
+                    <Transition appear enter-from-class="opacity-0 -translate-x-6"
+                        enter-active-class="transition-all duration-1000 ease-out">
                         <div class="prose max-w-none text-gray-700">
                             <p class="mb-4">Founded in 2015, our company began with a simple vision: to create
                                 innovative
@@ -27,13 +27,16 @@
                             <p>Through years of hard work, dedication, and a commitment to our core values, we've
                                 established ourselves as industry leaders known for quality and reliability.</p>
                         </div>
-                    </div>
+                    </Transition>
+                </div>
 
+                <Transition appear enter-from-class="opacity-0 translate-x-6"
+                    enter-active-class="transition-all duration-1000 ease-out">
                     <div class="bg-gray-200 rounded-lg overflow-hidden">
                         <!-- Replace with actual image -->
                         <img src="/assets/images/company-founding.jpg" class="h-80 object-cover" alt="" srcset="">
                     </div>
-                </TransitionGroup>
+                </Transition>
             </div>
         </section>
 
@@ -44,18 +47,22 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <!-- Mission -->
-                    <div class="bg-white p-8 rounded-lg shadow-md">
-                        <div class="mb-4 text-purple-700">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M13 10V3L4 14h7v7l9-11h-7z" />
-                            </svg>
+                    <Transition appear enter-from-class="opacity-0 -translate-x-6"
+                        enter-active-class="transition-all duration-1000 ease-out">
+                        <div class="bg-white p-8 rounded-lg shadow-md">
+                            <div class="mb-4 text-purple-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-3 text-purple-900">Our Mission</h3>
+                            <p class="text-gray-700">To deliver exceptional products and services that empower our
+                                customers
+                                to achieve their goals, while making a positive impact on communities around us.</p>
                         </div>
-                        <h3 class="text-xl font-semibold mb-3 text-purple-900">Our Mission</h3>
-                        <p class="text-gray-700">To deliver exceptional products and services that empower our customers
-                            to achieve their goals, while making a positive impact on communities around us.</p>
-                    </div>
+                    </Transition>
 
                     <!-- Vision -->
                     <div class="bg-white p-8 rounded-lg shadow-md">
@@ -73,19 +80,22 @@
                             expectations, fosters innovation, and inspires positive change in all that we do.</p>
                     </div>
 
-                    <!-- Values -->
-                    <div class="bg-white p-8 rounded-lg shadow-md">
-                        <div class="mb-4 text-purple-700">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                            </svg>
+                    <Transition appear enter-from-class="opacity-0 translate-x-6"
+                        enter-active-class="transition-all duration-1000 ease-out">
+                        <!-- Values -->
+                        <div class="bg-white p-8 rounded-lg shadow-md">
+                            <div class="mb-4 text-purple-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-3 text-purple-900">Our Values</h3>
+                            <p class="text-gray-700">Integrity, excellence, innovation, collaboration, and
+                                customer-centricity form the foundation of everything we do.</p>
                         </div>
-                        <h3 class="text-xl font-semibold mb-3 text-purple-900">Our Values</h3>
-                        <p class="text-gray-700">Integrity, excellence, innovation, collaboration, and
-                            customer-centricity form the foundation of everything we do.</p>
-                    </div>
+                    </Transition>
                 </div>
             </div>
         </section>

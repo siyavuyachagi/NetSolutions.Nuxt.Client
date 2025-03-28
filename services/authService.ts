@@ -25,20 +25,3 @@ class AuthService {
 }
 
 export default new AuthService();
-
-export interface User {
-  id: string;
-  username: string;
-  email: string;
-  lastName: string;
-  firstName: string;
-  roles: string[];
-  avatar: string;
-  joinedAt: Date;
-}
-
-export interface AuthResponse {
-  user: User;
-  accessToken: string;
-  refreshToken: string;
-}

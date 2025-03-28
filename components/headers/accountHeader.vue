@@ -19,6 +19,7 @@
                 <nav class="py-1">
                     <nuxt-link to="/account/profile" class="block px-4 py-2 hover:bg-gray-100">Profile</nuxt-link>
                     <nuxt-link to="/account/profile" class="block px-4 py-2 hover:bg-gray-100">Settings</nuxt-link>
+                    <nuxt-link to="/account/profile" class="block px-4 py-2 hover:bg-gray-100">Bookmarks</nuxt-link>
                     <button class="block px-4 py-2 hover:bg-gray-100 text-red-500 w-full text-start"
                         @click="authService.logout('/auth/login')">Logout</button>
                 </nav>
@@ -34,7 +35,25 @@ const emit = defineEmits(['toggleSidebar']);
 
 // Profile dropdown
 const isProfileDropdownOpen = ref(false);
-const toggleProfileDropdown = () => {
+const toggleProfileDropdown = (event: Event) => {
+    event.stopPropagation();
     isProfileDropdownOpen.value = !isProfileDropdownOpen.value;
 };
+
+const handleClickOutside = (event: MouseEvent) => {
+    // Close dropdown if click is outside the dropdown
+    if (isProfileDropdownOpen.value) {
+        isProfileDropdownOpen.value = false;
+    }
+};
+
+onMounted(() => {
+    // Add click event listener to the document
+    document.addEventListener('click', handleClickOutside);
+});
+
+onUnmounted(() => {
+    // Remove event listener when component is unmounted
+    document.removeEventListener('click', handleClickOutside);
+});
 </script>

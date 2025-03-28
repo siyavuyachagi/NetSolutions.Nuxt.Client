@@ -1,24 +1,25 @@
 import apiClient from "~/api/apiClient";
+import type { Project } from "~/interface/Project";
 
 class ProjectService {
-  async getProjectAsync(id: string): Promise<any> {
+  async getProjectAsync(id: string): Promise<Project> {
     return apiClient.get(`/api/Clients/${id}`).then((response) => {
       if (response.status === 200) {
         console.log(response.data);
         return response.data;
       } else {
-        throw new Error("Invalid username or password");
+        throw new Error(`Error fetching Project: ${id}`);
       }
     });
   }
 
-  async getProjectsAsync(): Promise<any[]> {
+  async getProjectsAsync(): Promise<Project[]> {
     return apiClient.get(`/api/Clients`).then((response) => {
       if (response.status === 200) {
         console.log(response.data);
         return response.data;
       } else {
-        throw new Error("Invalid username or password");
+        throw new Error("Error fetching projects");
       }
     });
   }

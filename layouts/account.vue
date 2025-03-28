@@ -19,9 +19,9 @@
                     <li class="mb-4">
                         <nuxt-link to="/account/projects" class="text-gray-700 hover:text-blue-600">Projects</nuxt-link>
                     </li>
-                    <!-- <li class="mb-4">
-                        <nuxt-link to="/messages" class="text-gray-700 hover:text-blue-600">Messages</nuxt-link>
-                    </li> -->
+                    <li class="mb-4">
+                        <nuxt-link to="/solutions" class="text-gray-700 hover:text-blue-600">Solutions</nuxt-link>
+                    </li>
                 </ul>
             </nav>
         </div>

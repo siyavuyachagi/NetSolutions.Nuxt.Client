@@ -8,12 +8,10 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   (config) => {
-    console.log("Runtime Config:", useRuntimeConfig());
+    console.log("IsDev:", process.env.NODE_ENV === "development");
+    console.log("runtimeConfig: ", useRuntimeConfig());
 
     config.baseURL = useRuntimeConfig().public.apiUrl;
-
-    console.log("Base URL:", config.baseURL);
-
     const token = useAuthStore().accessToken;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -25,4 +23,5 @@ apiClient.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
 export default apiClient;

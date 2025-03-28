@@ -55,9 +55,9 @@
                             </td>
                             <td class="p-4">
                                 <div class="w-full bg-gray-200 rounded-full h-2.5">
-                                    <div class="bg-blue-600 h-2.5 rounded-full"
+                                    <!-- <div class="bg-blue-600 h-2.5 rounded-full"
                                         :style="{ width: project.progress ? `${project.progress}%` : `${Math.floor(Math.random() * 100)}%` }">
-                                    </div>
+                                    </div> -->
                                 </div>
                             </td>
                             <td class="p-4">{{ project.createdAt }}</td>
@@ -134,6 +134,7 @@
 <script setup lang="ts">
 import { useAsyncData } from 'nuxt/app';
 import clientService from '~/services/clientService'
+import projectService from '~/services/projectService';
 import { useAuthStore } from '~/stores/useAuthStore'
 
 definePageMeta({
@@ -145,10 +146,15 @@ definePageMeta({
 });
 
 
-const { data: client } = useAsyncData(() =>
+const { data: client, status: clientStatus, error: clientError, refresh: clientRefresh } = useAsyncData(() =>
     clientService.getClientAsync(useAuthStore().user?.id as string)
 );
-console.log(client.value)
+
+// const { data: projects, status: projectsStatus, error: projectsError, refresh: projectsRefresh } = useAsyncData(() =>
+//     projectService.getUserProjectsAsync(useAuthStore().user?.id as string)
+// );
+console.log(await client.value);
+// console.log(await projects.value);
 // Recent messages
 const recentMessages = ref([
     {

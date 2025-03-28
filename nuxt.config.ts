@@ -1,3 +1,7 @@
+import dotenv from "dotenv";
+
+dotenv.config(); // This loads the .env file
+
 export default defineNuxtConfig({
   ssr: true, // Ensure SSR is enabled globally
   compatibilityDate: "2024-11-01",
@@ -37,7 +41,7 @@ export default defineNuxtConfig({
         {
           name: "keywords",
           content:
-            "web development, web design,uiux design, SEO, NetSolutions, mobile development",
+            "web development, web design,uiux design, seo, netsolutions, mobile development, project, solutions, code",
         },
       ],
       link: [{ rel: "icon", type: "image/svg+xml", href: "/logo.svg" }],
@@ -47,7 +51,10 @@ export default defineNuxtConfig({
     server: {
       proxy: {
         "/api": {
-          // target:, // Changed from https:// to http://
+          target:
+            process.env.NODE_ENV === "development"
+              ? process.env.NUXT_PUBLIC_API_BASE_URL_DEV
+              : process.env.NUXT_PUBLIC_API_BASE_URL_PROD,
           changeOrigin: true,
           secure: true, // Only needed for HTTPS
           timeout: 60000, // Set a longer timeout (60 seconds)
@@ -67,22 +74,12 @@ export default defineNuxtConfig({
       routes: ["/", "/about", "/contact", "/auth/login"], // List the pages to prerender as static
     },
   },
-  $production: {
-    runtimeConfig: {
-      public: {
-        apiUrl: process.env.NUXT_PUBLIC_API_BASE_URL_PROD,
-      },
-    },
-  },
-  $development: {
-    runtimeConfig: {
-      public: {
-        apiUrl: process.env.NUXT_PUBLIC_API_BASE_URL_DEV,
-      },
-    },
-  },
   runtimeConfig: {
     public: {
+      apiUrl:
+        process.env.NODE_ENV === "development"
+          ? process.env.NUXT_PUBLIC_API_BASE_URL_DEV
+          : process.env.NUXT_PUBLIC_API_BASE_URL_PROD,
       googleMapsApiKey: process.env.NUXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     },
   },

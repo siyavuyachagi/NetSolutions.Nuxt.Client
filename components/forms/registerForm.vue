@@ -39,14 +39,10 @@
                 Confirm Password
             </label>
             <div class="relative">
-                <input v-model="model.password.value" :type="showPassword ? 'text' : 'password'" id="password" required
-                    placeholder="Enter your password"
+                <input v-model="model.confirmPassword.value" :type="showPassword ? 'text' : 'password'"
+                    id="confirm-password" required placeholder="Enter your password"
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    :class="{ 'border-red-500': model.password.errors?.length }">
-                <button type="button" @click="togglePasswordVisibility" class="absolute right-3 top-3 text-gray-600">
-                    <Eye v-if="!showPassword" />
-                    <EyeOff v-else />
-                </button>
+                    :class="{ 'border-red-500': model.confirmPassword.errors?.length }">
             </div>
             <p v-if="model.password?.errors" class="text-red-500 text-xs italic">
                 <!-- {{ model.password.errors[0] }} -->
@@ -108,15 +104,18 @@
 
 <script setup lang="ts">
 import { EyeOff, Eye } from 'lucide-vue-next';
-import VueSanity, { required, type ModelConfig } from 'vuesanity';
-import authService from '~/services/authService';
+import VueSanity, { email, required, type ModelConfig } from 'vuesanity';
+import accountService from '~/services/accountService';
 
-
+const route = useRoute();
 const model = reactive<ModelConfig>({
     username: {
-        validations: [required()]
+        validations: [required(), email()]
     },
     password: {
+        validations: [required()]
+    },
+    confirmPassword: {
         validations: [required()]
     },
     rememberMe: {
@@ -124,7 +123,7 @@ const model = reactive<ModelConfig>({
         value: false
     }
 });
-const showPassword = ref(false)
+const showPassword = ref(false);
 
 const togglePasswordVisibility = () => {
     showPassword.value = !showPassword.value
@@ -133,7 +132,9 @@ async function login() {
     try {
         var state = new VueSanity(model);
         if (!state.isValid) return;
-        await authService.loginAsync(state.normalizedModel, '/dashboard');
+        else {
+            await accountService.registerAsync(state.formData, route.query.returnUrl as string || undefined)
+        }
     } catch (error) {
         // Handle error
     }

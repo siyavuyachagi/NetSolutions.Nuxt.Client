@@ -41,10 +41,6 @@
             active-class="text-primary-500">
             Contact
         </nuxt-link>
-        <nuxt-link to="/account" class="text-neutral-700 hover:text-primary-500 transition"
-            active-class="text-primary-500">
-            Account
-        </nuxt-link>
     </nav>
 </template>
 

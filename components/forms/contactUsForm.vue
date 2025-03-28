@@ -55,6 +55,7 @@
 
 <script setup lang="ts">
 import VueSanity, { email, maxLength, minLength, required, type ModelConfig } from 'vuesanity';
+import messagesService from '~/services/messagesService';
 
 const pageLoading = ref(true);
 const emit = defineEmits(['submitted'])
@@ -72,20 +73,21 @@ const model: ModelConfig = reactive({
 const isSubmitting = ref(false);
 
 async function handleSubmit() {
-    isSubmitting.value = true;
     try {
-        // Simulating API call with setTimeout
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        isSubmitting.value = true;
         const state = new VueSanity(model);
         if (state.isValid) {
-            console.log('Is valid')
+            await messagesService.contactUs(state.formData);
             emit('submitted')
+            toasts.success('Message sent successfully')
         }
         console.log(state)
-    } catch (e) {
-        console.error(e)
+    } catch (err: any) {
+        console.error(err);
+        toasts.error(err?.message)
+    } finally {
+        isSubmitting.value = false;
     }
-    isSubmitting.value = false;
 }
 
 onMounted(() => pageLoading.value = false)

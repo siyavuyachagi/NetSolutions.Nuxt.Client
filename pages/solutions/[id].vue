@@ -385,7 +385,7 @@ const solutionId = route.params.id as string;
 const { data: solution, status: solutionStatus, error: solutionError, refresh: solutionRefresh } =
     useAsyncData(`solutions-solution-${route.params.id}`, () => solutionService.getSolutionAsync(route.params.id as string), {
         lazy: true,
-        watch: [route.params],
+        // watch: [route.params],
     });
 
 // Fetch all solutions

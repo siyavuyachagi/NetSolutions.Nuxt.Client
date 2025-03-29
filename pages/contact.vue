@@ -147,10 +147,6 @@
 
 <script setup lang="ts">
 import ContactUsForm from '~/components/forms/contactUsForm.vue';
-import {
-    CheckCircle
-} from 'lucide-vue-next';
-import messagesService from '~/services/messagesService';
 
 const googleMapsApiKey = useRuntimeConfig().public.googleMapsApiKey;
 const pageLoading = ref(true);

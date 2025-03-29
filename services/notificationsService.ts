@@ -1,10 +1,14 @@
-import apiClient from "~/api/apiClient";
+
 
 class NotificationService {
-  constructor() {}
+  private get apiClient() {
+    // Get the apiClient from the Nuxt app context
+    const { $apiClient } = useNuxtApp();
+    return $apiClient;
+  }
 
   async contactUsAsync(payload: string): Promise<any> {
-    return apiClient
+    return this.apiClient
       .post(`/api/Notifications/contact/us/web`, payload)
       .then((response) => {
         if (response.status === 200) {

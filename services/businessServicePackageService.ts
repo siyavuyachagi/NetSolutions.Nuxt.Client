@@ -1,19 +1,26 @@
-import apiClient from "~/api/apiClient";
 import type { BusinessServicePackage } from "~/interface/BusinessServicePackage";
 
 class BusinessServicePackageService {
+  private get apiClient() {
+    // Get the apiClient from the Nuxt app context
+    const { $apiClient } = useNuxtApp();
+    return $apiClient;
+  }
+
   async getBusinessServicePackages(): Promise<BusinessServicePackage[]> {
-    return apiClient.get(`/api/BusinessServicePackages`).then((response) => {
-      if (response.status === 200) {
-        return response.data;
-      } else {
-        throw new Error("Invalid username or password");
-      }
-    });
+    return this.apiClient
+      .get(`/api/BusinessServicePackages`)
+      .then((response) => {
+        if (response.status === 200) {
+          return response.data;
+        } else {
+          throw new Error("Invalid username or password");
+        }
+      });
   }
 
   async getBusinessServicePackage(id: string): Promise<BusinessServicePackage> {
-    return apiClient
+    return this.apiClient
       .get(`/api/BusinessServicePackages/${id}`)
       .then((response) => {
         if (response.status === 200) {
@@ -25,7 +32,7 @@ class BusinessServicePackageService {
   }
 
   async postSubscribeAsync(id: string, payload: any): Promise<any> {
-    return apiClient
+    return this.apiClient
       .post(`/api/BusinessServicePackages/subscribe/${id}`, payload)
       .then((response) => {
         if (response.status === 200) {

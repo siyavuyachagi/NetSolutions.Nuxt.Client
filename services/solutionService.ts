@@ -1,20 +1,19 @@
-import { se } from "date-fns/locale";
-import apiClient from "~/api/apiClient";
-import { useSolutionsStore } from "~/stores/useSolutionsStore";
-import usePayFast from "./usePayFast";
 import type { Solution } from "~/interface/Solution";
 import type { PaymentTransaction } from "~/interface/PaymentTransaction";
-// import type { Client, Solution } from "~/api/interfaces";
+import { useNuxtApp } from "#app";
 
 class SolutionService {
-  private STORAGE_KEY: string = "solutions-session-store";
-
+  private get apiClient() {
+    // Get the apiClient from the Nuxt app context
+    const { $apiClient } = useNuxtApp();
+    return $apiClient;
+  }
   constructor() {}
 
   async getSolutionAsync(id: string): Promise<Solution | null> {
     try {
       // Fetch the solution from the API
-      const response = await apiClient.get(`/api/Solutions/${id}`);
+      const response = await this.apiClient.get(`/api/Solutions/${id}`);
       if (response.status === 200) {
         return response.data;
       } else {
@@ -29,7 +28,7 @@ class SolutionService {
   async getSolutionsAsync(): Promise<Solution[]> {
     try {
       // Fetch solutions from API
-      const response = await apiClient.get(`/api/Solutions`);
+      const response = await this.apiClient.get(`/api/Solutions`);
       if (response.status === 200) {
         return response.data;
       } else {
@@ -46,7 +45,7 @@ class SolutionService {
     description?: string,
     createdAt?: Date
   ): Promise<any[]> {
-    return apiClient.get(`/api/Solutions`).then((response) => {
+    return this.apiClient.get(`/api/Solutions`).then((response) => {
       if (response.status === 200) {
         return response.data;
       } else {
@@ -56,7 +55,7 @@ class SolutionService {
   }
 
   async bookmarkAsync(payload: any): Promise<any[]> {
-    return apiClient
+    return this.apiClient
       .post(`/api/Solutions/bookmark`, payload)
       .then((response) => {
         if (response.status === 200) {
@@ -68,7 +67,7 @@ class SolutionService {
   }
 
   async bookmarkedUserSolutionsAsync(userId: string): Promise<any[]> {
-    return apiClient
+    return this.apiClient
       .get(`/api/Solutions/bookmarked/${userId}`)
       .then((response) => {
         if (response.status === 200) {
@@ -81,7 +80,7 @@ class SolutionService {
 
   async purchaseSolutionsAsync(id: string, payload: any) {
     try {
-      const response = await apiClient.post(
+      const response = await this.apiClient.post(
         `/api/Solutions/purchase/${id}`,
         payload
       );
@@ -105,7 +104,7 @@ class SolutionService {
   }
 
   async paymentTransaction(Id: string): Promise<PaymentTransaction> {
-    return apiClient
+    return this.apiClient
       .get(`/api/Solutions/transaction/${Id}`)
       .then((response) => {
         if (response.status === 200) {

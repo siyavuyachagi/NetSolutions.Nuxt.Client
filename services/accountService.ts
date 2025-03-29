@@ -1,11 +1,15 @@
-import apiClient from "~/api/apiClient";
+
 import { useAuthStore } from "~/stores/useAuthStore";
 
 class AccountService {
-  constructor() {}
+  private get apiClient() {
+    // Get the apiClient from the Nuxt app context
+    const { $apiClient } = useNuxtApp();
+    return $apiClient;
+  }
 
   async registerAsync(payload: any, returnUrl: string = "/") {
-    return apiClient.post("/api/Account/register", payload).then((response) => {
+    return this.apiClient.post("/api/Account/register", payload).then((response) => {
       if (response.status === 200) {
         useAuthStore().update(response.data);
         useRouter().push(returnUrl);
@@ -19,7 +23,7 @@ class AccountService {
   }
 
   async loginAsync(payload: any, returnUrl: string = "/") {
-    return apiClient.post("/api/Account/login", payload).then((response) => {
+    return this.apiClient.post("/api/Account/login", payload).then((response) => {
       if (response.status === 200) {
         useAuthStore().update(response.data);
         useRouter().push(returnUrl);
@@ -38,7 +42,7 @@ class AccountService {
   }
 
   async getUserRoles(userId: string): Promise<any> {
-    return apiClient
+    return this.apiClient
       .post(`/api/Account/userRoles/${userId}`)
       .then((response) => {
         if (response.status === 200) {

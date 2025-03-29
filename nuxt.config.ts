@@ -43,19 +43,6 @@ export default defineNuxtConfig({
       link: [{ rel: "icon", type: "image/svg+xml", href: "/logo.svg" }],
     },
   },
-  vite: {
-    server: {
-      proxy: {
-        "/api": {
-          // target: ,
-          changeOrigin: true,
-          secure: true, // Only needed for HTTPS
-          timeout: 60000, // Set a longer timeout (60 seconds)
-          proxyTimeout: 60000,
-        },
-      },
-    },
-  },
   nitro: {
     storage: {
       cache: {
@@ -65,8 +52,10 @@ export default defineNuxtConfig({
     },
   },
   runtimeConfig: {
+    privateKey: process.env.NUXT_PRIVATE_KEY,
     public: {
-      apiUrl:process.env.NUXT_PUBLIC_API_BASE_URL,
+      apiUrlDev: process.env.NUXT_PUBLIC_API_URL_DEV,
+      apiUrlProd: process.env.NUXT_PUBLIC_API_URL_PROD,
       googleMapsApiKey: process.env.NUXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     },
   },

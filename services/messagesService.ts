@@ -1,10 +1,12 @@
-import apiClient from "~/api/apiClient";
-
 class MessagesService {
-  constructor() {}
+  private get apiClient() {
+    // Get the apiClient from the Nuxt app context
+    const { $apiClient } = useNuxtApp();
+    return $apiClient;
+  }
 
   async contactUs(request: any): Promise<any> {
-    return apiClient
+    return this.apiClient
       .post(`/api/Messages/contact-us`, request)
       .then((response) => {
         if (response.status === 200) {

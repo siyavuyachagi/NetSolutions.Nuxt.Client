@@ -3,7 +3,7 @@
     <section class="grid md:grid-cols-3 gap-6">
         <div class="bg-white shadow rounded-lg p-6">
             <h2 class="text-xl font-semibold mb-4 text-gray-800">Active Projects</h2>
-            <p class="text-3xl font-bold text-blue-600">{{ activeProjectsCount }}</p>
+            <p class="text-3xl font-bold text-blue-600">{{ client?.projects.length }}</p>
         </div>
         <div class="bg-white shadow rounded-lg p-6">
             <h2 class="text-xl font-semibold mb-4 text-gray-800">Completed Projects</h2>
@@ -40,27 +40,27 @@
                         <tr>
                             <th class="p-4 text-left">Project Name</th>
                             <th class="p-4 text-left">Status</th>
-                            <th class="p-4 text-left">Progress</th>
+                            <!-- <th class="p-4 text-left">Progress</th> -->
                             <th class="p-4 text-left">Last Updated</th>
                             <th class="p-4 text-left">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="project in filteredProjects" :key="project.id" class="border-b hover:bg-gray-50">
-                            <td class="p-4">{{ project.title }}</td>
+                        <tr v-for="project in client?.projects" :key="project.id" class="border-b hover:bg-gray-50">
+                            <td class="p-4">{{ project.name }}</td>
                             <td class="p-4">
                                 <span :class="getStatusClasses(project.status)">
                                     {{ project.status }}
                                 </span>
                             </td>
-                            <td class="p-4">
+                            <!-- <td class="p-4">
                                 <div class="w-full bg-gray-200 rounded-full h-2.5">
-                                    <!-- <div class="bg-blue-600 h-2.5 rounded-full"
+                                    <div class="bg-blue-600 h-2.5 rounded-full"
                                         :style="{ width: project.progress ? `${project.progress}%` : `${Math.floor(Math.random() * 100)}%` }">
-                                    </div> -->
+                                    </div>
                                 </div>
-                            </td>
-                            <td class="p-4">{{ project.createdAt }}</td>
+                            </td> -->
+                            <td class="p-4">{{ format(new Date(project.createdAt), "do MMM yyyy p") }}</td>
                             <td class="p-4">
                                 <div class="flex space-x-2">
                                     <button @click="viewProjectDetails(project)"
@@ -84,7 +84,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr v-if="filteredProjects.length === 0">
+                        <tr v-if="client?.projects.length === 0">
                             <td colspan="5" class="p-4 text-center text-gray-500">No projects found.</td>
                         </tr>
                     </tbody>
@@ -118,7 +118,7 @@
                 <select v-model="selectedProject" class="w-full border rounded-lg px-3 py-2 mb-4" required>
                     <option value="">Select Project</option>
                     <option v-for="project in client?.projects" :key="project.id" :value="project.id">
-                        {{ project.title }}
+                        {{ project.name }}
                     </option>
                 </select>
                 <textarea v-model="messageContent" placeholder="Type your message..."
@@ -132,14 +132,12 @@
 </template>
 
 <script setup lang="ts">
+import { format } from 'date-fns';
 import { useAsyncData } from 'nuxt/app';
 import clientService from '~/services/clientService'
-import projectService from '~/services/projectService';
 import { useAuthStore } from '~/stores/useAuthStore'
 
 definePageMeta({
-    title: 'HetSolutions | Client Dashboard',
-    description: 'Client account page',
     layout: 'account',
     requiresAuth: true,
     roles: ['client']
@@ -184,14 +182,14 @@ const pendingCommunicationsCount = computed(() => recentMessages.value.length);
 const searchTerm = ref('');
 const filterStatus = ref('');
 
-const filteredProjects = computed(() => {
-    if (!client.value?.projects) return [];
-    return client.value.projects.filter((project: any) => {
-        const matchesSearch = project.title.toLowerCase().includes(searchTerm.value.toLowerCase());
-        const matchesStatus = !filterStatus.value || project.status.toLowerCase() === filterStatus.value.toLowerCase();
-        return matchesSearch && matchesStatus;
-    });
-});
+// const filteredProjects = computed(() => {
+//     if (!client.value?.projects) return [];
+//     return client.value.projects.filter((project: any) => {
+//         const matchesSearch = project.title.toLowerCase().includes(searchTerm.value.toLowerCase());
+//         const matchesStatus = !filterStatus.value || project.status.toLowerCase() === filterStatus.value.toLowerCase();
+//         return matchesSearch && matchesStatus;
+//     });
+// });
 
 // Project actions
 const viewProjectDetails = (project: any) => {
@@ -247,4 +245,8 @@ const getStatusClasses = (status: string) => {
             return baseClasses;
     }
 };
+
+onMounted(() => {
+    clientRefresh()
+})
 </script>

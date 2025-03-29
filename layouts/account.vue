@@ -14,13 +14,16 @@
             <nav class="p-4">
                 <ul>
                     <li class="mb-4">
-                        <nuxt-link to="/account/" class="text-gray-700 hover:text-blue-600">Dashboard</nuxt-link>
+                        <nuxt-link to="/account/" @click="toggleSidebar"
+                            class="text-gray-700 hover:text-blue-600">Dashboard</nuxt-link>
                     </li>
                     <li class="mb-4">
-                        <nuxt-link to="/account/projects" class="text-gray-700 hover:text-blue-600">Projects</nuxt-link>
+                        <nuxt-link to="/account/projects" @click="toggleSidebar"
+                            class="text-gray-700 hover:text-blue-600">Projects</nuxt-link>
                     </li>
                     <li class="mb-4">
-                        <nuxt-link to="/solutions" class="text-gray-700 hover:text-blue-600">Solutions</nuxt-link>
+                        <nuxt-link to="/account/solutions" @click="toggleSidebar"
+                            class="text-gray-700 hover:text-blue-600">Solutions</nuxt-link>
                     </li>
                 </ul>
             </nav>
@@ -49,6 +52,7 @@
 useHead({
     title: 'HetSolutions | Client Dashboard',
 })
+
 // Sidebar toggle (always togglable)
 const sidebarOpen = ref(false);
 const toggleSidebar = () => {

@@ -11,7 +11,6 @@ class ClientService {
   async getClientAsync(id: string): Promise<Client> {
     return this.apiClient.get(`/api/Clients/${id}`).then((response) => {
       if (response.status === 200) {
-        console.log(response.data);
         return response.data;
       } else {
         throw new Error(`Error fetching User: ${id}`);

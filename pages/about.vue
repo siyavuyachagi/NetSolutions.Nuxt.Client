@@ -18,7 +18,7 @@
                     <Transition appear enter-from-class="opacity-0 -translate-x-6"
                         enter-active-class="transition-all duration-1000 ease-out">
                         <div class="prose max-w-none text-gray-700">
-                            <p class="mb-4">Founded in 2015, our company began with a simple vision: to create
+                            <p class="mb-4">Founded in 2025, our company began with a simple vision: to create
                                 innovative
                                 solutions that make a difference in people's lives.</p>
                             <p class="mb-4">What started as a small team of passionate individuals has grown into a

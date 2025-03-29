@@ -1,7 +1,6 @@
 <template>
-    Projects
+    Solutions
 </template>
-
 
 <script setup lang="ts">
 definePageMeta({

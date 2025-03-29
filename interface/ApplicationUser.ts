@@ -9,6 +9,7 @@ export interface ApplicationUser {
   normalizedUserName?: string | null;
   lastName: string;
   firstName: string;
+  bio: string;
   normalizedEmail?: string | null;
   emailConfirmed: boolean;
   phoneNumber?: string | null;
@@ -23,4 +24,5 @@ export interface ApplicationUser {
   organization: Organization;
   userActivities: UserActivity[];
   solutions: Solution[];
+  createdAt: Date;
 }

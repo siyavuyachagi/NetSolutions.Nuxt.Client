@@ -219,7 +219,7 @@
                     </p>
 
                     <nuxt-link
-                        :to="`/contact?fromUrl=/service/${businessService?.id}&rexs=${businessService?.id}#contact`"
+                        :to="`/contact?path-from=/service/${businessService?.id}&resource-id=${businessService?.id}#contact`"
                         class="w-full bg-neutral-800 hover:bg-neutral-900 text-white font-medium py-3 px-4 rounded-lg mb-4 flex items-center justify-center">
                         <Mail class="h-5 w-5 mr-2" />
                         Get in Touch

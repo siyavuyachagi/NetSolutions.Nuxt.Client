@@ -38,7 +38,7 @@
                                 class="block px-4 py-2 hover:bg-gray-100">Settings</nuxt-link>
                             <button class="flex px-4 py-2 hover:bg-gray-100 text-red-500 w-full text-start"
                                 @click="authService.logout('/auth/login')">
-                                <LogOut class="" />
+                                <LogOut />
                                 Logout
                             </button>
                         </nav>

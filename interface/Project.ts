@@ -14,7 +14,7 @@ export interface Project {
   client?: Client | null;
   businessServiceId: string;
   businessService?: BusinessService | null;
-  title: string;
+  name: string;
   description: string;
   budget: number;
   status: string;

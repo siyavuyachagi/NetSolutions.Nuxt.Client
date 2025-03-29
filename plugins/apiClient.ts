@@ -8,10 +8,6 @@ export default defineNuxtPlugin((nuxtApp) => {
     ? config.public.apiUrlDev
     : config.public.apiUrlProd;
 
-  console.log("Env: ", import.meta.env);
-  console.log("Runtime config: ", config.public);
-  console.log("URL: ", apiUrl);
-
   // Create axios instance with base URL from runtime config
   const apiClient = axios.create({
     baseURL: apiUrl,

@@ -52,11 +52,10 @@ export default defineNuxtConfig({
     },
   },
   runtimeConfig: {
-    privateKey: process.env.NUXT_PRIVATE_KEY,
     public: {
+      googleMapsApiKey: process.env.NUXT_PUBLIC_GOOGLE_MAPS_API_KEY,
       apiUrlDev: process.env.NUXT_PUBLIC_API_URL_DEV,
       apiUrlProd: process.env.NUXT_PUBLIC_API_URL_PROD,
-      googleMapsApiKey: process.env.NUXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     },
   },
   hooks: {

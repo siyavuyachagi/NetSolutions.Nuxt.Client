@@ -7,9 +7,9 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
     // User does not require Auth
     if (to.matched.some((record) => record.meta.requiresAuth)) {
-      console.log("User requires Auth");
+      // console.log("User requires Auth");
       if (!store.isAuthenticated) {
-        console.log("User not Authenticated");
+        // console.log("User not Authenticated");
         router.push({
           path: "/auth/login",
           query: {
@@ -18,7 +18,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
           },
         });
       } else {
-        console.log("User Authenticated", store.user);
+        // console.log("User Authenticated", store.user);
 
         // If authenticated, check if the route requires specific roles
         const userRoles: string[] = (store.user?.roles || []).map((role) =>
@@ -33,7 +33,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
           requiredRoles.length > 0 && // Check if there are required roles
           !requiredRoles.some((role: string) => userRoles.includes(role))
         ) {
-          console.log("User not Authorized");
+          // console.log("User not Authorized");
           router.push({
             path: "/auth/login",
             query: {

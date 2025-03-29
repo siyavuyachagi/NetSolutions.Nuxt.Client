@@ -37,24 +37,6 @@ export default defineNuxtPlugin((nuxtApp) => {
     }
   );
 
-  // Response interceptor
-  // apiClient.interceptors.response.use(
-  //   (response) => {
-  //     // Handle successful responses
-  //     return response;
-  //   },
-  //   (error) => {
-  //     // Handle errors
-  //     // For example, handling 401 errors:
-  //     // if (error.response && error.response.status === 401) {
-  //     //   // Handle unauthorized error, maybe redirect to login
-  //     // }
-
-  //     console.error("Response interceptor error");
-  //     return Promise.reject(error);
-  //   }
-  // );
-
   // Provide the configured axios instance to your Nuxt app
   return {
     provide: {

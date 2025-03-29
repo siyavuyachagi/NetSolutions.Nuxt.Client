@@ -59,4 +59,18 @@ export default defineNuxtConfig({
       googleMapsApiKey: process.env.NUXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     },
   },
+  hooks: {
+    "build:before": () => {
+      console.log("Build environment variables:");
+      console.log("NODE_ENV:", process.env.NODE_ENV);
+      console.log(
+        "NUXT_PUBLIC_API_URL_DEV:",
+        process.env.NUXT_PUBLIC_API_URL_DEV
+      );
+      console.log(
+        "NUXT_PUBLIC_API_URL_PROD:",
+        process.env.NUXT_PUBLIC_API_URL_PROD
+      );
+    },
+  },
 });

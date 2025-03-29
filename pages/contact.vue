@@ -154,7 +154,6 @@ const formSubmitted = ref<boolean>(false)
 
 
 function contactUsFormSubmit() {
-    console.log('Update UI')
     if (import.meta.client) {
         sessionStorage.setItem('ns-contact-us-form-submitted', 'true');
     }

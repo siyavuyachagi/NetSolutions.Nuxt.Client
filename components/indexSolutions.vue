@@ -154,7 +154,7 @@
 
 <script setup lang="ts">
 import { ExternalLink, LayoutGrid, List } from 'lucide-vue-next';
-import type { TechnologyStack } from '~/interface/TechnologyStack';
+import type { TechnologyStack } from '~/models/types';
 import solutionService from '~/services/solutionService';
 
 // Fetch solutions

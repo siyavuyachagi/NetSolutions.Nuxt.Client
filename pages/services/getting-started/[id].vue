@@ -39,8 +39,7 @@
                                         ? 'bg-primary-500 text-white'
                                         : currentStep === index + 1
                                             ? 'bg-primary-100 text-primary-600 border-2 border-primary-500'
-                                            : 'bg-neutral-100 text-neutral-400'
-                                ]">
+                                            : 'bg-neutral-100 text-neutral-400']">
                                     {{ index + 1 }}
                                 </div>
                                 <div class="text-xs mt-2 text-center"

@@ -25,7 +25,8 @@
                     <p class="text-neutral-600 mb-6">Tell us about your project requirements to help us understand your
                         needs better.</p>
                     <!-- Step content -->
-                    <form @submit.prevent="submitForm" class="space-y-6" :class="{ 'opacity-50 pointer-events-none':isSubmitting }">
+                    <form @submit.prevent="submitForm" class="space-y-6"
+                        :class="{ 'opacity-50 pointer-events-none':isSubmitting }">
                         <!-- Contact Information -->
                         <div>
                             <div class="space-y-4">
@@ -39,7 +40,7 @@
                                             placeholder="Your first name" />
                                         <p v-if="model.firstName.errors?.length" class="mt-1 text-sm text-red-600">{{
                                             model.firstName.errors[0]
-                                        }}</p>
+                                            }}</p>
                                     </div>
 
                                     <div>
@@ -51,7 +52,7 @@
                                             placeholder="Your last name" />
                                         <p v-if="model.lastName.errors?.length" class="mt-1 text-sm text-red-600">{{
                                             model.lastName.errors[0]
-                                        }}</p>
+                                            }}</p>
                                     </div>
                                 </div>
 
@@ -122,18 +123,8 @@
                 <!-- Selected package summary -->
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <h3 class="text-lg font-semibold text-neutral-800 mb-4">
-                        {{ solution?.name }}
+                        Purchase solution
                     </h3>
-
-                    <div class="border-t py-4">
-                        <h4 class="font-medium text-neutral-800 mb-2">Included in this package:</h4>
-                        <ul class="space-y-2">
-                            <li v-for="feature in solution?.features" :key="feature.id" class="flex items-start">
-                                <CheckCircle class="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
-                                <span class="text-neutral-700 text-sm">{{ feature?.title }}</span>
-                            </li>
-                        </ul>
-                    </div>
 
                     <div class="bg-neutral-50 rounded-lg p-4 mb-4">
                         <div class="flex justify-between items-center mb-2">
@@ -149,6 +140,17 @@
                         </div>
 
                         <p class="text-neutral-600 text-sm mt-4 line-clamp-6">{{ solution?.description }}</p>
+                    </div>
+
+
+                    <div class="border-t py-4">
+                        <h4 class="font-medium text-neutral-800 mb-2">Included in this package:</h4>
+                        <ul class="space-y-2">
+                            <li v-for="feature in solution?.features" :key="feature.id" class="flex items-start">
+                                <CheckCircle class="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
+                                <span class="text-neutral-700 text-sm">{{ feature?.title }}</span>
+                            </li>
+                        </ul>
                     </div>
 
                     <div class="mt-4 pt-4 border-t">

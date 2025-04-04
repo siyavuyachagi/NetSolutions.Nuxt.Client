@@ -221,7 +221,6 @@ onMounted(() => {
         endDate.value = new Date(props.modelValue.endDate);
         updateSliderFromDates();
     }
-
     emitChange();
 });
 

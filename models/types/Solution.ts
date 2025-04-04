@@ -1,3 +1,4 @@
+import type { ApplicationUser } from "./ApplicationUser";
 import type { Feedback } from "./Feedback";
 import type { FileMetadata } from "./FileMetadata";
 import type { Project } from "./Project";
@@ -23,4 +24,6 @@ export interface Solution {
   discriminator: string;
   reviews: Feedback[];
   features: SolutionFeature[];
+  likes: ApplicationUser[];
+  bookmarks: ApplicationUser[];
 }

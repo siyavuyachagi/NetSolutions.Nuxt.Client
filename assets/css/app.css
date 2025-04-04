@@ -24,3 +24,8 @@ h6 {
         @apply mb-3 float-none text-center;
     }
 }
+
+.password-field::-ms-reveal,
+.password-field::-ms-clear {
+  display: none;
+}

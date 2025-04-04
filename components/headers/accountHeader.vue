@@ -19,7 +19,7 @@
                 <nav class="py-1">
                     <nuxt-link to="/account/profile" class="block px-4 py-2 hover:bg-gray-100">Profile</nuxt-link>
                     <nuxt-link to="/account/profile" class="block px-4 py-2 hover:bg-gray-100">Settings</nuxt-link>
-                    <nuxt-link to="/account/profile" class="block px-4 py-2 hover:bg-gray-100">Bookmarks</nuxt-link>
+                    <nuxt-link to="/account/profile" class="block px-4 py-2 hover:bg-gray-100">Saved</nuxt-link>
                     <button class="block px-4 py-2 hover:bg-gray-100 text-red-500 w-full text-start"
                         @click="authService.logout('/auth/login')">Logout</button>
                 </nav>

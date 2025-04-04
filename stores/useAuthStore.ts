@@ -23,7 +23,7 @@ interface AuthStorage {
 }
 
 export const useAuthStore = defineStore("auth", () => {
-  const STORAGE_KEY = "ns-client-auth_store"; // Single key for storing auth data
+  const STORAGE_KEY = "ns-client-auth-store"; // Single key for storing auth data
   const user = ref<User | null>(null);
   const accessToken = ref<string | null>(null);
   const refreshToken = ref<string | null>(null);

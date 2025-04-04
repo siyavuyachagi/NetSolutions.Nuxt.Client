@@ -29,7 +29,10 @@
                     <input v-model="model.password.value" :type="showPassword ? 'text' : 'password'" id="password"
                         required placeholder="Enter your password"
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        :class="{ 'border-red-500': model.password.errors?.length }">
+                        :class="{
+                            'border-red-500': model.password.errors?.length,
+                            'password-field': !showPassword
+                        }">
                     <button type="button" @click="togglePasswordVisibility"
                         class="absolute right-3 top-3 text-gray-600">
                         <Eye v-if="!showPassword" />

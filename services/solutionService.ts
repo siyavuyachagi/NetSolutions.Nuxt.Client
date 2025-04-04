@@ -1,6 +1,5 @@
-import type { Solution } from "~/interface/Solution";
-import type { PaymentTransaction } from "~/interface/PaymentTransaction";
 import { useNuxtApp } from "#app";
+import type { PaymentTransaction, Solution } from "~/models/types";
 
 class SolutionService {
   private get apiClient() {
@@ -54,11 +53,15 @@ class SolutionService {
     });
   }
 
-  async bookmarkAsync(payload: any): Promise<any[]> {
+  async bookmarkAsync(id: string, payload: any): Promise<any[]> {
     return this.apiClient
-      .post(`/api/Solutions/bookmark`, payload)
+      .post(`/api/Solutions/bookmark/${id}`, payload)
       .then((response) => {
-        if (response.status === 200) {
+        if (
+          response.status === 200 ||
+          response.status === 201 ||
+          response.status === 204
+        ) {
           return response.data;
         } else {
           throw new Error("Failed to fetch solutions");
@@ -108,6 +111,22 @@ class SolutionService {
       .get(`/api/Solutions/transaction/${Id}`)
       .then((response) => {
         if (response.status === 200) {
+          return response.data;
+        } else {
+          throw new Error("Failed to fetch solutions");
+        }
+      });
+  }
+
+  async likeAsync(id: string, payload: any): Promise<any[]> {
+    return this.apiClient
+      .post(`/api/Solutions/like/${id}`, payload)
+      .then((response) => {
+        if (
+          response.status === 200 ||
+          response.status === 201 ||
+          response.status === 204
+        ) {
           return response.data;
         } else {
           throw new Error("Failed to fetch solutions");

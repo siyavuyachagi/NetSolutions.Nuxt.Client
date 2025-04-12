@@ -5,7 +5,7 @@ import type { UserActivity } from "./UserActivity";
 export interface ApplicationUser {
   id: string;
   userName: string;
-  email?: string | null;
+  email: string;
   normalizedUserName?: string | null;
   lastName: string;
   firstName: string;

@@ -37,6 +37,7 @@
         </div>
     </div>
 
+
     <!-- Loading Skeleton -->
     <div v-if="solutionsStatus === 'pending'" :class="['grid gap-6', viewMode === 'grid'
         ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
@@ -92,47 +93,10 @@
     <div v-else :class="['grid gap-6', viewMode === 'grid'
         ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
         : 'grid-cols-1']">
-        <div v-for="solution in paginatedSolutions" :key="solution.id"
-            class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition flex flex-col relative">
 
-            <!-- Category Ribbon -->
-            <div class="absolute -top-1 -left-2">
-                <div class="relative">
-                    <div class="absolute -bottom-2 -right-2 w-0 h-0 border-t-8 border-l-8 border-t-transparent border-l-transparent"
-                        :class="getRibbonShadowClass(solution.discriminator)"></div>
-                    <div :class="['py-1 px-3 flex items-center ribbon', getRibbonClass(solution.discriminator)]">
-                        <span class="text-white text-xs font-medium">{{ solution.discriminator || 'Web App'
-                        }}</span>
-                    </div>
-                </div>
-            </div>
-
-            <h3 class="text-xl font-semibold text-neutral-800 mb-2 mt-5">
-                {{ solution.name }}
-            </h3>
-            <p class="text-neutral-600 mb-4 line-clamp-6 md:line-clamp-3">
-                {{ solution.description }}
-            </p>
-            <!-- Tech Stack Pills -->
-            <div class="flex flex-wrap gap-2 mb-4">
-                <span v-for="stack in solution.technologyStacks" :key="stack.id"
-                    class="bg-primary-100 text-primary-600 text-sm px-3 py-1 rounded-full">
-                    {{ stack.name }}
-                </span>
-            </div>
-            <hr class="text-gray-200 my-3" />
-            <div class="flex justify-center space-x-4 mb-6">
-                <NuxtLink v-if="solution.previewUrl" :to="solution.previewUrl" target="_blank"
-                    class="text-gray-500 hover:text-primary-400 transition">
-                    <ExternalLink />
-                </NuxtLink>
-                <!-- Add other icons similarly -->
-            </div>
-            <NuxtLink :to="`/solutions/${solution.id}`"
-                class="text-center bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition mt-auto">
-                Details
-            </NuxtLink>
-        </div>
+        <component v-for="solution in paginatedSolutions" :key="solution.id">
+            <SolutionCard :solution="solution" />
+        </component>
     </div>
 
     <!-- Pagination Controls -->
@@ -156,6 +120,8 @@
 import { ExternalLink, LayoutGrid, List } from 'lucide-vue-next';
 import type { TechnologyStack } from '~/models/types';
 import solutionService from '~/services/solutionService';
+import SolutionCard from './index/solutionCard.vue';
+
 
 // Fetch solutions
 const {

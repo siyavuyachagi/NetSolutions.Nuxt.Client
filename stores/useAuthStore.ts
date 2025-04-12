@@ -1,42 +1,23 @@
 import { defineStore } from "pinia";
 import { ref, computed, watchEffect } from "vue";
-
-interface User {
-  id: string;
-  userName: string;
-  lastName: string;
-  firstName: string;
-  avatar: string;
-  roles: string[];
-}
-
-interface ResponseData {
-  accessToken: string;
-  refreshToken: string;
-  user: User;
-}
+import type { ApplicationUser } from "~/models/types";
 
 interface AuthStorage {
-  user: User;
+  user: ApplicationUser;
   accessToken: string;
   refreshToken: string;
 }
 
 export const useAuthStore = defineStore("auth", () => {
   const STORAGE_KEY = "ns-client-auth-store"; // Single key for storing auth data
-  const user = ref<User | null>(null);
+  const user = ref<ApplicationUser | null>(null);
   const accessToken = ref<string | null>(null);
   const refreshToken = ref<string | null>(null);
 
   const isAuthenticated = computed(() => !!user.value && !!accessToken.value);
 
-  function login(responseData: ResponseData, rememberMe: boolean = false) {
-    const authData: AuthStorage = {
-      user: responseData.user,
-      accessToken: responseData.accessToken,
-      refreshToken: responseData.refreshToken,
-    };
-
+  function login(responseData: AuthStorage, rememberMe: boolean = false) {
+    console.log(responseData)
     // Retrieve the cookie object
     const userCookie = useCookie(STORAGE_KEY, {
       // `httpOnly: true` should only be used for server-side handling, not on the client-side
@@ -47,7 +28,7 @@ export const useAuthStore = defineStore("auth", () => {
     });
 
     // Set the cookie value with the authentication data
-    userCookie.value = JSON.stringify(authData);
+    userCookie.value = JSON.stringify(responseData);
 
     // Set individual state variables in Pinia store
     user.value = responseData.user;
@@ -94,7 +75,7 @@ export const useAuthStore = defineStore("auth", () => {
   }
 
   function update(
-    responseData?: ResponseData | null,
+    responseData?: AuthStorage | null,
     rememberMe: boolean = false
   ) {
     if (responseData) {

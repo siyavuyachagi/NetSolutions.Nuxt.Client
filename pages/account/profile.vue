@@ -37,19 +37,25 @@
             <!-- Profile Header -->
             <div class="flex flex-col sm:flex-row items-center space-x-4 mb-6">
                 <!-- Profile Image with Edit Button -->
-                <div class="relative">
-                    <img :src="client?.avatar" alt="Profile Image" class="w-16 h-16 rounded-full border mb-4 sm:mb-0">
-                    <!-- Edit Button -->
-                    <button class="absolute bottom-0 right-0 text-gray-500 hover:text-blue-500">
-                        <Edit class="w-5 h-5" />
-                    </button>
+                <div class="relative group w-16 h-16">
+                    <img :src="authStore.user?.avatar" alt="Profile Image"
+                        class="w-full h-full rounded-full border mb-4 sm:mb-0 object-cover">
+                    <!-- Edit Button - Hidden by default, visible on hover with centered positioning -->
+                    <div
+                        class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        <button class="text-white">
+                            <Edit class="w-6 h-6" />
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Profile Info -->
                 <div>
-                    <h3 class="text-xl font-semibold text-gray-700">{{ client?.firstName }} {{ client?.lastName }}</h3>
-                    <p class="text-gray-500">{{ client?.organization?.name || 'N/A' }}</p>
-                    <p class="text-gray-400 text-sm">Joined: {{client?.createdAt ? format(new Date(client.createdAt),"do MMM yyyy") : 'No specified' }}</p>
+                    <h3 class="text-xl font-semibold text-gray-700">{{ authStore.user?.firstName }} {{
+                        authStore.user?.lastName }}</h3>
+                    <p class="text-gray-500">{{ authStore.user?.organization?.name || authStore.user?.userName }}</p>
+                    <p class="text-gray-400 text-sm">Joined: {{ authStore.user?.createdAt ? format(new
+                        Date(authStore.user.createdAt), "do MMM yyyy") : 'No specified' }}</p>
                 </div>
             </div>
 
@@ -93,7 +99,8 @@
                     </div>
                     <div>
                         <label class="block text-gray-700 font-medium">Change Password</label>
-                        <input type="password" v-model="user.password" class="border rounded-lg px-3 py-2 w-full" placeholder="Enter old password">
+                        <input type="password" v-model="user.password" class="border rounded-lg px-3 py-2 w-full"
+                            placeholder="Enter old password">
                     </div>
                 </div>
             </div>
@@ -143,10 +150,8 @@ definePageMeta({
     roles: ['client']
 });
 
-const { data: client, status: clientStatus, error: clientError, refresh: clientRefresh } = useAsyncData(() =>
-    clientService.getClientAsync(useAuthStore().user?.id as string)
-);
-console.log(client.value)
+const authStore = useAuthStore();
+
 const activeTab = ref('account');
 const tabs = [
     { name: 'account', label: 'Account Info' },
@@ -177,15 +182,14 @@ function saveChanges() {
 }
 
 const organizationName = computed({
-    get: () => client?.value?.organization?.name || '',
+    get: () => authStore.user?.organization?.name || '',
     set: (value) => {
-        if (client.value?.organization) {
-            client.value.organization.name = value;
+        if (authStore.user?.organization) {
+            authStore.user.organization.name = value;
         }
     }
 });
 
 onMounted(() => {
-    clientRefresh();
 })
 </script>

@@ -110,7 +110,7 @@
                                 </div>
                                 <div>
                                     <h3 class="text-sm font-medium text-neutral-500">Version</h3>
-                                    <p class="text-neutral-800">{{ solution?.version.toFixed(2) || 'N/A' }}</p>
+                                    <p class="text-neutral-800">{{ solution?.version || '0.0' }}</p>
                                 </div>
                             </div>
                         </div>
@@ -307,10 +307,8 @@ const showMoreReviews = ref(false);
 
 
 const { data: solution, status: solutionStatus, error: solutionError, refresh: solutionRefresh } =
-    useAsyncData(`solutions-solution-${route.params.id}`, () => solutionService.getSolutionAsync(route.params.id as string), {
-        lazy: true,
-        // watch: [route.params],
-    });
+    useAsyncData(`solutions-solution-${route.params.id}`, () => solutionService.getSolutionAsync(route.params.id as string));
+console.log(await solution.value)
 
 // Fetch all solutions
 const {
@@ -318,10 +316,7 @@ const {
     status: allSolutionsStatus,
     error: allSolutionsError,
     refresh: allSolutionsRefresh
-} = useAsyncData('allSolutions', () => solutionService.getSolutionsAsync(),
-    {
-        lazy: true,
-    });
+} = useAsyncData('allSolutions', () => solutionService.getSolutionsAsync());
 
 // Compute related solutions based on current solution
 const relatedSolutions = computed(() => {

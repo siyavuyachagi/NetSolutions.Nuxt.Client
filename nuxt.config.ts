@@ -58,18 +58,22 @@ export default defineNuxtConfig({
       apiUrlProd: process.env.NUXT_PUBLIC_API_URL_PROD,
     },
   },
-  hooks: {
-    "build:before": () => {
-      console.log("Build environment variables:");
-      console.log("NODE_ENV:", process.env.NODE_ENV);
-      console.log(
-        "NUXT_PUBLIC_API_URL_DEV:",
-        process.env.NUXT_PUBLIC_API_URL_DEV
-      );
-      console.log(
-        "NUXT_PUBLIC_API_URL_PROD:",
-        process.env.NUXT_PUBLIC_API_URL_PROD
-      );
-    },
+  devServer: {
+    port: 3001,
+    host: "0.0.0.0",
   },
+  // hooks: {
+  //   "build:before": () => {
+  //     console.log("Build environment variables:");
+  //     console.log("NODE_ENV:", process.env.NODE_ENV);
+  //     console.log(
+  //       "NUXT_PUBLIC_API_URL_DEV:",
+  //       process.env.NUXT_PUBLIC_API_URL_DEV
+  //     );
+  //     console.log(
+  //       "NUXT_PUBLIC_API_URL_PROD:",
+  //       process.env.NUXT_PUBLIC_API_URL_PROD
+  //     );
+  //   },
+  // },
 });

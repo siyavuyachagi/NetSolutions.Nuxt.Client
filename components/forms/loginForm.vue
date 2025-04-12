@@ -1,7 +1,8 @@
 <template>
     <Transition appear enter-from-class="opacity-0 translate-x-6"
         enter-active-class="transition-all duration-1000 ease-out">
-        <form @submit.prevent="login" class="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4 mt-8"
+        <form v-if="mounted" @submit.prevent="login"
+            class="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4 mt-8 hover:shadow-lg"
             :class="{ 'pointer-events-none opacity-50': onSubmit }">
             <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">
                 Login to Your Account
@@ -105,6 +106,7 @@ import authService from '~/services/authService';
 const route = useRoute();
 const errors = ref<string[]>([]);
 const onSubmit = ref<boolean>(false);
+const mounted = ref(false)
 const model = reactive<ModelConfig>({
     username: {
         validations: [required()]
@@ -171,4 +173,8 @@ watch(() => route.query, (newQuery) => {
         errors.value.push(newQuery.message as string)
     }
 }, { immediate: true }) // This ensures it runs immediately on component creation
+
+onMounted(() => {
+    mounted.value = true;
+})
 </script>

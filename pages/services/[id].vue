@@ -45,7 +45,7 @@
                         ]">
                             {{ tab.label }}
                             <span v-if="tab.id === 'testimonials'">({{ businessService?.testimonials?.length || 0
-                            }})</span>
+                                }})</span>
                         </button>
                     </div>
 
@@ -275,17 +275,24 @@ import { ArrowLeft, ArrowRight, Star, CheckCircle, User, ShoppingCart, Mail, Pho
 import { useRoute } from 'vue-router';
 import solutionService from '~/services/solutionService';
 import businessServiceService from '~/services/businessServiceService';
-import type { Solution } from '~/interface/Solution';
+import type { BusinessService, Solution } from '~/models/types';
 
 const route = useRoute();
 // Fetch our services and solutions asynchronously
-const { data: businessService, refresh: businessServiceRefresh } = useAsyncData(`businessService-${route.params.id}`, () => businessServiceService.getServiceAsync(route.params.id as string));
 const { data: businessServices, refresh: businessServicesRefresh } = useAsyncData(`businessServices-${route.params.id}`, () => businessServiceService.getServicesAsync());
 const { data: solutions, refresh: solutionsRefresh } = useAsyncData(`solutions-${route.params.id}`, () => solutionService.getSolutionsAsync());
 
 // State management using Composition API
 const activeTab = ref('overview');
 const showMoreTestimonials = ref(false);
+
+// Instead of making a separate API call, find the service from the already loaded data
+const businessService = computed(() => {
+    if (businessServices.value) {
+        return businessServices.value.find(service => service.id === route.params.id);
+    }
+    return null;
+});
 
 // Tabs configuration
 const tabs = [
@@ -322,8 +329,8 @@ function pkgColor(name: string) {
 }
 
 onMounted(() => {
-    businessServiceRefresh();
     businessServicesRefresh();
+    solutionsRefresh();
     console.log(businessServices.value)
     console.log(businessService.value)
 });

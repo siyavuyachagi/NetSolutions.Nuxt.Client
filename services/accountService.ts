@@ -1,4 +1,4 @@
-
+import type { ApiResponse } from "~/models/ApiResponse";
 import { useAuthStore } from "~/stores/useAuthStore";
 
 class AccountService {
@@ -8,32 +8,57 @@ class AccountService {
     return $apiClient;
   }
 
-  async registerAsync(payload: any, returnUrl: string = "/") {
-    return this.apiClient.post("/api/Account/register", payload).then((response) => {
+  async registerAsync(
+    payload: Record<string, any>,
+    returnUrl = "/"
+  ): Promise<ApiResponse<any>> {
+    try {
+      const response = await this.apiClient.post(
+        "/api/Account/register",
+        payload
+      );
+
+      console.log(response);
+
       if (response.status === 200) {
         useAuthStore().update(response.data);
         useRouter().push(returnUrl);
-      } else if (response.status === 400) {
-        console.log(response.data);
-        throw new Error(response.data);
-      } else {
-        throw new Error("Invalid username or password");
+
+        return {
+          success: true,
+          data: response.data,
+          message: "Resources loaded successfully.",
+        };
       }
-    });
+
+      return {
+        success: false,
+        message: response.data || "Registration failed",
+      };
+    } catch (error: any) {
+      console.error("Registration error:", error);
+
+      return {
+        success: false,
+        message: error?.response?.data || "Something went wrong",
+      };
+    }
   }
 
   async loginAsync(payload: any, returnUrl: string = "/") {
-    return this.apiClient.post("/api/Account/login", payload).then((response) => {
-      if (response.status === 200) {
-        useAuthStore().update(response.data);
-        useRouter().push(returnUrl);
-      } else if (response.status === 400) {
-        console.log(response.data);
-        throw new Error(response.data);
-      } else {
-        throw new Error("Invalid username or password");
-      }
-    });
+    return this.apiClient
+      .post("/api/Account/login", payload)
+      .then((response) => {
+        if (response.status === 200) {
+          useAuthStore().update(response.data);
+          useRouter().push(returnUrl);
+        } else if (response.status === 400) {
+          console.log(response.data);
+          throw new Error(response.data);
+        } else {
+          throw new Error("Invalid username or password");
+        }
+      });
   }
 
   logout(returnUrl: string = "/"): void {

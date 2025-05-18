@@ -187,9 +187,8 @@
                 <div class="bg-white rounded-lg shadow-md overflow-hidden">
                     <div class="h-64 bg-gray-300">
                         <!-- Replace with actual image -->
-                        <div class="w-full h-full flex items-center justify-center">
-                            <p class="text-gray-600">Photo</p>
-                        </div>
+                        <img src="https://randomuser.me/api/portraits/men/52.jpg" class="w-full h-full object-cover"
+                            alt="Profile Image">
                     </div>
                     <div class="p-6">
                         <h3 class="text-xl font-semibold text-purple-900">John Smith</h3>
@@ -223,9 +222,8 @@
                 <div class="bg-white rounded-lg shadow-md overflow-hidden">
                     <div class="h-64 bg-gray-300">
                         <!-- Replace with actual image -->
-                        <div class="w-full h-full flex items-center justify-center">
-                            <p class="text-gray-600">Photo</p>
-                        </div>
+                        <img src="https://randomuser.me/api/portraits/women/29.jpg" class="w-full h-full object-cover"
+                            alt="Profile Image">
                     </div>
                     <div class="p-6">
                         <h3 class="text-xl font-semibold text-purple-900">Sarah Johnson</h3>
@@ -260,9 +258,8 @@
                 <div class="bg-white rounded-lg shadow-md overflow-hidden">
                     <div class="h-64 bg-gray-300">
                         <!-- Replace with actual image -->
-                        <div class="w-full h-full flex items-center justify-center">
-                            <p class="text-gray-600">Photo</p>
-                        </div>
+                        <img src="https://randomuser.me/api/portraits/men/56.jpg" class="w-full h-full object-cover"
+                            alt="Profile Image">
                     </div>
                     <div class="p-6">
                         <h3 class="text-xl font-semibold text-purple-900">Michael Brown</h3>
@@ -308,7 +305,7 @@
         <!-- Stats Section -->
         <section class="py-16 bg-purple-900 text-white">
             <div class="container mx-auto px-4">
-                <h2 class="text-3xl font-semibold mb-12 text-center">Our Impact</h2>
+                <h2 class="text-3xl font-semibold mb-12 text-center !text-white">Our Impact</h2>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     <!-- Stat 1 -->
@@ -421,7 +418,7 @@
         <!-- CTA Section -->
         <section class="bg-gradient-to-r from-purple-800 to-purple-900 text-white py-16">
             <div class="container mx-auto px-4 text-center">
-                <h2 class="text-3xl font-semibold mb-6">Ready to Work With Us?</h2>
+                <h2 class="text-3xl font-semibold mb-6 !text-white">Ready to Work With Us?</h2>
                 <p class="text-xl mb-8 max-w-2xl mx-auto">Let's create something amazing together. Get in touch with our
                     team to discuss your project.</p>
                 <nuxt-link href="/contact#contact"

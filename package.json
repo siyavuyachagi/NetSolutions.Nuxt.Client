@@ -1,5 +1,6 @@
 {
-  "name": "nuxt-app",
+  "name": "netsolutions.client",
+  "description": "A modern Vue.js application built with the Composition API that serves as the client-facing portal for our services.",
   "private": true,
   "type": "module",
   "scripts": {
@@ -11,13 +12,13 @@
     "clean": "rm -rf ./.nuxt ./.output ./.vs ./dist ./node_modules package-lock.json && npm install"
   },
   "dependencies": {
-    "@nuxt/kit": "^3.16.1",
+    "@nuxt/kit": "^3.17.3",
     "@nuxtjs/tailwindcss": "^6.13.1",
     "@pinia/nuxt": "^0.10.1",
     "axios": "^1.8.1",
     "date-fns": "^4.1.0",
     "lucide-vue-next": "^0.477.0",
-    "nuxt": "^3.16.1",
+    "nuxt": "^3.17.3",
     "typed.js": "^2.1.0",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0",

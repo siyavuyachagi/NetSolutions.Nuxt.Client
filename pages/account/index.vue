@@ -139,8 +139,7 @@ import { useAuthStore } from '~/stores/useAuthStore'
 
 definePageMeta({
     layout: 'account',
-    requiresAuth: true,
-    roles: ['client']
+    authorize: ['Client']
 });
 
 

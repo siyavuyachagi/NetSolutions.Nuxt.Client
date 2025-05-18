@@ -250,7 +250,7 @@
                             <FileCode class="h-5 w-5 mr-3 text-neutral-500" />
                             <span>Documentation</span>
                         </a>
-                        <a v-if="solution?.SourceUrl" :href="solution.SourceUrl" target="_blank"
+                        <a v-if="solution?.sourceUrl" :href="solution.sourceUrl" target="_blank"
                             class="flex items-center text-neutral-700 hover:text-primary-500 transition">
                             <Github class="h-5 w-5 mr-3 text-neutral-500" />
                             <span>Source Code</span>
@@ -267,6 +267,9 @@
                         </a>
                     </div>
                 </div>
+
+                <!-- Support  -->
+                <ContactSupport />
             </div>
         </div>
     </div>
@@ -287,6 +290,8 @@ import {
     ExternalLink
 } from 'lucide-vue-next';
 import { format } from 'date-fns';
+import ContactSupport from '~/components/cards/contact-support.vue';
+
 
 definePageMeta({
     validate(route) {
@@ -308,7 +313,7 @@ const showMoreReviews = ref(false);
 
 const { data: solution, status: solutionStatus, error: solutionError, refresh: solutionRefresh } =
     useAsyncData(`solutions-solution-${route.params.id}`, () => solutionService.getSolutionAsync(route.params.id as string));
-console.log(await solution.value)
+console.log(solution.value)
 
 // Fetch all solutions
 const {
@@ -317,7 +322,7 @@ const {
     error: allSolutionsError,
     refresh: allSolutionsRefresh
 } = useAsyncData('allSolutions', () => solutionService.getSolutionsAsync());
-
+console.log(allSolutions.value)
 // Compute related solutions based on current solution
 const relatedSolutions = computed(() => {
     if (!solution.value || !allSolutions.value) return [];
@@ -391,6 +396,5 @@ watch(solution, () => {
 onMounted(() => {
     solutionRefresh();
     allSolutionsRefresh();
-    console.log(solution.value);
 });
 </script>

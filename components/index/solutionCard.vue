@@ -42,7 +42,7 @@
                 </div>
 
                 <NuxtLink :to="`/solutions/${solution.id}`"
-                    class="inline-flex items-center text-primary-600 font-medium text-sm hover:text-primary-700 transition-colors">
+                    class="inline-flex items-center text-primary-600 font-bold text-sm hover:text-primary-700 transition-colors">
                     View Details
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">

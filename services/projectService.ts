@@ -1,4 +1,4 @@
-import type { Project } from "~/interface/Project";
+import type { Project } from "~/types/response";
 
 class ProjectService {
   private get apiClient() {

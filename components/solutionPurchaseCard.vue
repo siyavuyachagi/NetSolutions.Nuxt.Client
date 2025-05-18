@@ -13,11 +13,16 @@
             Purchase Now
         </nuxt-link>
         <button
-            class="w-full bg-neutral-100 hover:bg-neutral-200 text-neutral-800 font-medium py-3 px-4 rounded-lg mb-6 flex items-center justify-center">
-            <DownloadCloud class="h-5 w-5 mr-2" />
-            Download Demo
+            class="w-full bg-neutral-100 hover:bg-neutral-200 text-neutral-800 font-medium py-3 px-4 rounded-lg mb-4 flex items-center justify-center">
+            <Globe class="h-5 w-5 mr-2" />
+            Live preview
         </button>
 
+        <button
+            class="w-full bg-neutral-100 hover:bg-neutral-200 text-neutral-800 font-medium py-3 px-4 rounded-lg mb-6 flex items-center justify-center">
+            <DownloadCloud class="h-5 w-5 mr-2" />
+            Download
+        </button>
         <div class="border-t border-b py-4 mb-4">
             <div class="flex justify-between mb-2">
                 <span class="text-neutral-600">License</span>
@@ -44,7 +49,7 @@
                 <Heart :class="['h-5 w-5 mr-1', isLiked ? 'fill-current' : '']" />
                 <span>{{ isLiked ? 'Liked' : 'Like' }}</span>
             </button>
-            <button @click="bookmarkSolution" :class="[
+            <!-- <button @click="bookmarkSolution" :class="[
                 'flex-1 py-2 rounded-lg border flex items-center justify-center transition',
                 isBookmarked
                     ? 'bg-blue-50 border-blue-200 text-blue-500'
@@ -52,7 +57,7 @@
             ]">
                 <Bookmark :class="['h-5 w-5 mr-1', isBookmarked ? 'fill-current' : '']" />
                 <span>{{ isBookmarked ? 'Saved' : 'Save' }}</span>
-            </button>
+            </button> -->
         </div>
 
         <div class="grid grid-cols-3 gap-2">
@@ -66,11 +71,12 @@
                 <MessageCircle class="h-5 w-5 mb-1" />
                 Contact
             </nuxt-link>
-            <button
+            <button @click="showReportBugModal = true"
                 class="p-2 border border-neutral-200 rounded-lg text-neutral-600 hover:bg-neutral-50 transition flex flex-col items-center text-xs">
                 <Info class="h-5 w-5 mb-1" />
                 Report
             </button>
+            <ReportBugModal v-if="showReportBugModal" @close="showReportBugModal = false" />
         </div>
     </div>
 </template>
@@ -78,7 +84,6 @@
 
 <script setup lang="ts">
 import type { PropType } from 'vue';
-import type { Solution } from '~/models/types';
 import solutionService from '~/services/solutionService';
 import {
     Heart,
@@ -86,11 +91,11 @@ import {
     DownloadCloud,
     Share2,
     MessageCircle,
-    Bookmark,
-    Info
+    Info,
+    Globe
 } from 'lucide-vue-next';
-
-
+import ReportBugModal from './modals/report-bug-Modal.vue';
+import type { Solution } from '~/types/response';
 
 const props = defineProps({
     solution: {
@@ -102,6 +107,7 @@ const props = defineProps({
 const emit = defineEmits(["update"])
 
 const authStore = useAuthStore();
+const showReportBugModal = ref(false);
 
 async function likeSolution() {
     if (useAuthStore().isAuthenticated && useAuthStore().user?.id) {
@@ -119,30 +125,9 @@ async function likeSolution() {
     console.log("Not authenticated")
 }
 
-async function bookmarkSolution() {
-    if (useAuthStore().isAuthenticated && useAuthStore().user?.id) {
-        try {
-            var payload = {
-                userId: useAuthStore().user?.id,
-            }
-            await solutionService.bookmarkAsync(props.solution.id, payload);
-            emit('update');
-        }
-        catch (e) {
-            console.error(e);
-        }
-    }
-}
-
 const isLiked = computed(() => {
     if (!authStore.isAuthenticated) false;
     if (props.solution?.likes.some(l => l.id === authStore.user?.id)) {
-        return true;
-    } else return false;
-});
-const isBookmarked = computed(() => {
-    if (!authStore.isAuthenticated) false;
-    if (props.solution?.bookmarks?.some(b => b.id === authStore.user?.id)) {
         return true;
     } else return false;
 });

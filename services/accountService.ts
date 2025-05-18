@@ -1,82 +1,122 @@
-import type { ApiResponse } from "~/models/ApiResponse";
 import { useAuthStore } from "~/stores/useAuthStore";
+import type { ApiResponse } from "~/types/ApiResponse";
 
 class AccountService {
-  private get apiClient() {
+  private get _apiClient() {
     // Get the apiClient from the Nuxt app context
     const { $apiClient } = useNuxtApp();
     return $apiClient;
   }
+  private get _authStore() {
+    return useAuthStore();
+  }
+  public get _router() {
+    return useRouter();
+  }
 
   async registerAsync(
     payload: Record<string, any>,
-    returnUrl = "/"
+    returnUrl = this._apiClient.getUri()
   ): Promise<ApiResponse<any>> {
     try {
-      const response = await this.apiClient.post(
-        "/api/Account/register",
+      const response = await this._apiClient.post(
+        `/api/Account/register?returnUrl=${returnUrl}`,
         payload
       );
 
-      console.log(response);
-
       if (response.status === 200) {
-        useAuthStore().update(response.data);
-        useRouter().push(returnUrl);
-
+        this._authStore.signIn(response.data);
         return {
           success: true,
           data: response.data,
-          message: "Resources loaded successfully.",
+          message: "Account created successfully.",
         };
       }
-
-      return {
-        success: false,
-        message: response.data || "Registration failed",
-      };
     } catch (error: any) {
       console.error("Registration error:", error);
-
       return {
         success: false,
-        message: error?.response?.data || "Something went wrong",
+        message: error?.response?.data?.title || "Something went wrong",
+      };
+    } finally {
+      return {
+        success: false,
+        message: "An unexpected error occurred.",
       };
     }
   }
 
   async loginAsync(payload: any, returnUrl: string = "/") {
-    return this.apiClient
+    return this._apiClient
       .post("/api/Account/login", payload)
       .then((response) => {
         if (response.status === 200) {
-          useAuthStore().update(response.data);
-          useRouter().push(returnUrl);
-        } else if (response.status === 400) {
-          console.log(response.data);
-          throw new Error(response.data);
-        } else {
-          throw new Error("Invalid username or password");
+          this._authStore.signIn(response.data);
+          this._router.replace(returnUrl);
         }
       });
   }
 
   logout(returnUrl: string = "/"): void {
-    useAuthStore().update();
-    useRouter().push(returnUrl);
+    this._authStore.signOut();
+    this._router.replace(returnUrl);
   }
 
-  async getUserRoles(userId: string): Promise<any> {
-    return this.apiClient
-      .post(`/api/Account/userRoles/${userId}`)
+  async sendConfirmationEmailAsync(
+    email: string,
+    returnUrl: string
+  ): Promise<ApiResponse<any>> {
+    return this._apiClient
+      .post(
+        `/api/Account/send/confirmation/email/${email}?returnUrl=${returnUrl}`
+      )
+      .then((response) => {
+        if (response.status === 201) {
+          console.log(response.data);
+          return {
+            success: true,
+            data: response.data,
+            message: "Email sent successfully",
+          };
+        } else {
+          throw new Error(response.data);
+        }
+      });
+  }
+
+  async forgotPasswordAsync(
+    email: string,
+    returnUrl: string
+  ): Promise<ApiResponse<any>> {
+    return this._apiClient
+      .post(`/api/Account/forgot-password/${email}?returnUrl=${returnUrl}`)
       .then((response) => {
         if (response.status === 200) {
           console.log(response.data);
-          return response.data;
-        } else if (response.status === 400) {
-          throw new Error(response.data);
+          return {
+            success: true,
+            data: response.data,
+            message: "Email sent successfully",
+          };
         } else {
-          throw new Error("Invalid username or password");
+          throw new Error(response.data);
+        }
+      });
+  }
+
+  async resetPasswordAsync(payload: any): Promise<ApiResponse<any>> {
+    return this._apiClient
+      .post(`/api/Account/reset-password`, payload)
+      .then((response) => {
+        if (response.status === 200) {
+          console.log(response.data);
+          return {
+            success: true,
+            data: response.data,
+            message: "Password updated successfully",
+          };
+        } else {
+          throw new Error(response.data);
         }
       });
   }

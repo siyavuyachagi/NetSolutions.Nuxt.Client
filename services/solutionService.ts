@@ -1,5 +1,5 @@
 import { useNuxtApp } from "#app";
-import type { PaymentTransaction, Solution } from "~/models/types";
+import type { PaymentTransaction, Solution } from "~/types/response";
 
 class SolutionService {
   private get apiClient() {
@@ -14,6 +14,7 @@ class SolutionService {
       // Fetch the solution from the API
       const response = await this.apiClient.get(`/api/Solutions/${id}`);
       if (response.status === 200) {
+        console.log(`Solution: `,response.data)
         return response.data;
       } else {
         throw new Error("Failed to fetch solution");
@@ -53,38 +54,12 @@ class SolutionService {
     });
   }
 
-  async bookmarkAsync(id: string, payload: any): Promise<any[]> {
-    return this.apiClient
-      .post(`/api/Solutions/bookmark/${id}`, payload)
-      .then((response) => {
-        if (
-          response.status === 200 ||
-          response.status === 201 ||
-          response.status === 204
-        ) {
-          return response.data;
-        } else {
-          throw new Error("Failed to fetch solutions");
-        }
-      });
-  }
-
-  async bookmarkedUserSolutionsAsync(userId: string): Promise<any[]> {
-    return this.apiClient
-      .get(`/api/Solutions/bookmarked/${userId}`)
-      .then((response) => {
-        if (response.status === 200) {
-          return response.data;
-        } else {
-          throw new Error("Failed to fetch solutions");
-        }
-      });
-  }
-
   async purchaseSolutionsAsync(id: string, payload: any) {
     try {
+      const successRedirectUrl = `${location.origin}/solutions/purchase/${id}/success`;
+      const cancelRedirectUrl = `${location.origin}/solutions/purchase/${id}/cancel`;
       const response = await this.apiClient.post(
-        `/api/Solutions/purchase/${id}`,
+        `/api/Solutions/${id}/purchase?successRedirectUrl=${successRedirectUrl}&cancelRedirectUrl=${cancelRedirectUrl}`,
         payload
       );
 
@@ -120,18 +95,35 @@ class SolutionService {
 
   async likeAsync(id: string, payload: any): Promise<any[]> {
     return this.apiClient
-      .post(`/api/Solutions/like/${id}`, payload)
+      .post(`/api/Solutions/${id}/like`, payload)
       .then((response) => {
-        if (
-          response.status === 200 ||
-          response.status === 201 ||
-          response.status === 204
-        ) {
+        if (response.status === 200) {
           return response.data;
         } else {
           throw new Error("Failed to fetch solutions");
         }
       });
+  }
+
+  async downloadSolutionsAsync(id: string) {
+    try {
+      const response = await this.apiClient.post(
+        `/api/Solutions/${id}/download`
+      );
+
+      if (response.status === 200) {
+        if (response.data) {
+          return { success: true, data: response.data };
+        } else {
+          throw new Error("Redirect URL is missing in the response");
+        }
+      } else {
+        throw new Error("Error purchasing solution");
+      }
+    } catch (error) {
+      console.error("Payment initiation failed:", error);
+      throw error;
+    }
   }
 }
 

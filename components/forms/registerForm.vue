@@ -2,13 +2,14 @@
     <Transition appear enter-from-class="opacity-0 translate-x-6"
         enter-active-class="transition-all duration-1000 ease-out">
         <form v-if="mounted" @submit.prevent="createAccount"
-            class="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4 mt-8 hover:shadow-lg">
+            class="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4 mt-8 hover:shadow-lg"
+            :class="{ 'pointer-events-none opacity-50': isSubmitting }">
             <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">
                 Create an account
             </h2>
 
             <p class="text-error">{{ errors[0] }}</p>
-            <div class="mb-4">
+            <div class="mb-2">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
                     Email Address
                 </label>
@@ -20,7 +21,7 @@
                 </p>
             </div>
 
-            <div class="mb-6">
+            <div class="mb-2">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
                     Password
                 </label>
@@ -32,14 +33,14 @@
                     <button type="button" tabindex="-1" @click="togglePasswordVisibility"
                         class="absolute right-3 top-3 text-gray-600">
                         <Eye v-if="!showPassword" />
-                        <EyeOff v-else />
+                        <EyeClosed v-else />
                     </button>
                 </div>
                 <p v-if="model.password?.errors" class="text-red-500 text-xs italic">
                     <!-- {{ model.password.errors[0] }} -->
                 </p>
             </div>
-            <div class="mb-6">
+            <div class="mb-2">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
                     Confirm Password
                 </label>
@@ -57,12 +58,8 @@
             <div class="flex items-center justify-between">
                 <button type="submit"
                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300">
-                    Sign Up
+                    {{ isSubmitting ? 'Please wait...' : 'Sign Up' }}
                 </button>
-                <!-- 
-            <a href="#" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
-                Forgot Password?
-            </a> -->
             </div>
 
             <div class="mt-4 text-center">
@@ -109,11 +106,13 @@
 
 
 <script setup lang="ts">
-import { EyeOff, Eye } from 'lucide-vue-next';
+import { Eye, EyeClosed } from 'lucide-vue-next';
 import VueSanity, { email, required, type ModelConfig } from 'vuesanity';
 import accountService from '~/services/accountService';
+import toast from '~/utils/toasts';
 
 const route = useRoute();
+const router = useRouter();
 const mounted = ref(false);
 const errors = ref<string[]>([]);
 const model = reactive<ModelConfig>({
@@ -132,19 +131,24 @@ const model = reactive<ModelConfig>({
     }
 });
 const showPassword = ref(false);
+const isSubmitting = ref(false);
 
 const togglePasswordVisibility = () => {
     showPassword.value = !showPassword.value
 }
 async function createAccount() {
+    isSubmitting.value = true;
     errors.value = [];
     try {
-        var state = new VueSanity(model);
+        var state = new VueSanity(model, false);
         if (!state.isValid) return;
         else {
+
+            const emailRedirectUrl = `${window.location.origin}/auth/accountConfirmed?email=${model.username.value}`;
+
             const result = await accountService.registerAsync(
                 state.normalizedModel,
-                (route.query.returnUrl as string) || undefined
+                emailRedirectUrl
             );
 
             if (!result.success) {
@@ -153,10 +157,16 @@ async function createAccount() {
                     : result.message
                         ? [result.message]
                         : [];
+            } else {
+                router.replace(`/auth/accountConfirmation?email=${model.username.value}`);
             }
         }
     } catch (error) {
         // Handle error
+        console.error(error);
+        toast.error("Error creating account")
+    } finally {
+        isSubmitting.value = false;
     }
 }
 onMounted(() => {

@@ -1,4 +1,4 @@
-import type { BusinessServicePackage } from "~/interface/BusinessServicePackage";
+import type { BusinessServicePackage } from "~/types/response";
 
 class BusinessServicePackageService {
   private get apiClient() {

@@ -130,11 +130,25 @@
                 </div>
             </div>
 
-            <div class="mt-6">
-                <button @click="saveChanges"
-                    class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg w-full sm:w-auto">Save
-                    Changes</button>
+            <div v-if="activeTab === 'settings'">
+                <h3 class="text-xl font-semibold text-gray-700 mb-3">Notification Preferences</h3>
+                <div class="space-y-4">
+                    <label class="flex items-center space-x-3">
+                        <input type="checkbox" v-model="user.notifications.email" class="form-checkbox">
+                        <span>Email Notifications</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="checkbox" v-model="user.notifications.sms" class="form-checkbox">
+                        <span>SMS Notifications</span>
+                    </label>
+                </div>
+                <div class="mt-6">
+                    <button @click="saveChanges"
+                        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg w-full sm:w-auto">Save
+                        Changes</button>
+                </div>
             </div>
+
         </div>
     </div>
 </template>
@@ -157,7 +171,8 @@ const tabs = [
     { name: 'account', label: 'Account Info' },
     { name: 'security', label: 'Security' },
     { name: 'notifications', label: 'Notifications' },
-    { name: 'organization', label: 'Organization' }
+    { name: 'organization', label: 'Organization' },
+    { name: 'settings', label: 'Settings' },
 ];
 
 const user = {

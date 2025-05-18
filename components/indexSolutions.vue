@@ -20,14 +20,14 @@
             <!-- View Mode Toggle -->
             <div class="w-full hidden md:flex md:w-auto justify-end">
                 <div class="flex items-center bg-neutral-100 rounded-full p-1 space-x-1">
-                    <button @click="viewMode = 'grid'"
-                        class="px-4 py-2 rounded-full transition-all duration-300 ease-in-out" :class="viewMode === 'grid'
+                    <button @click="setViewMode('grid')"
+                        class="px-4 py-2 rounded-full transition-all duration-300 ease-in-out" :class="getViewMode === 'grid'
                             ? 'bg-primary-500 text-white shadow-md'
                             : 'text-neutral-600 hover:bg-neutral-200'">
                         <LayoutGrid class="h-5 w-5" />
                     </button>
-                    <button @click="viewMode = 'list'"
-                        class="px-4 py-2 rounded-full transition-all duration-300 ease-in-out" :class="viewMode === 'list'
+                    <button @click="setViewMode('list')"
+                        class="px-4 py-2 rounded-full transition-all duration-300 ease-in-out" :class="getViewMode === 'list'
                             ? 'bg-primary-500 text-white shadow-md'
                             : 'text-neutral-600 hover:bg-neutral-200'">
                         <List class="h-5 w-5" />
@@ -39,17 +39,10 @@
 
 
     <!-- Loading Skeleton -->
-    <div v-if="solutionsStatus === 'pending'" :class="['grid gap-6', viewMode === 'grid'
+    <div v-if="solutionsStatus === 'pending'" :class="['grid gap-6', getViewMode === 'grid'
         ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
         : 'grid-cols-1']">
         <div v-for="i in 6" :key="i" class="bg-white rounded-lg shadow-md p-6 flex flex-col relative animate-pulse">
-            <!-- Skeleton Category Ribbon -->
-            <div class="absolute -top-1 -left-2">
-                <div class="relative">
-                    <div class="py-1 px-3 flex items-center ribbon bg-neutral-300" style="width: 80px; height: 24px">
-                    </div>
-                </div>
-            </div>
             <!-- Skeleton Title -->
             <div class="h-6 bg-neutral-200 rounded w-3/4 mb-4 mt-5"></div>
             <!-- Skeleton Description -->
@@ -90,13 +83,13 @@
     </div>
 
     <!-- Solutions Grid/List -->
-    <div v-else :class="['grid gap-6', viewMode === 'grid'
+    <div v-else :class="['grid gap-6', getViewMode === 'grid'
         ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
         : 'grid-cols-1']">
 
-        <component v-for="solution in paginatedSolutions" :key="solution.id">
+        <template v-for="solution in paginatedSolutions" :key="solution.id">
             <SolutionCard :solution="solution" />
-        </component>
+        </template>
     </div>
 
     <!-- Pagination Controls -->
@@ -117,11 +110,12 @@
 </template>
 
 <script setup lang="ts">
-import { ExternalLink, LayoutGrid, List } from 'lucide-vue-next';
-import type { TechnologyStack } from '~/models/types';
+import { LayoutGrid, List } from 'lucide-vue-next';
 import solutionService from '~/services/solutionService';
 import SolutionCard from './index/solutionCard.vue';
+import type { TechnologyStack } from '~/types/response';
 
+const VIEWMODE_STORAGE_KEY = "ns_index_viewmode";
 
 // Fetch solutions
 const {
@@ -146,38 +140,6 @@ const onSearchInput = () => {
     currentPage.value = 1;
 };
 
-// Get color class for ribbon based on solution discriminator
-const getRibbonClass = (discriminator: string) => {
-    switch (discriminator?.toLowerCase()) {
-        case 'web application':
-            return 'bg-blue-600';
-        case 'uiuxdesign':
-            return 'bg-purple-600';
-        case 'mobile development':
-            return 'bg-green-600';
-        case 'graphic design':
-            return 'bg-orange-500';
-        default:
-            return 'bg-blue-600';
-    }
-};
-
-// Get shadow color for ribbon
-const getRibbonShadowClass = (discriminator: string) => {
-    switch (discriminator?.toLowerCase()) {
-        case 'webdevelopment':
-            return 'border-r-blue-800';
-        case 'uiuxdesign':
-            return 'border-r-purple-800';
-        case 'mobiledevelopment':
-            return 'border-r-green-800';
-        case 'graphicdesign':
-            return 'border-r-orange-700';
-        default:
-            return 'border-r-blue-800';
-    }
-};
-
 // Computed properties
 const filteredSolutions = computed(() => {
     if (!solutions.value) return [];
@@ -189,7 +151,7 @@ const filteredSolutions = computed(() => {
         solution.name.toLowerCase().includes(query) ||
         solution.description.toLowerCase().includes(query) ||
         solution.discriminator?.toLowerCase().includes(query) ||
-        solution.technologyStacks.some((s: TechnologyStack) => s.name.toLowerCase().includes(query))
+        solution.technologyStacks.some((ts: TechnologyStack) => ts.name.toLowerCase().includes(query))
     );
 });
 
@@ -202,6 +164,14 @@ const paginatedSolutions = computed(() => {
     const end = start + pageSize;
     return filteredSolutions.value.slice(start, end);
 });
+
+const getViewMode = computed(() => viewMode.value);
+
+const setViewMode = (mode: string) => {
+    viewMode.value = mode;
+    localStorage.setItem(VIEWMODE_STORAGE_KEY, mode);
+};
+
 
 // Ensure current page is valid when filtered results change
 watch(filteredSolutions, () => {
@@ -221,26 +191,8 @@ const prevPage = () => {
 // console.log(await solutions.value)
 onMounted(() => {
     solutionsRefresh();
+    const stored = localStorage.getItem(VIEWMODE_STORAGE_KEY);
+    if (stored) viewMode.value = stored;
     console.log(solutions.value)
 })
 </script>
-
-<style scoped>
-.ribbon {
-    position: relative;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 10px 50%);
-}
-
-.ribbon:after {
-    content: '';
-    position: absolute;
-    bottom: -8px;
-    left: 0;
-    width: 8px;
-    height: 8px;
-    background: inherit;
-    filter: brightness(70%);
-    clip-path: polygon(0 0, 100% 0, 100% 100%);
-}
-</style>

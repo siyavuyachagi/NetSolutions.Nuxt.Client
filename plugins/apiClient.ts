@@ -13,6 +13,9 @@ export default defineNuxtPlugin((nuxtApp) => {
     baseURL: apiUrl,
     headers: {
       "Content-Type": "application/json",
+      // options: {
+      //   origin: window.location.origin,
+      // },
     },
   });
 

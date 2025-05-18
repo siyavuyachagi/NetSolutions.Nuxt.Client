@@ -285,10 +285,10 @@
                     <div class="border-t py-4">
                         <h4 class="font-medium text-neutral-800 mb-2">Included in this package:</h4>
                         <ul class="space-y-2">
-                            <li v-for="feature in businessServicePackage?.packageFeatures" :key="feature.id"
-                                class="flex items-start">
+                            <li v-for="feature in businessServicePackage?.businessServicePackageFeatures"
+                                :key="feature.id" class="flex items-start">
                                 <CheckCircle class="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
-                                <span class="text-neutral-700 text-sm">{{ feature?.title }}</span>
+                                <span class="text-neutral-700 text-sm">{{ feature?.name }}</span>
                             </li>
                         </ul>
                     </div>
@@ -322,33 +322,7 @@
                 </div>
 
                 <!-- Need help section -->
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <h3 class="text-lg font-semibold text-neutral-800 mb-4">Need Help?</h3>
-                    <p class="text-neutral-600 mb-4">Have questions about our services or the application process?</p>
-
-                    <div class="space-y-3">
-                        <a href="#" class="flex items-center text-neutral-700 hover:text-primary-500 transition">
-                            <MessageCircle class="h-5 w-5 mr-3 text-neutral-500" />
-                            <span>Chat with Support</span>
-                        </a>
-                        <a href="#" class="flex items-center text-neutral-700 hover:text-primary-500 transition">
-                            <Phone class="h-5 w-5 mr-3 text-neutral-500" />
-                            <span>+27 123 456 7890</span>
-                        </a>
-                        <a href="#" class="flex items-center text-neutral-700 hover:text-primary-500 transition">
-                            <Mail class="h-5 w-5 mr-3 text-neutral-500" />
-                            <span>support@yourcompany.com</span>
-                        </a>
-                    </div>
-
-                    <div class="mt-6">
-                        <button
-                            class="w-full border border-neutral-300 hover:bg-neutral-50 text-neutral-700 font-medium py-2 px-4 rounded-lg flex items-center justify-center">
-                            <HelpCircle class="h-5 w-5 mr-2" />
-                            View FAQ
-                        </button>
-                    </div>
-                </div>
+                <contact-support />
             </div>
         </div>
     </div>
@@ -358,12 +332,14 @@
 import { ref, onMounted } from 'vue';
 import {
     ArrowLeft, ArrowRight, CheckCircle, CloudUpload, X, FileText, Image,
-    File, MessageCircle, Phone, Mail, HelpCircle
+    File
 } from 'lucide-vue-next';
 import { useRoute, useRouter } from 'vue-router';
 import VueSanity, { email, extensions, maxSize, required, type ModelConfig } from 'vuesanity';
 import type { Timeline } from '~/components/timelineSelector.vue';
 import businessServicePackageService from '~/services/businessServicePackageService';
+import ContactSupport from '~/components/cards/contact-support.vue';
+
 
 definePageMeta({
     validate(route) {

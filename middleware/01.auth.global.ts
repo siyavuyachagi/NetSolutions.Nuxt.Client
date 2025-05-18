@@ -5,43 +5,41 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     const store = useAuthStore();
     const router = useRouter();
 
-    // User does not require Auth
-    if (to.matched.some((record) => record.meta.requiresAuth)) {
-      // console.log("User requires Auth");
-      if (!store.isAuthenticated) {
-        // console.log("User not Authenticated");
-        router.push({
+    const authorizeMeta = to.meta.authorize;
+
+    // If no authorization required, exit
+    if (authorizeMeta === undefined) return;
+
+    // Not authenticated
+    if (!store.isAuthenticated) {
+      return router.push({
+        path: "/auth/login",
+        query: {
+          message: "Not authenticated.",
+          returnUrl: to.fullPath,
+        },
+      });
+    }
+
+    // If authorization is simply `true`, any authenticated user is allowed
+    if (authorizeMeta === true) return;
+
+    // If route specifies required roles
+    if (Array.isArray(authorizeMeta)) {
+      const userRoles: string[] = (store.user?.userRoles || []).map((r) =>
+        r.toLowerCase()
+      );
+      const requiredRoles: string[] = authorizeMeta.map((r) => r.toLowerCase());
+
+      const hasRole = requiredRoles.some((role) => userRoles.includes(role));
+      if (!hasRole) {
+        return router.push({
           path: "/auth/login",
           query: {
-            message: "Not authenticated.",
+            message: "Not authorized.",
             returnUrl: to.fullPath,
           },
         });
-      } else {
-        // console.log("User Authenticated", store.user);
-
-        // If authenticated, check if the route requires specific roles
-        const userRoles: string[] = (store.user?.roles || []).map((role) =>
-          role.toLowerCase()
-        ); // Normalize user roles
-        const requiredRoles: string[] = ((to.meta.roles as string[]) || []).map(
-          (role) => role.toLowerCase()
-        ); // Normalize required roles
-
-        // If route requires roles and the user doesn't have any of them, redirect
-        if (
-          requiredRoles.length > 0 && // Check if there are required roles
-          !requiredRoles.some((role: string) => userRoles.includes(role))
-        ) {
-          // console.log("User not Authorized");
-          router.push({
-            path: "/auth/login",
-            query: {
-              message: "Not Authorized.",
-              returnUrl: to.fullPath,
-            },
-          });
-        }
       }
     }
   }

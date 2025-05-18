@@ -1,4 +1,4 @@
-import type { PaymentTransaction } from "~/interface/PaymentTransaction";
+import type { PaymentTransaction } from "~/types/response";
 
 class PaymentTransactionService {
   private get apiClient() {

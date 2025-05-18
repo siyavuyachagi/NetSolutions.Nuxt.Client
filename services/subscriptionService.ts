@@ -1,4 +1,4 @@
-import type { Subscription } from "~/interface/Subscription";
+import type { Subscription } from "~/types/response";
 
 class SubscriptionService {
   private get apiClient() {

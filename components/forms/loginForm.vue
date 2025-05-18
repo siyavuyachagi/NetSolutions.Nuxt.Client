@@ -10,7 +10,7 @@
             <div class="my-2">
                 <p class="text-error">{{ errors?.join(', ') }}</p>
             </div>
-            <div class="mb-4">
+            <div class="mb-2">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
                     Email Address
                 </label>
@@ -22,7 +22,7 @@
                 </p>
             </div>
 
-            <div class="mb-6">
+            <div class="mb-2">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
                     Password
                 </label>
@@ -37,7 +37,7 @@
                     <button type="button" @click="togglePasswordVisibility"
                         class="absolute right-3 top-3 text-gray-600">
                         <Eye v-if="!showPassword" />
-                        <EyeOff v-else />
+                        <EyeClosed v-else />
                     </button>
                 </div>
                 <p v-if="model.password?.errors" class="text-red-500 text-xs italic">
@@ -51,9 +51,10 @@
                     {{ onSubmit ? 'Loading...' : 'Sign In' }}
                 </button>
 
-                <a href="#" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+                <nuxt-link to="/auth/forgot-password"
+                    class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
                     Forgot Password?
-                </a>
+                </nuxt-link>
             </div>
 
             <div class="mt-4 text-center">
@@ -99,9 +100,9 @@
 
 
 <script setup lang="ts">
-import { EyeOff, Eye } from 'lucide-vue-next';
+import { Eye, EyeClosed } from 'lucide-vue-next';
 import VueSanity, { required, type ModelConfig } from 'vuesanity';
-import authService from '~/services/authService';
+import accountService from '~/services/accountService';
 
 const route = useRoute();
 const errors = ref<string[]>([]);
@@ -135,7 +136,7 @@ async function login() {
         }
 
         try {
-            await authService.loginAsync(state.formData, '/account');
+            await accountService.loginAsync(state.formData, "/account");
         } catch (error: any) {
             // Handle different types of errors
             if (error.response) {

@@ -34,10 +34,10 @@
                         class="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg">
                         <nav class="py-1">
                             <nuxt-link to="/account" class="block px-4 py-2 hover:bg-gray-100">Account</nuxt-link>
-                            <nuxt-link to="/account/settings"
-                                class="block px-4 py-2 hover:bg-gray-100">Settings</nuxt-link>
+                            <!-- <nuxt-link to="/account/settings"
+                                class="block px-4 py-2 hover:bg-gray-100">Settings</nuxt-link> -->
                             <button class="flex px-4 py-2 hover:bg-gray-100 text-red-500 w-full text-start"
-                                @click="authService.logout('/auth/login')">
+                                @click="accountService.logout('/auth/login')">
                                 <LogOut />
                                 Logout
                             </button>
@@ -55,7 +55,7 @@ import { LogOut, LogIn } from 'lucide-vue-next';
 import { useAuthStore } from '~/stores/useAuthStore';
 import DesktopNav from '../navs/desktopNav.vue';
 import MobileNav from '../navs/mobileNav.vue';
-import authService from '~/services/authService';
+import accountService from '~/services/accountService';
 
 // Get auth store instance
 const authStore = useAuthStore();

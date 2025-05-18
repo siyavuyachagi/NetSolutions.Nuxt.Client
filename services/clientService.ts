@@ -1,5 +1,5 @@
+import type { Client } from "~/types/response";
 
-import type { Client } from "~/interface/Client";
 
 class ClientService {
   private get apiClient() {
@@ -18,7 +18,7 @@ class ClientService {
     });
   }
 
-  async getClientsAsync(): Promise<any[]> {
+  async getClientsAsync(): Promise<Client[]> {
     return this.apiClient.get(`/api/Clients`).then((response) => {
       if (response.status === 200) {
         return response.data;

@@ -1,4 +1,5 @@
-import type { BusinessService } from "~/interface/BusinessService";
+import type { ApiResponse } from "~/types/ApiResponse";
+import type { BusinessService } from "~/types/response";
 
 class BusinessServiceService {
   private get apiClient() {
@@ -28,6 +29,34 @@ class BusinessServiceService {
           throw new Error(response.data);
         }
       });
+  }
+
+  async createServiceTestimonialAsync(
+    id: string,
+    payload: any
+  ): Promise<ApiResponse<string>> {
+    try {
+      const response = await this.apiClient.post(
+        `/api/BusinessServices/${id}/testimonials`,
+        payload
+      );
+
+      if (response.status === 200) {
+        return {
+          success: true,
+          data: response.data,
+          message: "Request was successful.",
+        };
+      } else {
+        throw new Error(response.data);
+      }
+    } catch (error: any) {
+      return {
+        success: false,
+        data: "",
+        message: error.message || "An error occurred",
+      };
+    }
   }
 }
 
